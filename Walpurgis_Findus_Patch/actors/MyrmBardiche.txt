@@ -1,0 +1,1167 @@
+ACTOR Bardiche : MyrmidonWeapon 23814 
+{
+	//The Bardiche came to me after quite alot of umming and arring about what
+	//the Myrmidon's Alt-Slot 3 would be. But one day, I just cracked open Photoshop
+	//and made the first sprite; a dark black metal bardiche, which just clicked.
+	//
+	//I also didn't have any weapons of dubious power at that point, nor any
+	//semi-sentient ones, so Alastor got that role, including some voices.
+	//I think it turned out pretty good!
+	Inventory.RestrictedTo MyrmidonPlayer
+	Weapon.SelectionOrder 2
+	Weapon.SlotNumber 3
+	Weapon.SlotPriority 0
+	+BLOODSPLATTER
+	+UNDROPPABLE
+	+WEAPON.MELEEWEAPON
+	+WEAPON.AMMO_OPTIONAL
+	+WEAPON.ALT_AMMO_OPTIONAL
+	+WEAPON.AXEBLOOD
+	Weapon.AmmoGive 25
+	Weapon.KickBack 150
+	Weapon.YAdjust -20
+	//Scale 1.05
+	Weapon.AmmoType "Mana2W"
+	//Decal "MinotaurScorch"
+	Inventory.PickupMessage "\c[white]Took the Necromantic \c[red]Bardiche\c[white], \c[red]Alastor\c[white]! [\c[green]3\c[white]]"
+	Inventory.PickupSound "Pickup/WeaponBlunt"
+	Obituary "$OB_MPFWEAPHAMMERM"
+	Tag "Bardiche Alastor"
+	Obituary "%o had their soul ripped in twain and sent to Alastor."
+	States
+	{
+	Spawn:
+		MY8A R -1
+		Stop
+	Select:
+		TNT1 A 3 A_WeaponReady(WRF_NOBOB|WRF_NOFIRE)
+		TNT1 A 0 A_GiveInventory("BardicheInHand",1)
+		TNT1 A 0 A_JumpIfInventory ("NotMetAlastor", 1, "Select3") 
+		TNT1 A 0 A_StartSound("AlastorRaised",CHAN_AUTO,CHANF_OVERLAP,1,ATTN_NONE,frandom(0.97,1.04))
+		Goto Select2
+	Deselect:
+		TNT1 A 0 A_TakeInventory("BardicheInHand")
+		TNT1 A 0 A_StartSound("AlastorLowered",CHAN_AUTO,CHANF_OVERLAP,1,ATTN_NONE,frandom(0.97,1.04))
+		Goto Deselect2
+	Select2:
+		B4RD A 1 
+		{	A_Raise;
+			A_Raise;}
+		Loop
+	Select3:
+		B4RD A 0 {A_StartSound("AlastorNewMaster",CHAN_AUTO,CHANF_OVERLAP,1,ATTN_NONE,frandom(0.97,1.04));
+					A_TakeInventory("NotMetAlastor");}
+		Goto Select2
+	Deselect2:
+		B4RD A 1 A_Lower
+		Loop
+	Ready:
+		B4RD A 2 
+		{	A_WeaponReady(WRF_ALLOWRELOAD);
+			if (random(1,25) == 1 && (CountInv("MaceChargeCheck1")) == 0 && (CountInv("LightningCheck")) == 0) // animation for the bardiche
+			{	A_Overlay(23,"OverlayChoose");
+			A_OverlayFlags(23,PSPF_ADDBOB|PSPF_ADDWEAPON,true);}
+		}
+		Loop
+	OverlayChoose: //This is an overlay 
+		TNT1 A 1 A_TakeInventory("LightningCheck") //Just in case
+		TNT1 A 1 A_GiveInventory("LightningCheck",random(1,13))
+		TNT1 A 0 A_JumpIfInventory ("LightningCheck", 8, "OverlayFace") 
+		TNT1 A 0 A_JumpIfInventory ("LightningCheck", 1, "OverlayName") 
+		Stop
+	OverlayName:
+		B0VR AAA 2 A_JumpIfInventory ("MaceChargeCheck1", 1, "KillAmbient")
+		B0VR BBB 2 A_JumpIfInventory ("MaceChargeCheck1", 1, "KillAmbient")
+		B0VR CCCC 2 A_JumpIfInventory ("MaceChargeCheck1", 1, "KillAmbient")
+		B0VR CCCC 2 A_JumpIfInventory ("MaceChargeCheck1", 1, "KillAmbient")
+		B0VR CCCC 2 A_JumpIfInventory ("MaceChargeCheck1", 1, "KillAmbient")
+		B0VR C 0 A_Jump(33,"OverlayNameFinish")
+		B0VR DDD 2 A_JumpIfInventory ("MaceChargeCheck1", 1, "KillAmbient")
+		B0VR EEE 2 A_JumpIfInventory ("MaceChargeCheck1", 1, "KillAmbient")
+		B0VR FF 2 A_JumpIfInventory ("MaceChargeCheck1", 1, "KillAmbient")
+		B0VR EEE 2 A_JumpIfInventory ("MaceChargeCheck1", 1, "KillAmbient")
+		B0VR DDD 2 A_JumpIfInventory ("MaceChargeCheck1", 1, "KillAmbient")
+		B0VR CCC 2 A_JumpIfInventory ("MaceChargeCheck1", 1, "KillAmbient")
+		B0VR C 0 A_Jump(90,"OverlayNameFinish")
+	OverlayNameLoop:
+		B0VR DDD 2 A_JumpIfInventory ("MaceChargeCheck1", 1, "KillAmbient")
+		B0VR EEE 2 A_JumpIfInventory ("MaceChargeCheck1", 1, "KillAmbient")
+		B0VR FFF 1 A_JumpIfInventory ("MaceChargeCheck1", 1, "KillAmbient")
+		B0VR EEE 2 A_JumpIfInventory ("MaceChargeCheck1", 1, "KillAmbient")
+		B0VR DDD 2 A_JumpIfInventory ("MaceChargeCheck1", 1, "KillAmbient")
+		B0VR CCC 2 A_JumpIfInventory ("MaceChargeCheck1", 1, "KillAmbient")
+		B0VR C 0 A_Jump(155,"OverlayNameFinish")
+		Goto OverlayNameLoop
+	OverlayNameFinish:
+		B0VR CCCCCCCC 2 A_JumpIfInventory ("MaceChargeCheck1", 1, "KillAmbient")
+		B0VR BBB 2 A_JumpIfInventory ("MaceChargeCheck1", 1, "KillAmbient")
+		B0VR AAA 2 A_JumpIfInventory ("MaceChargeCheck1", 1, "KillAmbient")
+		TNT1 A 0 A_TakeInventory("LightningCheck")
+		Stop	
+	OverlayFace:
+		B0VR GGGG 2 A_JumpIfInventory ("MaceChargeCheck1", 1, "KillAmbient")
+		B0VR HHHH 2 A_JumpIfInventory ("MaceChargeCheck1", 1, "KillAmbient")
+		B0VR III 2 A_JumpIfInventory ("MaceChargeCheck1", 1, "KillAmbient")
+		B0VR III 2 A_JumpIfInventory ("MaceChargeCheck1", 1, "KillAmbient")
+		B0VR III 2 A_JumpIfInventory ("MaceChargeCheck1", 1, "KillAmbient")
+		B0VR I 0 A_Jump(75,"OverlayFaceFinish")
+	OverlayFaceLoop:
+		B0VR JJJJ 2 A_JumpIfInventory ("MaceChargeCheck1", 1, "KillAmbient")
+		B0VR KKKK 2 A_JumpIfInventory ("MaceChargeCheck1", 1, "KillAmbient")
+		B0VR LLLL 1 A_JumpIfInventory ("MaceChargeCheck1", 1, "KillAmbient")
+		B0VR KKKK 2 A_JumpIfInventory ("MaceChargeCheck1", 1, "KillAmbient")
+		B0VR JJJJ 2 A_JumpIfInventory ("MaceChargeCheck1", 1, "KillAmbient")
+		B0VR III 2 A_JumpIfInventory ("MaceChargeCheck1", 1, "KillAmbient")
+		B0VR JJJJ 2 A_JumpIfInventory ("MaceChargeCheck1", 1, "KillAmbient")
+		B0VR KKKK 2 A_JumpIfInventory ("MaceChargeCheck1", 1, "KillAmbient")
+		B0VR LLLL 1 A_JumpIfInventory ("MaceChargeCheck1", 1, "KillAmbient")
+		B0VR KKKK 2 A_JumpIfInventory ("MaceChargeCheck1", 1, "KillAmbient")
+		B0VR JJJJ 2 A_JumpIfInventory ("MaceChargeCheck1", 1, "KillAmbient")
+		B0VR III 2 A_JumpIfInventory ("MaceChargeCheck1", 1, "KillAmbient")
+		B0VR I 0 A_Jump(175,"OverlayFaceFinish")
+		Goto OverlayFaceLoop
+	OverlayFaceFinish:
+		B0VR IIIIIIIIIIII 2 A_JumpIfInventory ("MaceChargeCheck1", 1, "KillAmbient")
+		B0VR HHHH 2 A_JumpIfInventory ("MaceChargeCheck1", 1, "KillAmbient")
+		B0VR GGGG 2 A_JumpIfInventory ("MaceChargeCheck1", 1, "KillAmbient")
+		TNT1 A 0 A_TakeInventory("LightningCheck")
+		Stop
+	KillAmbient:
+		TNT1 A 0 A_TakeInventory("LightningCheck")
+		TNT1 A 0 A_TakeInventory("MaceChargeCheck1")
+		Stop
+	Fire:
+		B4RD A 0 A_GiveInventory("MaceChargeCheck1",1)
+		B4RD A 0 
+		B4RD A 0 A_JumpIfInventory("ComboCounter",1,"FireCleave") 	
+	FireSplit:
+		B4RD B 1 A_StartSound("DaggerSwish",1,CHANF_OVERLAP|CHANF_LOCAL,0.4,ATTN_STATIC,frandom(0.40,0.56))
+		B4RD B 1 A_WeaponOffset(4,38) 
+		B4RD B 1 A_WeaponOffset(8,44)
+		B4RD C 1 A_WeaponOffset(-20,52)
+		B4RD C 1 A_WeaponOffset(20,52)
+		B4RD C 1 {if(random(1,2) == 1 && (GetCVar("walp_silentprotagonists")==0) && (CountInv("PowerShutItWilson")) == 0)
+				{A_StartSound("MyrmExertsLight",CHAN_AUTO,CHANF_OVERLAP,0.9,ATTN_NONE,frandom(0.97,1.04));}
+				A_WeaponOffset(70,52);}
+		B4RD C 1 A_WeaponOffset(115,58)
+		B4RD C 1 A_WeaponOffset(180,62)
+		TNT1 A 1 
+		B4RD D 0 A_WeaponOffset(0,30) 
+		B4RD D 1 A_StartSound("SwingItNow",1,CHANF_OVERLAP|CHANF_LOCAL,1,ATTN_STATIC,frandom(0.68,0.78))
+		B4RD E 2 
+		B9RD F 2
+		B9RD GHIJK 1
+		B9RD L 1 A_CustomPunch (1, 1, CPF_NOTURN, "AxePuffWalp", 280, 2) //decal and lifesteal
+		B9RD M 1 {
+				if(CountInv("BardicheUpgrade") == 1 || CountInv("BardicheUpgrade") == 4 || CountInv("BardicheUpgrade") == 6 || CountInv("BardicheUpgrade") == 9)
+				{	A_FireProjectile("BardicheSlashVertUpgrade",0,false,0,0,FPF_NOAUTOAIM);}
+				else if((CountInv("BardicheMutate") == 1 || CountInv("BardicheMutate") == 4 || CountInv("BardicheMutate") == 6 || CountInv("BardicheMutate") == 9) && CountInv("Mana2W") >= 1)
+				{	A_FireProjectile("BardicheSlashVertical",0,false,0,0,FPF_NOAUTOAIM);
+					A_TakeInventory("Mana2W", 1, TIF_NOTAKEINFINITE);
+					A_FireProjectile("NecromancyBanned",10,false,0,10,FPF_NOAUTOAIM);
+					A_FireProjectile("NecromancyBanned",0,false,-10,10,FPF_NOAUTOAIM);
+					A_FireProjectile("NecromancyBanned",20,false,10,10,FPF_NOAUTOAIM);
+					A_StartSound("BardicheMutateShots",1,CHANF_OVERLAP,1,ATTN_NORM,frandom(0.95,1.05));
+				}	
+				else
+				{	A_FireProjectile("BardicheSlashVertical",0,false,0,0,FPF_NOAUTOAIM);}
+				if(CountInv("BardicheMutate") == 5 || CountInv("BardicheMutate") == 6 || CountInv("BardicheMutate") == 8 || CountInv("BardicheMutate") == 9)
+				{
+					if(GetCVar("walp_monsterreplace")==1) //Corpse Explosion doesn't work with classic bestiary so loads of checks -_-;
+					{
+						A_SpawnItemEx("InvisBardicheCircle",50,0,0,0,0,0,0,SXF_SETMASTER,0); 
+						A_TakeInventory("Mana2W", 1,TIF_NOTAKEINFINITE);
+					}
+				}
+				}
+		B9RD NOP 1
+		B9RD QR 2
+		B9RD S 2 A_GiveInventory("ComboCounter",1)
+		TNT1 A 0 A_Refire("Fire")
+		TNT1 A 2
+		Goto Ready
+	FireCleave:
+		B4RD B 1 A_StartSound("DaggerSwish",1,CHANF_OVERLAP|CHANF_LOCAL,0.4,ATTN_STATIC,frandom(0.40,0.56))
+		B4RD B 1 A_WeaponOffset(4,38) 
+		B4RD B 1 A_WeaponOffset(8,44)
+		B4RD C 1 A_WeaponOffset(-20,52)
+		B4RD C 1 A_WeaponOffset(20,52)
+		B4RD C 1 {if(random(1,2) == 1 && (GetCVar("walp_silentprotagonists")==0) && (CountInv("PowerShutItWilson")) == 0)
+				{A_StartSound("MyrmExertsLight",CHAN_AUTO,CHANF_OVERLAP,0.9,ATTN_NONE,frandom(0.97,1.04));}
+				A_WeaponOffset(70,52);}
+		B4RD C 2 A_WeaponOffset(115,58)
+		B4RD C 1 A_WeaponOffset(180,62)
+		TNT1 A 1 
+		B4RD D 0 A_WeaponOffset(0,30) 
+		B6RD E 1 A_StartSound("SwingItNow",1,CHANF_OVERLAP|CHANF_LOCAL,1,ATTN_STATIC,frandom(0.68,0.78))
+		B6RD F 2
+		B6RD GH 2
+		B6RD IJ 1
+		B6RD K 1 {
+				if(CountInv("BardicheUpgrade") == 1 || CountInv("BardicheUpgrade") == 4 || CountInv("BardicheUpgrade") == 6 || CountInv("BardicheUpgrade") == 9)
+				{	A_FireProjectile("BardicheSlashHorizUpgrade",0,false,0,0,FPF_NOAUTOAIM);}
+				else if((CountInv("BardicheMutate") == 1 || CountInv("BardicheMutate") == 4 || CountInv("BardicheMutate") == 6 || CountInv("BardicheMutate") == 9) && CountInv("Mana2W") >= 1)
+				{	A_FireProjectile("BardicheSlashHorizontal",0,false,0,0,FPF_NOAUTOAIM);
+					A_TakeInventory("Mana2W", 1, TIF_NOTAKEINFINITE);
+					A_StartSound("BardicheMutateShots",1,CHANF_OVERLAP,1,ATTN_NORM,frandom(0.95,1.05));
+					A_FireProjectile("NecromancyBanned",10,false,0,10,FPF_NOAUTOAIM);
+					A_FireProjectile("NecromancyBanned",0,false,-10,10,FPF_NOAUTOAIM);
+					A_FireProjectile("NecromancyBanned",20,false,10,10,FPF_NOAUTOAIM);}	
+				else
+				{	A_FireProjectile("BardicheSlashHorizontal",0,false,0,0,FPF_NOAUTOAIM);}
+				if(CountInv("BardicheMutate") == 5 || CountInv("BardicheMutate") == 6 || CountInv("BardicheMutate") == 8 || CountInv("BardicheMutate") == 9)
+				{
+					if(GetCVar("walp_monsterreplace")==1) //Corpse Explosion doesn't work with classic bestiary so loads of checks -_-;
+					{
+						A_SpawnItemEx("InvisBardicheCircle",50,0,0,0,0,0,0,SXF_SETMASTER,0); 
+						A_TakeInventory("Mana2W", 1,TIF_NOTAKEINFINITE);
+					}
+				}
+				}
+		B6RD L 1 A_CustomPunch (1, 1, CPF_NOTURN, "AxePuffWalpLeft", 290, 2) //decal and lifesteal
+		B6RD MNO 1
+		B6RD PQ 2
+		TNT1 A 0 A_TakeInventory("ComboCounter")
+		TNT1 A 2
+		TNT1 A 0 A_Refire("Fire")
+		TNT1 A 3
+		Goto Ready
+	Reload:	
+		B4RD A 0 A_GiveInventory("MaceChargeCheck1",1)
+		TNT1 A 0 A_JumpIfInventory("PowerAmbitMana", 1, "DetonateCircle")
+		TNT1 A 0 A_JumpIfInventory ("Mana2W", 5, "DetonateCircle")
+		Goto Fire
+	DetonateCircle:	//Checks Mana cost
+		B5RD A 1 A_WeaponOffset(0,32) 
+		B5RD B 3
+		B5RD C 2 
+	DetonateCircle2: 
+		B5RD D 2 A_StartSound("CursedCharger",1,CHANF_OVERLAP|CHANF_LOCAL,0.8,ATTN_STATIC,1)
+		B5RD EFGHI 2 {A_WeaponOffset(0,32); A_TakeInventory("Mana2W", 1,TIF_NOTAKEINFINITE);}
+		B5RD J 1 {	
+		if(CountInv("BardicheUpgrade") == 5 || CountInv("BardicheUpgrade") == 6 || CountInv("BardicheUpgrade") == 8 || CountInv("BardicheUpgrade") == 9)
+				{
+			if(GetCVar("walp_monsterreplace")==1) //Corpse Explosion doesn't work with classic bestiary so loads of checks -_-;
+				{
+					A_SpawnItemEx("BardicheCirclePlus",70,0,0,0,0,0,0,SXF_SETMASTER,0); 
+					A_TakeInventory("Mana2W", 1,TIF_NOTAKEINFINITE);
+				}
+			else
+				{
+					A_FireProjectile("MIRVCluster",10,false,0,10,FPF_NOAUTOAIM);
+					A_FireProjectile("MIRVCluster",0,false,-10,10,FPF_NOAUTOAIM);
+					A_FireProjectile("MIRVCluster",20,false,10,10,FPF_NOAUTOAIM);
+					A_StartSound("HeavenRupture",9,CHANF_OVERLAP|CHANF_LOCAL,0.8,ATTN_STATIC,1);
+				}				 
+				 
+				}
+		else if(CountInv("BardicheMutate") == 5 || CountInv("BardicheMutate") == 6 || CountInv("BardicheMutate") == 8 || CountInv("BardicheMutate") == 9)
+				{
+					A_FireProjectile("SkullBolt",0,false,10,10,FPF_NOAUTOAIM);
+					A_StartSound("MageStaffFire",9,CHANF_OVERLAP|CHANF_LOCAL,1,ATTN_STATIC,1);
+				}
+		else
+				{
+			if(GetCVar("walp_monsterreplace")==1)
+				{
+					A_SpawnItemEx("BardicheCircle",70,0,0,0,0,0,0,SXF_SETMASTER,0); 
+					A_TakeInventory("Mana2W", 1,TIF_NOTAKEINFINITE);
+				}
+			else
+				{
+					A_FireProjectile("MIRVCluster",0,false,0,0,FPF_NOAUTOAIM);
+					A_StartSound("MageStaffFire",9,CHANF_OVERLAP|CHANF_LOCAL,1,ATTN_STATIC,1);
+				}
+				}
+		}
+		B5RD J 1 A_SetBlend("Red",0.7,20)
+		B5RD J 3 A_AlertMonsters
+		B5RD GFED 2 
+		B5RD D 2 A_JumpIf((GetPlayerInput (INPUT_BUTTONS) & BT_RELOAD),"DetonateChecker")
+		B5RD CBA 3
+		Goto Ready
+	DetonateChecker:
+		TNT1 A 0 A_JumpIfInventory("PowerAmbitMana", 1, "DetonateCircle2")
+		TNT1 A 0 A_JumpIfInventory ("Mana2W", 5, "DetonateCircle2")
+		Goto Fire
+	AltFire:	
+		B4RD A 0 A_GiveInventory("MaceChargeCheck1",1)
+		TNT1 A 0 A_JumpIfInventory("PowerAmbitMana", 1, "SpikyPersonality")
+		TNT1 A 0 A_JumpIfInventory ("Mana2W", 5, "SpikyPersonality")
+		Goto Fire
+	SpikyPersonality:
+		B5RD A 1 A_WeaponOffset(0,32) 
+		B5RD B 3
+		B5RD C 2 
+	SpikyRetort:
+		B5RD D 2 A_StartSound("CursedCharger",1,CHANF_OVERLAP|CHANF_LOCAL,0.8,ATTN_STATIC,1)
+		B5RD E 2 A_WeaponOffset(0,32) 
+		B5RD F 2 A_StartSound("KnifeSwish2",1,CHANF_OVERLAP|CHANF_LOCAL,0.7,ATTN_STATIC,0.7)
+		B5RD K 3 {	if(GetCVar("walp_nocamera")==0)	
+			{	A_SetPitch(pitch-8,SPF_INTERPOLATE);	}} 
+		B5RD L 2 {if(GetCVar("walp_nocamera")==0)	
+			{A_SetPitch(pitch-8,SPF_INTERPOLATE);}}
+		B5RD L 0 A_StartSound("KnifeSwish2",1,CHANF_OVERLAP|CHANF_LOCAL,0.7,ATTN_STATIC,0.7)
+		B5RD MN 1 {	if(GetCVar("walp_nocamera")==0)	
+			{	A_SetPitch(pitch+8,SPF_INTERPOLATE);	} 
+			A_TakeInventory("Mana2W", 1,TIF_NOTAKEINFINITE);} 
+		B5RD O 0 {A_StartSound("WolfSmacker",1,CHANF_OVERLAP|CHANF_LOCAL,1,ATTN_STATIC,0.8);
+					if(CountInv("BardicheUpgrade") == 3 || CountInv("BardicheUpgrade") == 4 || CountInv("BardicheUpgrade") == 8 || CountInv("BardicheUpgrade") == 9)
+					{
+					A_FireProjectile("SpikyRetortCreatorLong",0,false,0,0,FPF_NOAUTOAIM,3); 
+					// A_SpawnItemEx("BardicheSpikesUpg",100,0,0,0,0,0,0,SXF_SETMASTER,0);
+					A_TakeInventory("Mana2W", 1,TIF_NOTAKEINFINITE);
+					}
+					if(CountInv("BardicheMutate") == 3 || CountInv("BardicheMutate") == 4 || CountInv("BardicheMutate") == 8 || CountInv("BardicheMutate") == 9)
+					{
+					A_SpawnItemEx("SpikedShooterBall",20,0,0,12,0,12,0,SXF_SETMASTER,0);
+					A_TakeInventory("Mana2W", 2,TIF_NOTAKEINFINITE);
+					}
+					else
+					{
+					A_FireProjectile("SpikyRetortCreator",0,false,0,0,FPF_NOAUTOAIM,3); 
+					A_TakeInventory("Mana2W", 2,TIF_NOTAKEINFINITE);
+					}
+				 }
+		B5RD O 4 
+		B5RD FED 2 
+		B5RD D 0 A_JumpIf((GetPlayerInput (INPUT_BUTTONS) & BT_ALTATTACK),"CheckSpikyness")
+		B5RD CBA 3
+		Goto Ready
+	CheckSpikyness:
+		TNT1 A 0 A_JumpIfInventory("PowerAmbitMana", 1, "SpikyRetort")
+		TNT1 A 0 A_JumpIfInventory ("Mana2W", 5, "SpikyRetort")
+		Goto Fire		
+	}
+}
+
+ACTOR BardicheSlashVertical : AxeBladeSlash //Normal Attack for Bardiche
+{
+	Radius 12 //201
+	Height 38
+	MissileType "None"
+	SeeSound "Telekin6"
+	Deathsound "None"
+	XScale 5.8
+	YScale 1.2
+	Damage 4
+	Alpha 0.5
+	Speed 35
+	Args 2
+	+NOCLIP
+	+BLOODSPLATTER
+	+EXTREMEDEATH
+	-PAINLESS
+	+FORCEPAIN
+	+HITTRACER
+	States
+	{
+	Spawn:
+		TNT1 A 0 
+		TNT1 A 1 {	A_RadiusGive("BardicheCutEffectLeast",58,RGF_MONSTERS,1);
+					A_Explode(17,50,XF_THRUSTZ,true,50,0,0,"None","StunHit"); 
+					A_StartSound("Telekin6",1,CHANF_OVERLAP,0.7,ATTN_NORM,frandom(0.8,0.92));}
+		TNT1 AA 1 {A_Explode(17,48,XF_THRUSTZ,true,40,0,0,"None","StunHit"); A_RadiusGive("BardicheCutEffectLesser",58,RGF_MONSTERS,1);}
+	Spawn2:
+		TNT1 A 0 Bright {	A_RadiusGive("BardicheCutEffect2",58,RGF_MONSTERS,1);
+							A_RadiusThrust(750,radius+80,RTF_NOTMISSILE,80);
+							A_Explode(5,48,XF_THRUSTZ,true,40,0,0,"None","StunHit");}
+		TNT1 A 1 Bright A_CountdownArg(0,"Death")
+		Loop
+	Death:
+		TNT1 A 1 Bright {A_Fadeout(0.33); A_RadiusThrust(350,radius+40,RTF_NOTMISSILE,80);}
+		Loop
+	}
+}
+
+ACTOR BardicheSlashVertUpgrade : BardicheSlashVertical //cut 1 is about 65, cut2 is 52, cutless is 30
+{
+	Radius 12 //362
+	Height 38
+	Args 3
+	//MissileType "SlashTrailVerticalBardiche"  A_RadiusGive("CorpseBoom",120,RGF_CORPSES|RGF_KILLED,1);
+	States
+	{
+	Spawn:
+		TNT1 A 0 
+		TNT1 A 1 {	A_RadiusGive("BardicheCutEffectLesser",68,RGF_MONSTERS,1);
+					A_Explode(21,58,XF_THRUSTZ,true,58,0,0,"None","StunHit"); 
+					A_StartSound("Telekin6",1,CHANF_OVERLAP,0.7,ATTN_NORM,frandom(0.8,0.92));}
+		TNT1 AA 1 {A_Explode(21,58,XF_THRUSTZ,true,58,0,0,"None","StunHit"); A_RadiusGive("BardicheCutEffectLeast",68,RGF_MONSTERS,1);}
+	Spawn2:
+		TNT1 A 0 Bright {	A_RadiusGive("BardicheCutEffect2",68,RGF_MONSTERS,1);
+							A_RadiusThrust(750,radius+80,RTF_NOTMISSILE,80);
+							A_Explode(8,48,XF_THRUSTZ,true,40,0,0,"None","StunHit");}
+		TNT1 A 1 Bright A_CountdownArg(0,"Death")
+		Loop
+	Death:
+		TNT1 A 1 Bright {A_Fadeout(0.33); A_RadiusThrust(350,radius+40,RTF_NOTMISSILE,80);}
+		Loop
+	}
+}
+
+ACTOR BardicheSlashHorizontal : AxeBladeSlash //what it says on the tin
+{
+	Radius 16 //166
+	Height 35
+	MissileType "None"
+	//SeeSound "Telekin6"
+	Deathsound "None"
+	XScale 2.8
+	YScale 1.9
+	Damage 3
+	Alpha 0.5
+	Speed 30
+	Args 2
+	+NOCLIP
+	+BLOODSPLATTER
+	+EXTREMEDEATH
+	-PAINLESS
+	+FORCEPAIN
+	States
+	{
+	Spawn:
+		TNT1 A 0 
+		TNT1 A 1 {	A_Explode(11,68,XF_THRUSTZ,true,50,0,0,"None","StunHit"); 
+					A_RadiusGive("BardicheCutEffectLesser",78,RGF_MONSTERS,1);
+					A_StartSound("Telekin6",1,CHANF_OVERLAP,0.7,ATTN_NORM,frandom(0.8,0.92));}
+		TNT1 AA 1 {A_Explode(13,68,XF_THRUSTZ,true,50,0,0,"None","StunHit"); A_RadiusGive("BardicheCutEffectLeast",78,RGF_MONSTERS,1);}
+	Spawn2:
+		TNT1 A 0 Bright {A_RadiusGive("BardicheCutEffectLesser",68,RGF_MONSTERS,1); 
+						 A_RadiusThrust(750,radius+80,RTF_NOTMISSILE,80); 
+						 A_Explode(5,48,XF_THRUSTZ,true,40,0,0,"None","StunHit");}
+		TNT1 A 1 Bright A_CountdownArg(0,"Death") 
+		Loop
+	Death:
+		TNT1 A 1 Bright {A_Fadeout(0.33); A_RadiusThrust(350,radius+40,RTF_NOTMISSILE,80);}
+		Loop
+	}
+}
+
+ACTOR BardicheSlashHorizUpgrade : BardicheSlashHorizontal 
+{
+	Radius 16 //353!! +180
+	Height 35
+	Args 3
+	States
+	{
+	Spawn:
+		TNT1 A 0 
+		TNT1 A 1 {	A_Explode(21,58,XF_THRUSTZ,true,58,0,0,"None","StunHit");
+					A_SetAngle(angle-25);
+					A_RadiusGive("BardicheCutEffectLesser",68,RGF_MONSTERS,1);
+					A_StartSound("Telekin6",1,CHANF_OVERLAP,0.7,ATTN_NORM,frandom(0.8,0.92));}
+		TNT1 AA 1 {A_Explode(20,75,XF_THRUSTZ,true,72,0,0,"None","StunHit"); A_RadiusGive("BardicheCutEffect2",68,RGF_MONSTERS,1);}
+	Spawn2:
+		TNT1 A 0 Bright {	A_RadiusGive("BardicheCutEffectLesser",68,RGF_MONSTERS,1);
+							A_RadiusThrust(750,radius+80,RTF_NOTMISSILE,80);
+							A_Explode(8,48,XF_THRUSTZ,true,40,0,0,"None","StunHit");}
+		TNT1 A 1 Bright A_CountdownArg(0,"Death")
+		Loop
+	Death:
+		TNT1 A 1 Bright {A_Fadeout(0.33); A_RadiusThrust(350,radius+40,RTF_NOTMISSILE,80);}
+		Loop
+	}
+}
+
+Actor BardicheCutEffect : CustomInventory
+{
+	+INVENTORY.ALWAYSPICKUP
+	+FORCEPAIN
+	Inventory.MaxAmount 0
+	States
+	{
+	Pickup:
+		TNT1 A 0 A_DamageSelf(random(60,69),"StunHit",DMSS_AFFECTARMOR,"None","None",AAPTR_TARGET)
+		TNT1 A 0 A_Facetarget
+		TNT1 A 0 A_ChangeVelocity (velx-7,0,2,CVF_RELATIVE,AAPTR_DEFAULT)
+		TNT1 A 0 A_SpawnItemEx ("BloodSplatter", 0, 0, 0, random(1, 5), 0, random(5, 10), random(0, 360), SXF_USEBLOODCOLOR|SXF_CLIENTSIDE)
+		TNT1 A 0 A_SpawnItemEx ("BloodSplatter", 0, 0, 0, random(1, 5), 0, random(5, 10), random(0, 360), SXF_USEBLOODCOLOR|SXF_CLIENTSIDE)
+		TNT1 A 0 A_StartSound("BardicheCutterSplat",5,CHANF_OVERLAP,1,ATTN_NORM,frandom(0.9,1.06))
+		Stop
+	}
+}
+
+Actor BardicheCutEffect2 : CustomInventory
+{
+	+INVENTORY.ALWAYSPICKUP
+	+FORCEPAIN
+	Inventory.MaxAmount 0
+	States
+	{
+	Pickup:
+		TNT1 A 0 A_DamageSelf(random(49,57),"StunHit",DMSS_AFFECTARMOR,"None","None",AAPTR_TARGET)
+		TNT1 A 0 A_Facetarget
+		TNT1 A 0 A_ChangeVelocity (velx-7,random(-1,1),2,CVF_RELATIVE,AAPTR_DEFAULT)
+		TNT1 A 0 A_SpawnItemEx ("BloodSplatter", 0, 0, 0, random(1, 5), 0, random(5, 10), random(0, 360), SXF_USEBLOODCOLOR|SXF_CLIENTSIDE)
+		TNT1 A 0 A_SpawnItemEx ("BloodSplatter", 0, 0, 0, random(1, 5), 0, random(5, 10), random(0, 360), SXF_USEBLOODCOLOR|SXF_CLIENTSIDE)
+		TNT1 A 0 A_StartSound("BardicheCutterSplat",5,CHANF_OVERLAP,1,ATTN_NORM,frandom(0.9,1.06))
+		Stop
+	}
+}
+
+Actor BardicheCutEffectLesser : CustomInventory
+{
+	+INVENTORY.ALWAYSPICKUP
+	+FORCEPAIN
+	Inventory.MaxAmount 0
+	States
+	{
+	Pickup:
+		TNT1 A 0 A_DamageSelf(random(23,35),"StunHit",DMSS_AFFECTARMOR,"None","None",AAPTR_TARGET)
+		TNT1 A 0 A_Facetarget
+		TNT1 A 0 A_ChangeVelocity (velx-(7-(Mass/100)),random(-1,1),2,CVF_RELATIVE,AAPTR_DEFAULT)
+		TNT1 A 0 A_SpawnItemEx ("BloodSplatter", 0, 0, 0, random(1, 5), 0, random(5, 10), random(0, 360), SXF_USEBLOODCOLOR|SXF_CLIENTSIDE)
+		TNT1 A 0 A_StartSound("BardicheCutterSplat",5,CHANF_OVERLAP,1,ATTN_NORM,frandom(0.9,1.06))
+		Stop
+	}
+}
+
+Actor BardicheCutEffectLeast : CustomInventory
+{
+	+INVENTORY.ALWAYSPICKUP
+	+FORCEPAIN
+	Inventory.MaxAmount 0
+	States
+	{
+	Pickup:
+		TNT1 A 0 A_DamageSelf(random(10,22),"StunHit",DMSS_AFFECTARMOR,"None","None",AAPTR_TARGET)
+		TNT1 A 0 A_Facetarget
+		TNT1 A 0 {if(Velx > 0)
+				{A_ChangeVelocity (velx-(4-(Mass/100)),random(-1,1),2,CVF_RELATIVE,AAPTR_DEFAULT);}}
+		TNT1 A 0 A_SpawnItemEx ("BloodSplatter", 0, 0, 0, random(1, 5), 0, random(5, 10), random(0, 360), SXF_USEBLOODCOLOR|SXF_CLIENTSIDE)
+		TNT1 A 0 A_StartSound("BardicheCutterSplat",5,CHANF_OVERLAP,1,ATTN_NORM,frandom(0.9,1.06))
+		Stop
+	}
+}
+
+ACTOR TinyRipper : Fastprojectile
+{
+	Speed 35
+	Radius 3
+	Height 5
+	Damage (random(2, 9))
+	Projectile
+	+PAINLESS
+	+NOTAUTOAIMED
+	+NODAMAGETHRUST
+	+ROLLSPRITE
+	+ROLLCENTER
+	+NOTIMEFREEZE
+	+RIPPER
+	+ACTIVATEIMPACT
+	+THRUSPECIES
+	+BRIGHT
+	Scale 1
+	Species "PlayerAlly"
+	RenderStyle Add
+	MissileType "TinyRipperTrail" 
+	Alpha 0.3
+	States
+	{
+	Spawn:
+		TNT1 A 3 Nodelay 
+		BDF4 SSSS 5 Bright {
+		A_SetRoll(roll+random(-10,10),SPF_INTERPOLATE);
+		A_SetScale((scalex+(frandom(-0.02,0.02))),(scaley+(frandom(-0.02,0.02))));
+		A_Fadeout(0.13);
+		}
+	Death:
+		TNT1 A 0
+		Stop
+	}
+}
+
+ACTOR TinyRipperTrail : SlashTrail
+{
+	Alpha 0.2
+	RenderStyle Add
+	Scale 1
+	States
+	{
+	Spawn:
+		TNT1 A 0
+		BDF4 SSS 1
+	Spawn2:	
+		TNT1 A 0 
+		BDF4 S 2 Bright A_FadeOut(0.13)
+		Goto Spawn2+1
+	}
+}
+
+ACTOR SlashTrailHorizontalBardiche : SlashTrail
+{
+	XScale 2.8
+	YScale 4.2
+	Alpha 0.3 
+	States
+	{
+	Spawn:
+		TNT1 A 0
+		TNT1 AAA 1
+	Spawn2:	
+		VB4R E 0 
+		VB4R E 2 Bright A_FadeOut(0.13)
+		Goto Spawn2+1
+	}
+}
+
+ACTOR CorpseBoom : Inventory //For Corpse Explosion
+{
+	+INVENTORY.UNDROPPABLE
+	Inventory.MaxAmount 10
+}
+
+Actor BardicheCircle 
+{
+	+NOGRAVITY
+	+NOCLIP
+	+NOINTERACTION
+	+ROLLSPRITE
+	+ROLLCENTER
+	+FLATSPRITE
+	+FLOORHUGGER
+	+RELATIVETOFLOOR
+	+INTERPOLATEANGLES
+	+STRETCHPIXELS
+	+SPRITEANGLE
+	-SOLID
+	Radius 1
+	Height 1
+	RenderStyle Translucent
+	Damagetype "Blast"
+	SpriteRotation 270
+	//SpriteAngle 180
+	Alpha 1.0
+	Scale 0.25
+	States
+	{
+	Spawn:
+		TNT1 A 1 Nodelay {A_Stop; A_StartSound("DeadGoesBoom",CHAN_AUTO,CHANF_OVERLAP,0.9,ATTN_NORM,frandom(0.97,1.04));}
+		BC1R C 2 Bright
+		Goto CircleBoom
+	CircleBoom:
+		BC1R CCCCCCCCCC 2 Bright {
+			A_Setroll(roll+2); 
+			A_SpawnItemEx("BSSparklies",random(-44,44),random(-44,44),20,frandom(-0.6,0.6),frandom(-0.6,0.6),frandom(0,0.7));
+			A_SpawnItemEx("BSSparklies",random(-44,44),random(-44,44),20,frandom(-0.6,0.6),frandom(-0.6,0.6),frandom(0,0.7));
+			A_SpawnItemEx("BSSparklies",random(-44,44),random(-44,44),20,frandom(-0.6,0.6),frandom(-0.6,0.6),frandom(0,0.7));}
+	Used:
+		BC1R C 0 Bright A_RadiusGive("CorpseBoom",330,RGF_CORPSES|RGF_KILLED,1)
+		BC1R CC 2 Bright {
+			A_Setroll(roll+2); 
+			A_SpawnItemEx("BardicheGhost",random(-66,66),random(-66,66),20,0,0,0,random(0,355));
+			A_SpawnItemEx("BSSparklies",random(-44,44),random(-44,44),20,frandom(-0.6,0.6),frandom(-0.6,0.6),frandom(0,0.7));
+			A_SpawnItemEx("BSSparklies",random(-44,44),random(-44,44),20,frandom(-0.6,0.6),frandom(-0.6,0.6),frandom(0,0.7));
+			A_SpawnItemEx("BSSparklies",random(-44,44),random(-44,44),20,frandom(-0.6,0.6),frandom(-0.6,0.6),frandom(0,0.7));}
+		BC1R CCCCC 2 Bright {
+			A_Setroll(roll+2); 
+			A_SpawnItemEx("BSSparklies",random(-44,44),random(-44,44),20,frandom(-0.6,0.6),frandom(-0.6,0.6),frandom(0,0.7));
+			A_SpawnItemEx("BSSparklies",random(-44,44),random(-44,44),20,frandom(-0.6,0.6),frandom(-0.6,0.6),frandom(0,0.7));
+			A_SpawnItemEx("BSSparklies",random(-44,44),random(-44,44),20,frandom(-0.6,0.6),frandom(-0.6,0.6),frandom(0,0.7));}
+	Fadeouttt: 
+		BC1R C 3 Bright {A_Fadeout(0.1); A_TakeInventory("LightningCheck",1); A_SetRoll(roll-(-5-(CountInv("LightningCheck"))));}
+		Loop
+ }
+}
+
+Actor BardicheCirclePlus : BardicheCircle
+{
+	+FRIENDLY
+	Scale 0.35
+	States
+	{
+	Spawn:
+		TNT1 A 1 Nodelay {A_Stop; A_StartSound("DeadGoesBoom",CHAN_AUTO,CHANF_OVERLAP,0.9,ATTN_NORM,frandom(0.97,1.04));}
+		BC1R C 2 Bright
+		Goto CircleBoom
+	CircleBoom:
+		BC1R CCC 2 Bright {
+			A_Setroll(roll+2); 
+			A_SpawnItemEx("BardicheGhost",random(-66,66),random(-66,66),20,0,0,0,random(0,355));
+			A_SpawnItemEx("BSSparklies",random(-44,44),random(-44,44),20,frandom(-0.6,0.6),frandom(-0.6,0.6),frandom(0,0.7));
+			A_SpawnItemEx("BSSparklies",random(-44,44),random(-44,44),20,frandom(-0.6,0.6),frandom(-0.6,0.6),frandom(0,0.7));
+			A_SpawnItemEx("BSSparklies",random(-44,44),random(-44,44),20,frandom(-0.6,0.6),frandom(-0.6,0.6),frandom(0,0.7));}
+		BC1R CCCCCCC 2 Bright {
+			A_Setroll(roll+2); 
+			A_SpawnItemEx("BSSparklies",random(-44,44),random(-44,44),20,frandom(-0.6,0.6),frandom(-0.6,0.6),frandom(0,0.7));
+			A_SpawnItemEx("BSSparklies",random(-44,44),random(-44,44),20,frandom(-0.6,0.6),frandom(-0.6,0.6),frandom(0,0.7));
+			A_SpawnItemEx("BSSparklies",random(-44,44),random(-44,44),20,frandom(-0.6,0.6),frandom(-0.6,0.6),frandom(0,0.7));}
+	Used:
+		BC1R C 0 Bright A_RadiusGive("CorpseBoom",380,RGF_CORPSES|RGF_KILLED,1)
+		BC1R CCC 2 Bright {
+			A_Setroll(roll+2); 
+			A_SpawnItemEx("BardicheGhost",random(-66,66),random(-66,66),20,0,0,0,random(0,355));
+			A_SpawnItemEx("BSSparklies",random(-44,44),random(-44,44),20,frandom(-0.6,0.6),frandom(-0.6,0.6),frandom(0,0.7));
+			A_SpawnItemEx("BSSparklies",random(-44,44),random(-44,44),20,frandom(-0.6,0.6),frandom(-0.6,0.6),frandom(0,0.7));
+			A_SpawnItemEx("BSSparklies",random(-44,44),random(-44,44),20,frandom(-0.6,0.6),frandom(-0.6,0.6),frandom(0,0.7));}
+		BC1R CCCC 2 Bright {
+			A_Setroll(roll+2); 
+			A_SpawnItemEx("BSSparklies",random(-44,44),random(-44,44),20,frandom(-0.6,0.6),frandom(-0.6,0.6),frandom(0,0.7));
+			A_SpawnItemEx("BSSparklies",random(-44,44),random(-44,44),20,frandom(-0.6,0.6),frandom(-0.6,0.6),frandom(0,0.7));
+			A_SpawnItemEx("BSSparklies",random(-44,44),random(-44,44),20,frandom(-0.6,0.6),frandom(-0.6,0.6),frandom(0,0.7));}
+	Fadeouttt: 
+		BC1R C 3 Bright {A_Fadeout(0.1); A_TakeInventory("LightningCheck",1); A_SetRoll(roll-(-5-(CountInv("LightningCheck"))));}
+		Loop
+ }
+}
+
+ACTOR InvisBardicheCircle : BardicheCircle //Mutated Tertiary; this is attached to melee swings
+{
+	+INVISIBLE
+	States
+	{
+	Spawn:
+		TNT1 A 1 Nodelay A_Stop
+		Goto Used2
+	Used2:
+		TNT1 A 12
+		TNT1 A 1 Bright A_RadiusGive("CorpseBoom",165,RGF_CORPSES|RGF_KILLED,1)
+		Stop
+	}
+}
+
+ACTOR LesserInvisBardicheCircle : BardicheCircle //Used by Dryad Secondary Upgrade
+{
+	+INVISIBLE
+	States
+	{
+	Spawn:
+		TNT1 A 1 Nodelay A_Stop
+		Goto Used2
+	Used2:
+		TNT1 A 12
+		TNT1 A 1 Bright A_RadiusGive("CorpseBoom",120,RGF_CORPSES|RGF_KILLED,1)
+		Stop
+	}
+}
+
+ACTOR SpikyRetortCreator //For 1.0, allows spikes to spawn further away.
+{
+  Radius 5
+  Height 6
+  Speed 100
+  Damage (random(20,30))
+  Projectile
+  Alpha 0
+  RenderStyle Add
+  DamageType "Physical"
+  +FLOORHUGGER
+  +FORCEPAIN
+  +FRIENDLY
+  +SEEKERMISSILE
+  +HITTRACER
+  DeathSound "None"
+  States
+  {
+  Spawn:
+		TNT1 A 0
+		TNT1 AAAA 1 
+		{	
+			A_SeekerMissile(30,35,SMF_LOOK|SMF_PRECISE,128,1);
+		}
+		Goto Death
+  XDeath:
+	    TNT1 A 2  {	
+				A_SpawnItemEx("BardicheSpikes",0,0,0,0,0,0,0,SXF_SETMASTER,0);
+				if(A_CheckFlag("ISMONSTER", "Null", AAPTR_TRACER)) { A_ChangeVelocity (-1,-0,12,CVF_RELATIVE,AAPTR_TRACER); }} // PATCH_BARDICHE_SPIKES_26042026
+		Stop
+  Death:
+		TNT1 A 2  {	
+				A_SpawnItemEx("BardicheSpikes",-30,0,0,0,0,0,0,SXF_SETMASTER,0);
+				if(A_CheckFlag("ISMONSTER", "Null", AAPTR_TRACER)) { A_ChangeVelocity (-1,-0,12,CVF_RELATIVE,AAPTR_TRACER); }} // PATCH_BARDICHE_SPIKES_26042026
+		Stop
+  }
+}
+
+
+ACTOR SpikyRetortCreatorLong : SpikyRetortCreator
+{
+  States
+  {
+  Spawn:
+		TNT1 A 0
+		TNT1 A 1 
+		{	
+			A_SeekerMissile(30,35,SMF_LOOK|SMF_PRECISE,128,1);
+		}
+		Loop
+  XDeath:
+	    TNT1 A 2  {	
+				A_SpawnItemEx("BardicheSpikesUpg",0,0,0,0,0,0,0,SXF_SETMASTER,0);
+				if(A_CheckFlag("ISMONSTER", "Null", AAPTR_TRACER)) { A_ChangeVelocity (-1,-0,12,CVF_RELATIVE,AAPTR_TRACER); }} // PATCH_BARDICHE_SPIKES_26042026
+		Stop
+  Death:
+		TNT1 A 2  {	
+				A_SpawnItemEx("BardicheSpikesUpg",-30,0,0,0,0,0,0,SXF_SETMASTER,0);
+				if(A_CheckFlag("ISMONSTER", "Null", AAPTR_TRACER)) { A_ChangeVelocity (-1,-0,12,CVF_RELATIVE,AAPTR_TRACER); }} // PATCH_BARDICHE_SPIKES_26042026
+		Stop
+  }
+}
+
+ACTOR BardicheSpikes //Stabbity
+{
+	Speed 0
+	Damage 0
+	Projectile
+	Radius 30
+	Height 30
+	Scale 0.8
+	Damagetype "StunHit"
+	+DONTBLAST
+	+NOCLIP
+	+NOINTERACTION
+	+FLOORHUGGER
+	+FORCEPAIN
+	+FRIENDLY
+	+EXTREMEDEATH
+	States
+	{
+	Spawn:
+		TNT1 A 0 Nodelay {if (random(1,2) == 1) // randomly flips the spikes
+			{ A_Changeflag("SPRITEFLIP",TRUE);}}
+		TNT1 A 0 A_StartSound("BloodSpikes",CHAN_AUTO,CHANF_OVERLAP,1,ATTN_NORM,frandom(0.97,1.04))
+		TNT1 A 2 A_QuakeEx(2,2,5,20,0,2,"-",QF_SCALEDOWN) 
+		R5PK AB 7 {		
+				A_SpawnProjectile("Blood",random(20,22),0,random(0,360),CMF_AIMDIRECTION,random(-45,-60));
+				A_SpawnProjectile("Blood",random(20,22),0,random(0,360),CMF_AIMDIRECTION,random(-55,-75));
+				A_SpawnProjectile("Blood",random(20,42),0,random(0,360),CMF_AIMDIRECTION,random(-65,-90));
+				A_Explode(random(6,9),160,XF_THRUSTZ,true,140,0,0,"None","StunHit");
+						 }
+		R5PK F 1 A_Explode(random(99,185)+random(2,8),160,XF_THRUSTZ,true,155)
+		R5PK F 4
+		R5PK CDE 4 A_Explode(random(8,11),170,XF_THRUSTZ,true,150,0,0,"None","StunHit")
+		R5PK EEEEE 3 A_Explode(random(5,9),150,XF_THRUSTZ,true,85,0,0,"None","StunHit") 
+		R5PK E 0 {A_SpawnItemEx("YouMustHaveBigGuts",0,0,0,0,0,0); A_StartSound("BludSpikeDeath",CHAN_AUTO,CHANF_OVERLAP,1,ATTN_NORM,frandom(0.97,1.04));}
+		R5PK EEE 1 {		
+				A_SpawnProjectile("BardicheShrapnelBig",random(10,40),0,random(0,360),CMF_AIMDIRECTION,random(-25,-50));
+				A_SpawnProjectile("Blood",random(40,52),0,random(0,360),CMF_AIMDIRECTION,random(-55,-75));
+				A_SpawnProjectile("BardicheShrapnelSmol",random(5,40),0,random(0,360),CMF_AIMDIRECTION,random(-5,-50));
+				A_SpawnProjectile("BardicheShrapnelSmol",random(0,35),0,random(0,360),CMF_AIMDIRECTION,random(-25,-60));
+				A_SpawnProjectile("BardicheShrapnelSmol",random(5,40),0,random(0,360),CMF_AIMDIRECTION,random(-15,-40));
+						 }
+		Stop
+	Death:
+		TNT1 A 1
+		Stop 
+	} 
+}
+
+ACTOR BardicheSpikesUpg
+{
+	Speed 0
+	Damage 0
+	Projectile
+	Radius 30
+	Height 30
+	Scale 0.8
+	Damagetype "StunHit"
+	+DONTBLAST
+	+NOCLIP
+	+NOINTERACTION
+	+FLOORHUGGER
+	+FORCEPAIN
+	+FRIENDLY
+	+EXTREMEDEATH
+	States
+	{
+	Spawn:
+		TNT1 A 0 Nodelay {if (random(1,2) == 1) // randomly flips the spikes
+			{ A_Changeflag("SPRITEFLIP",TRUE);}}
+		TNT1 A 0 A_StartSound("BloodSpikes",CHAN_AUTO,CHANF_OVERLAP,1,ATTN_NORM,frandom(0.97,1.04))
+		TNT1 A 2 A_QuakeEx(2,2,5,20,0,2,"-",QF_SCALEDOWN) 
+		R5PK AB 7 {		
+				A_SpawnProjectile("Blood",random(20,22),0,random(0,360),CMF_AIMDIRECTION,random(-45,-60));
+				A_SpawnProjectile("Blood",random(20,22),0,random(0,360),CMF_AIMDIRECTION,random(-55,-75));
+				A_SpawnProjectile("Blood",random(20,42),0,random(0,360),CMF_AIMDIRECTION,random(-65,-90));
+				A_Explode(random(7,12),160,XF_THRUSTZ,true,140,0,0,"None","StunHit");
+						 }
+		R5PK F 1 A_Explode(random(125,225)+random(4,9),170,XF_THRUSTZ,true,155)
+		R5PK F 4
+		R5PK CDE 4 A_Explode(random(9,13),170,XF_THRUSTZ,true,150,0,0,"None","StunHit")
+		R5PK EEEEE 3 A_Explode(random(7,11),150,XF_THRUSTZ,true,85,0,0,"None","StunHit") 
+		R5PK E 0 {A_SpawnItemEx("YouMustHaveBigGuts",0,0,0,0,0,0); A_StartSound("BludSpikeDeath",CHAN_AUTO,CHANF_OVERLAP,1,ATTN_NORM,frandom(0.97,1.04));}
+		R5PK EEE 1 {		
+				A_SpawnProjectile("BardicheShrapnelBig",random(10,40),0,random(0,360),CMF_AIMDIRECTION,random(-25,-50));
+				A_SpawnProjectile("Blood",random(40,52),0,random(0,360),CMF_AIMDIRECTION,random(-55,-75));
+				A_SpawnProjectile("BardicheShrapnelBig",random(10,40),0,random(0,360),CMF_AIMDIRECTION,random(-5,-50));
+				A_SpawnProjectile("BardicheShrapnelSmol",random(0,35),0,random(0,360),CMF_AIMDIRECTION,random(-25,-60));
+				A_SpawnProjectile("BardicheShrapnelSmol",random(5,40),0,random(0,360),CMF_AIMDIRECTION,random(-15,-40));
+				A_SpawnProjectile("BardicheShrapnelSmol",random(5,40),0,random(0,360),CMF_AIMDIRECTION,random(-5,-50));
+				A_SpawnProjectile("BardicheShrapnelSmol",random(5,40),0,random(0,360),CMF_AIMDIRECTION,random(-5,-50));
+						 }
+		Stop
+	Death:
+		TNT1 A 1
+		Stop 
+	} 
+}
+
+ACTOR BardicheShrapnelBig
+{
+	Speed 20
+	Radius 17
+	Height 10
+	Projectile	
+	Damage (Random(8, 14))
+	Scale 0.8
+	Gravity 1.1
+	Damagetype "BloodSorcery"
+	Bouncetype Grenade
+	BounceCount 4
+	WallBounceFactor 0.5
+	-NOGRAVITY
+	+STEPMISSILE
+	+BOUNCEONWALLS
+	+NOWALLBOUNCESND
+	+EXPLODEONWATER
+	+PAINLESS
+	+NOTAUTOAIMED
+	+NODAMAGETHRUST
+	+ROLLSPRITE
+	+ROLLCENTER
+	+NOTIMEFREEZE
+	+RIPPER
+	+ACTIVATEIMPACT
+	States
+	{
+	Spawn:
+		TNT1 A 0
+		5PK5 AA 1 Bright A_SetRoll(roll+random(30,55),SPF_INTERPOLATE)
+		Loop
+	Death:
+		5PK5 A 300
+		TNT1 A 0 A_SpawnProjectile("Blood",0,0,random(0,360),CMF_AIMDIRECTION,random(-55,-75))
+		Stop
+	}
+}
+
+ACTOR BardicheShrapnelBigFade : BardicheShrapnelBig	
+{
+	Gravity 2.2
+	States
+	{
+	Spawn:
+		TNT1 A 0
+		5PK5 AA 1 Bright A_SetRoll(roll+random(30,55),SPF_INTERPOLATE)
+		Loop
+	Death:
+		5PK5 A 1 A_Fadeout(0.12)
+		Loop
+	}
+}
+
+ACTOR BardicheShrapnelSmol : BardicheShrapnelBig	
+{
+	Damage (Random(5, 9))
+	Radius 8
+	Speed 16
+	Scale 1.2
+	Bouncetype Grenade
+	BounceCount 4
+	WallBounceFactor 0.5
+	Damagetype "BloodSorcery"
+	-PAINLESS
+	States
+	{
+	Spawn:
+		TNT1 A 0
+		5PK5 BB 1 Bright A_SetRoll(roll+random(5,45),SPF_INTERPOLATE)
+		Loop
+	Death:
+		5PK5 B 300
+		TNT1 A 0 A_SpawnProjectile("Blood",0,0,random(0,360),CMF_AIMDIRECTION,random(-55,-75))
+		Stop
+	}
+}
+
+ACTOR BardicheShrapnelSmolFade : BardicheShrapnelSmol	
+{
+	Gravity 2.2
+	States
+	{
+	Spawn:
+		TNT1 A 0
+		5PK5 BB 1 Bright A_SetRoll(roll+random(30,55),SPF_INTERPOLATE)
+		Loop
+	Death:
+		5PK5 B 1 A_Fadeout(0.12)
+		Loop
+	}
+}
+
+ACTOR BardicheGhost : HolySpirit 
+{
+	Health 50
+	Speed 12
+	Scale 0.9
+	Radius 10
+	Height 6
+	Damage 2
+	Projectile
+	+RIPPER
+	+SEEKERMISSILE
+	//+FOILINVUL
+	+SKYEXPLODE
+	+NOEXPLODEFLOOR
+	+CANBLAST
+	+THRUSPECIES
+	+EXTREMEDEATH
+	+FRIENDLY
+	RenderStyle Translucent
+	Alpha 0.4
+	Seesound "SpiritActive"
+	DeathSound "SpiritDie"
+	Species "PlayerAlly"
+	States
+	{
+	Spawn:
+		5P1B A 0 
+		5P1B A 0 A_SeekerMissile(80,90,SMF_LOOK|SMF_PRECISE,256,15)
+		5P1B AAB 2 A_CHolySeek
+		5P1B B 2 A_CHolyCheckScream
+		Loop
+	Death:
+		5P1B D 4
+		5P1B E 4 A_Scream
+		5P1B FGHI 4
+		Stop
+  }
+}
+
+ACTOR NecromancyBanned //A converted Heretic Hellstaff missile, in case Necromancy is banned (i.e. No custom bestiary)
+{
+	Radius 6
+	Height 6
+	Speed 22
+	Damage (random(60,85))
+	Projectile	
+	RenderStyle Add
+	Scale 1
+	DamageType "Blast"
+	+WINDTHRUST
+	+SPECTRAL
+	-NOBLOCKMAP
+	+NOGRAVITY
+	+CANNOTPUSH
+	+ROLLSPRITE
+	+ROLLCENTER
+	States
+	{
+		Spawn:
+			TNT1 A 0  
+			FX00 FFEEDDCCBBAA 1 {A_SpawnItemEx("BSSparklies",0,0,0,0,0,0,0,SXF_NOCHECKPOSITION); A_Setroll(roll+11);}
+			Loop
+		Death:
+			FX00 HHHIIIJJJKKKLLLMMM 1 Bright {A_SpawnItemEx("BSSparklies",0,0,0,0,0,0,0,SXF_NOCHECKPOSITION); A_Setroll(roll+11);}
+			Stop
+	}
+}
+
+ACTOR SpikedShooterBall //Secondary Mutation
+{
+	Speed 20
+	Radius 16
+	Height 16
+	Damage 2
+	Projectile
+	Deathsound "LetsPingBall"
+	Bouncesound "LetsPingBall"
+	Seesound "ObeliskThumper"
+	Damagetype "BloodSorcery"
+	Bouncetype "Doom"
+	Species "PlayerAlly"
+	BounceFactor 0.9
+	WallBounceFactor 0.9
+	ReactionTime 5
+	Alpha 1
+	Scale 0.85
+	Gravity 1.2
+	Mass 350
+	+FRIENDLY
+	+THRUSPECIES
+	+THRUACTORS
+	-NOGRAVITY
+	+ROLLSPRITE
+	+ROLLCENTER
+	+FORCERADIUSDMG
+	+USEBOUNCESTATE
+	//+RIPPER
+	States
+	{
+	Spawn:
+		B4B4 A 1 Bright {A_SetRoll(roll-20); A_Explode(18, 35, 0, FALSE, 30,0,0,"None","BloodSorcery");}
+		Loop
+	Bounce:
+		B4B4 A 0 Bright
+		{
+			While(CountInv("Mana1") < 4)
+			{
+				A_SetRoll(roll-(random(20,50))); 
+				A_SpawnProjectile("BardicheShrapnelSmolFade",random(5,40),0,random(0,360),CMF_AIMDIRECTION,random(-5,-50));
+				A_SpawnProjectile("BardicheShrapnelSmolFade",random(0,35),0,random(0,360),CMF_AIMDIRECTION,random(-25,-60));
+				A_Explode(12, 128, 0, FALSE, 70);
+				A_Setscale(scalex-0.01,scaley-0.01);
+				A_SetMass(mass-10);
+				A_GiveInventory("Mana1", 1);
+			}
+			A_SpawnProjectile("Blood",random(20,22),0,random(0,360),CMF_AIMDIRECTION,random(-55,-75));
+			A_SpawnProjectile("BardicheShrapnelBigFade",random(10,40),0,random(0,360),CMF_AIMDIRECTION,random(-25,-50));
+			A_TakeInventory("Mana1");
+		}
+		LZ4Z A 0 Bright A_Countdown
+		Goto Spawn
+	Bounce.Floor:
+		B4B4 A 0 Bright
+		{
+			While(CountInv("Mana1") < 4)
+			{
+				A_SetRoll(roll-(random(20,50))); 
+				A_SpawnProjectile("BardicheShrapnelSmolFade",random(5,40),0,random(0,360),CMF_AIMDIRECTION,random(-5,-50));
+				A_SpawnProjectile("BardicheShrapnelSmolFade",random(0,35),0,random(0,360),CMF_AIMDIRECTION,random(-25,-60));
+				A_Explode(12, 128, 0, FALSE, 70);
+				A_Setscale(scalex-0.01,scaley-0.01);
+				A_SetMass(mass-10);
+				A_GiveInventory("Mana1", 1);
+			}
+			A_SpawnProjectile("Blood",random(20,22),0,random(0,360),CMF_AIMDIRECTION,random(-55,-75));
+			A_SpawnProjectile("BardicheShrapnelBigFade",random(10,40),0,random(0,360),CMF_AIMDIRECTION,random(-25,-50));
+			A_TakeInventory("Mana1");
+		}
+		LZ4Z A 0 Bright A_Countdown
+		Goto Spawn
+	Death:
+		LZ4Z AAA 0 {A_SpawnProjectile("BardicheShrapnelBigFade",20,0,0,CMF_AIMDIRECTION,random(-45,-60)); 
+				A_SpawnProjectile("BardicheShrapnelSmolFade",20,5,0,CMF_AIMDIRECTION,random(-45,-60));
+				A_SpawnProjectile("BardicheShrapnelSmolFade",20,-5,0,CMF_AIMDIRECTION,random(-45,-60));}
+		TNT1 A 1
+		Stop
+	}
+}
+
+ACTOR BardicheWindSlash : FastProjectile
+{
+	Radius 10
+	Height 26
+	Speed 38
+	XScale 0.35
+	YScale 0.43
+	Damage 1
+	Projectile
+	+RANDOMIZE
+	+BLOODSPLATTER
+	+RIPPER
+	RenderStyle Add
+	Alpha 0.6
+  	MissileType "VorpalSlashTurbulance" 
+	MissileHeight 8
+  States
+  {
+  Spawn:
+    RV0R A 4 Bright 
+    Loop
+  Death:
+    TNT1 A 1 Bright
+    Stop
+  }
+}

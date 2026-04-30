@@ -1,0 +1,21 @@
+// ==========================================
+// WALPURGIS GLOBAL WEAPON SLOT ASSIGNMENTS
+// ==========================================
+
+// SLOT 1 - Starting Melee/Wands
+setslot 1 VisExpello CrusaderMace Queensbury Baselard
+
+// SLOT 2 - Basic Projectiles / Sweeps
+setslot 2 Algor SturmSpear VorpalAxe DogMode
+
+// SLOT 3 - Mid-Tier
+setslot 3 Aestus Lightbringer Gladius DagonsCane
+
+// SLOT 4 - High-Tier
+setslot 4 Fulgur Heavensever HammerOfR Hebiko
+
+// SLOT 5 - Heavy AoE / Summons
+setslot 5 LapisFlos FireStormFont Bardiche DryadMode
+
+// SLOT 6 - Ultimate Weapons
+setslot 6 Agnus StarHammer QuietusX Ichival

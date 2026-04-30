@@ -1,0 +1,1296 @@
+ACTOR VorpalAxe : MyrmidonWeapon 23811 //replaces FWeapAxe
+{
+	//Hexen never really made it clear as to who the hell Timon was...
+	//So I made him into a legendary blacksmith. 
+	//This one is probably the only weapon still similar to its original
+	//HexArcana 1.1 incarnation. The Vorpal Slash is entirely new, and
+	//the sprites used are rather different, though.
+	//The Axe excels in close melee, as although the thrown attack is 
+	//strong as heck and leeches life, its slow to execute with limited range.
+	Inventory.RestrictedTo MyrmidonPlayer
+	Weapon.SelectionOrder 3
+	Weapon.SlotNumber 2
+	Weapon.SlotPriority 0
+	+WEAPON.AXEBLOOD
+	+WEAPON.MELEEWEAPON
+	+WEAPON.AMMO_OPTIONAL
+	+UNDROPPABLE
+	+NOTIMEFREEZE
+	//+WEAPON.ALT_USES_BOTH
+	//+WEAPON.ALT_AMMO_OPTIONAL
+	//Decal "AxeSlashDecal"
+	Weapon.KickBack 100
+	Weapon.YAdjust -10
+	Weapon.AmmoUse 10
+	Weapon.AmmoGive 25
+	Weapon.AmmoType1 "Mana1W"
+	Inventory.PickupMessage "\c[white]Grabbed \c[sapphire]Timon's Vorpal Axe\c[white]! [\c[sapphire]2\c[white]]"
+	Inventory.PickupSound "Pickup/WeaponBlade"
+	Obituary "$OB_MPFWEAPAXE"
+	Tag "Timon's Axe"
+	Obituary "%o didn't axe the right questions."
+	States
+	{
+	Spawn:
+		WFAX A -1
+		Stop
+	Select:
+		TNT1 A 1
+		TNT1 A 0 A_GiveInventory("AxeInHand",1)
+		Goto Select2
+	Deselect:
+		TNT1 A 0 A_TakeInventory("AxeInHand")
+		TNT1 A 0 {A_TakeInventory ("MaceChargeCheck2"); A_TakeInventory ("MaceChargeCheck1");} //prevent weirdness if switching straight to Gladius
+		Goto Deselect2
+	Select2:
+		FAXE A 1 A_Raise
+		Loop
+	Deselect2:
+		FAXE A 1 A_Lower
+		Loop
+	Summon:	//This is used when the thrown axe gets stuck on a wall. "TKCounter" tells us about it.
+		FASM A 2 {A_StartSound("LightSh",1,CHANF_OVERLAP|CHANF_LOCAL,0.9,ATTN_STATIC,1.2); A_TakeInventory("TKCounter");}
+		FASM BCDEFG 2 	
+		Goto Ready
+	Summon2:	
+		FASM G 1 {A_StartSound("Smacker2",1,CHANF_OVERLAP|CHANF_LOCAL,0.9,ATTN_STATIC,1.2); A_TakeInventory("TKCounter");}
+		FASM G 1 A_WeaponReady(WRF_ALLOWRELOAD)
+		Goto Ready
+	Ready:
+		FAXE A 1 A_WeaponReady(WRF_ALLOWRELOAD) 
+		Loop
+	Ready1:
+		FPCH A 1 A_WeaponReady //(WRF_NOBOB)
+		FPCH A 0 A_JumpIfInventory("MaceCharge", 1, "Ready1")	//This checks if your axe is thrown
+		FPCH A 0 A_JumpIfInventory("TKCounter", 1, "Summon")
+		Goto Ready		
+	Fire:
+		FAXE A 0 {if(CountInv("AxeMutate") == 1 || CountInv("AxeMutate") == 4 || CountInv("AxeMutate") == 6 || CountInv("AxeMutate") == 9)
+				{A_GiveInventory("Walpurgisnacht",1);}}
+		FAXE A 0 A_JumpIfInventory ("MaceCharge", 1, "FirePunch")	//If axe missing, punch instead of axe
+		FAXE A 0 A_JumpIfInventory ("Walpurgisnacht", 1, "Fire1Mut")	//If mutated fire, switch to different states
+		Goto Fire1
+	Fire1:
+		FAXE A 0 A_JumpIfInventory ("ComboCounter", 3, "FireChop") 
+		FAXE A 0 A_JumpIfInventory ("ComboCounter", 2, "FireTop") 
+		FAXE A 0 A_JumpIfInventory ("ComboCounter", 1, "FireSide") 
+		Goto FireTop
+	Fire1Mut:
+		FAXE A 0 A_JumpIfInventory ("Mana1W",1,"Fire1Mut2") //If no mana for mutate swings, use normal swings.
+		Goto Fire1
+	Fire1Mut2:
+		FAXE A 0 A_JumpIfInventory ("ComboCounter", 3, "FireChopM") 
+		FAXE A 0 A_JumpIfInventory ("ComboCounter", 2, "FireTopM") 
+		FAXE A 0 A_JumpIfInventory ("ComboCounter", 1, "FireSideM") 
+		Goto FireTopM
+	FireTop: 
+		FAXE A 1 Offset (14, 52)
+		F4XE B 2 Offset (15, 32) A_AlertMonsters
+		F4XE C 2 Offset (15, 32) A_StartSound("SwingItNow",1,CHANF_OVERLAP|CHANF_LOCAL,0.9,ATTN_STATIC,frandom(1,1.15))
+		F4XE D 1 Offset (15, 32) {if(random(0,4) >= 2 && (GetCVar("walp_silentprotagonists")==0) && (CountInv("PowerShutItWilson")) == 0)
+				{A_StartSound("MyrmExertsLight",CHAN_AUTO,CHANF_OVERLAP,0.9,ATTN_NONE,frandom(0.97,1.04));}}
+		F4XE D 1 Offset (-5, 70) {
+				if(CountInv("AxeUpgrade") == 1 || CountInv("AxeUpgrade") == 4 || CountInv("AxeUpgrade") == 6 || CountInv("AxeUpgrade") == 9)
+				{
+				A_CustomPunch (random(55,100), 1, CPF_NOTURN, "AxePuffWalp", 144, 0);
+				A_StartSound("SwordSwing",0,CHANF_OVERLAP,0.2,ATTN_STATIC,0.9);
+				A_FireProjectile("UpgradeAxeSlash1",0,false,0,0,FPF_NOAUTOAIM);
+				}
+				else
+				{
+				A_CustomPunch (random(50,95), 1, CPF_NOTURN, "AxePuffWalp", 144, 0);
+				}
+				}
+		F4XE D 1 Offset (-25, 90) 
+		F4XE E 2 Offset (15, 32) 
+		F4XE E 2 Offset (10, 54) A_GiveInventory("ComboCounter",1)
+		F4XE E 2 Offset (10, 150) A_WeaponReady(WRF_ALLOWRELOAD | WRF_NOBOB | WRF_NOPRIMARY) 
+		Goto FireEnded
+	FireTopM: 
+		FAXE A 1 Offset (14, 52) A_TakeInventory("Walpurgisnacht")
+		F4XE B 2 Offset (15, 32) {	A_AlertMonsters; 
+									A_Overlay(23,"LectroAxeOverlay");
+									A_OverlayOffset(23,random(-110,-220),random(10,-10));
+									//A_TakeInventory("Mana1W", 1,TIF_NOTAKEINFINITE); 
+									A_SpawnItemEx("DecorativePhatSparks",random(45,50)* cos(pitch),0,(40 - (40 * sin(pitch))),0,0,0);}
+		F4XE C 2 Offset (15, 32) {A_StartSound("SwingItNow",1,CHANF_OVERLAP|CHANF_LOCAL,0.9,ATTN_STATIC,frandom(1,1.15)); A_StartSound("ZappitySwings",2,CHANF_OVERLAP,1,ATTN_NORM,1);}
+		T4XE D 1 Offset (15, 32) {if(random(0,4) >= 2 && (GetCVar("walp_silentprotagonists")==0) && (CountInv("PowerShutItWilson")) == 0)
+				{A_StartSound("MyrmExertsLight",CHAN_AUTO,CHANF_OVERLAP,0.9,ATTN_NONE,frandom(0.97,1.04));}}
+		T4XE D 1 Offset (-5, 70) A_CustomPunch (random(65,125), 1, CPF_NOTURN, "AxeShockPuff", 144, 0)
+		T4XE D 1 Offset (-25, 90) 
+		F4XE E 2 Offset (15, 32) 
+		F4XE E 2 Offset (10, 54) A_GiveInventory("ComboCounter",1)
+		F4XE E 2 Offset (10, 150) A_WeaponReady(WRF_ALLOWRELOAD | WRF_NOBOB | WRF_NOPRIMARY) 
+		Goto FireEnded
+	FireSide:	
+		F4XE F 0 Offset (15, 32) A_AlertMonsters
+		F4XE F 0 A_StartSound("SwingItNow",1,CHANF_OVERLAP|CHANF_LOCAL,0.9,ATTN_STATIC,frandom(1,1.15))
+		F4XE F 1 {if(random(0,4) >= 3 && (GetCVar("walp_silentprotagonists")==0) && (CountInv("PowerShutItWilson")) == 0)
+				{A_StartSound("MyrmExertsLight",CHAN_AUTO,CHANF_OVERLAP,0.9,ATTN_NONE,frandom(0.97,1.04));}}
+		F4XE FGGHHIJ 1
+		F4XE J 1 {
+				if(CountInv("AxeUpgrade") == 1 || CountInv("AxeUpgrade") == 4 || CountInv("AxeUpgrade") == 6 || CountInv("AxeUpgrade") == 9)
+				{
+				A_CustomPunch (random(55,100), 1, CPF_NOTURN, "AxePuffWalpLeft", 144, 0);
+				A_StartSound("SwordSwing",0,CHANF_OVERLAP,0.2,ATTN_STATIC,0.9);
+				A_FireProjectile("UpgradeAxeSlash2",0,false,0,0,FPF_NOAUTOAIM);
+				}
+				else
+				{
+				A_CustomPunch (random(50,95), 1, CPF_NOTURN, "AxePuffWalpLeft", 144, 0);
+				}}
+		F4XE K 1 
+		F4XE L 1 A_GiveInventory("ComboCounter",1)
+		TNT1 A 2
+		Goto FireEnded
+	FireSideM:	
+		F4XE E 0 Offset (15, 32) {A_AlertMonsters; A_TakeInventory("Walpurgisnacht"); /*A_TakeInventory("Mana1W", 1,TIF_NOTAKEINFINITE);*/}
+		F4XE E 0 {A_StartSound("SwingItNow",1,CHANF_OVERLAP|CHANF_LOCAL,0.9,ATTN_STATIC,frandom(1,1.15)); A_StartSound("ZappitySwings",2,CHANF_OVERLAP,1,ATTN_NORM,1);}
+		F4XE E 1 {if(random(0,4) >= 3 && (GetCVar("walp_silentprotagonists")==0) && (CountInv("PowerShutItWilson")) == 0)
+				{A_StartSound("MyrmExertsLight",CHAN_AUTO,CHANF_OVERLAP,0.9,ATTN_NONE,frandom(0.97,1.04));}
+				A_SpawnItemEx("DecorativePhatSparks",random(45,50)* cos(pitch),0,(40 - (40 * sin(pitch))),0,0,0);
+				A_Overlay(23,"LectroAxeOverlay");
+				A_OverlayOffset(23,random(-110,-220),random(10,-10));}
+		F4XE EFFG 1
+		V4XE GHI 1
+		V4XE I 1 A_CustomPunch (random(65,125), 1, CPF_NOTURN, "AxeShockPuffLeft", 144, 0) //DecorativePhatSparks
+		F4XE K 1 
+		F4XE K 1 A_GiveInventory("ComboCounter",1)
+		TNT1 A 2
+		Goto FireEnded
+	FireChop:
+		SM4X A 0 Offset (15, 32) {A_AlertMonsters;}
+		SM4X A 0 A_StartSound("SwingItNow",1,CHANF_OVERLAP|CHANF_LOCAL,0.9,ATTN_STATIC,frandom(1,1.15))
+		SM4X A 2 {if(random(0,4) >= 3 && (GetCVar("walp_silentprotagonists")==0) && (CountInv("PowerShutItWilson")) == 0)
+				{A_StartSound("MyrmExertsLight",CHAN_AUTO,CHANF_OVERLAP,0.9,ATTN_NONE,frandom(0.97,1.04));}}
+		SM4X BCCD 1
+		SM4X E 2 Offset (-5, 70) {
+				if(CountInv("AxeUpgrade") == 1 || CountInv("AxeUpgrade") == 4 || CountInv("AxeUpgrade") == 6 || CountInv("AxeUpgrade") == 9)
+				{
+				A_CustomPunch (random(55,100), 1, CPF_NOTURN, "AxePuffWalpRight", 144, 0);
+				A_StartSound("SwordSwing",0,CHANF_OVERLAP,0.2,ATTN_STATIC,0.9);
+				A_FireProjectile("UpgradeAxeSlash3",0,false,0,0,FPF_NOAUTOAIM);
+				}
+				else
+				{
+				A_CustomPunch (random(50,95), 1, CPF_NOTURN, "AxePuffWalpRight", 144, 0);
+				}
+				}
+		SM4X FG 1
+		SM4X G 1 A_TakeInventory("ComboCounter")
+		TNT1 A 2
+		Goto FireEnded
+	FireChopM:
+		SM4X A 0 Offset (15, 32) {A_AlertMonsters; /*A_TakeInventory("Mana1W", 1,TIF_NOTAKEINFINITE);*/ A_TakeInventory("Walpurgisnacht");}
+		SM4X A 0 {A_StartSound("SwingItNow",1,CHANF_OVERLAP|CHANF_LOCAL,0.9,ATTN_STATIC,frandom(1,1.15)); A_StartSound("ZappitySwings",2,CHANF_OVERLAP,1,ATTN_NORM,1);}
+		SM4X A 2 {if(random(0,4) >= 3 && (GetCVar("walp_silentprotagonists")==0) && (CountInv("PowerShutItWilson")) == 0)
+				{A_StartSound("MyrmExertsLight",CHAN_AUTO,CHANF_OVERLAP,0.9,ATTN_NONE,frandom(0.97,1.04));}
+				A_SpawnItemEx("DecorativePhatSparks",random(45,50)* cos(pitch),0,(40 - (40 * sin(pitch))),0,0,0);
+				A_Overlay(23,"LectroAxeOverlay");
+				A_OverlayOffset(23,random(-110,-220),random(10,-10));}
+		SM4X BCC 1
+		SM5X D 1
+		SM5X E 2 Offset (-5, 70) A_CustomPunch (random(65,125), 1, CPF_NOTURN, "AxeShockPuffRight", 144, 0)
+		SM5X FG 1
+		SM4X G 1 A_TakeInventory("ComboCounter")
+		TNT1 A 2
+	FireEnded:
+		FAXE E 0 A_ReFire("Fire")
+		FAXE A 1 Offset (0, 60) A_WeaponReady(WRF_ALLOWRELOAD | WRF_NOBOB)
+		FAXE A 1 Offset (0, 52) A_WeaponReady(WRF_ALLOWRELOAD | WRF_NOBOB)
+		FAXE A 1 Offset (0, 44) A_WeaponReady(WRF_ALLOWRELOAD | WRF_NOBOB)
+		FAXE A 1 Offset (0, 36) A_WeaponReady(WRF_ALLOWRELOAD | WRF_NOBOB)
+		FAXE A 1 A_TakeInventory("ComboCounter")
+		Goto Ready
+	AltFire:
+		TNT1 A 0 A_JumpIfInventory("MaceCharge", 1, "FirePunch")	//Checks if the axe is thrown
+		Goto AltFire1
+	AltFire1:
+		FAXE A 1 Offset (7, 44) A_Stopsound(7)
+		FAXE A 0 {
+			if(CountInv("AxeUpgrade") == 3 || CountInv("AxeUpgrade") == 4 || CountInv("AxeUpgrade") == 8 || CountInv("AxeUpgrade") == 9)
+			{ A_GiveInventory("Spearcheck2",1);}
+			else if(CountInv("AxeMutate") == 3 || CountInv("AxeMutate") == 4 || CountInv("AxeMutate") == 8 || CountInv("AxeMutate") == 9)
+			{ A_GiveInventory("Spearcheck1",1);}
+			}
+		FAXE A 0 A_JumpIfInventory("Spearcheck2", 1, "AltFire2")
+		FAXE A 0 A_JumpIfInventory("Spearcheck1", 1, "AltFire3")
+		FAXE A 1 Offset (14, 52) A_JumpIfInventory("PowerAmbitMana", 1, "Vorpal")
+		FAXE A 1 Offset (21, 60) A_JumpIfInventory("Mana1W", 8, "Vorpal") 
+		Goto Fire
+	AltFire2: //upgrade
+		FAXE A 0 A_TakeInventory("Spearcheck2")
+		FAXE A 1 Offset (0, 52) A_JumpIfInventory("PowerAmbitMana", 1, "VorpalPurple")
+		FAXE A 1 Offset (0, 60) A_JumpIfInventory("Mana1W", 8, "VorpalPurple") 
+		Goto Fire
+	AltFire3: //mutate
+		FAXE A 0 A_TakeInventory("Spearcheck1")
+		FAXE A 1 Offset (0, 52) A_JumpIfInventory("PowerAmbitMana", 1, "VorpalVertical")
+		FAXE A 1 Offset (0, 60) A_JumpIfInventory("Mana1W", 8, "VorpalVertical") 
+		Goto Fire
+	Vorpal:	//Snicker-snak-snick-snak! Off with his head!
+		TNT1 A 1 {if(random(0,4) >= 1 && (GetCVar("walp_silentprotagonists")==0) && (CountInv("PowerShutItWilson")) == 0)
+				{A_StartSound("MyrmExerts",CHAN_AUTO,CHANF_OVERLAP,0.9,ATTN_NONE,frandom(0.97,1.04));}}
+		TNT1 A 3 A_StartSound("SwordSwing",CHAN_WEAPON,CHANF_OVERLAP,1,ATTN_STATIC,frandom(0.97,1.04))
+		V4XE FF 1 Offset (15, 32) A_TakeInventory("Mana1W", 1,TIF_NOTAKEINFINITE)	
+		V4XE F 0 A_StartSound("VorpalEffect",0,CHANF_OVERLAP,1,ATTN_STATIC,1)
+		V4XE GGHH 1 A_TakeInventory("Mana1W", 1,TIF_NOTAKEINFINITE)	
+		V4XE I 1 		{
+			if(CountInv("AxeUpgrade") == 3 || CountInv("AxeUpgrade") == 4 || CountInv("AxeUpgrade") == 8 || CountInv("AxeUpgrade") == 9)
+			{
+			A_FireProjectile("AxeSlashSuper",0,false,0,0,FPF_NOAUTOAIM);
+			A_CustomPunch (1, 1, CPF_NOTURN, "AxePuffWalpLeft", 600, 0); //purely for decal
+			}
+			else
+			{
+			A_FireProjectile("AxeBladeSlash",0,false,0,0,FPF_NOAUTOAIM);
+			A_CustomPunch (1, 1, CPF_NOTURN, "AxePuffWalpLeft", 300, 0); //purely for decal
+			}
+			A_QuakeEx(2,7,2,12,0,2,"-",QF_SCALEDOWN);
+			A_TakeInventory("Mana1W", 1,TIF_NOTAKEINFINITE);
+			A_AlertMonsters;
+		}
+		V4XE J 2 A_TakeInventory("Mana1W", 2,TIF_NOTAKEINFINITE)
+		V4XE J 0 {
+				if(CountInv("MaceChargeCheck2") < 1) //Check if slash died
+				{
+				A_GiveInventory ("MaceChargeCheck1", 1);
+				}
+		}
+		V4XE J 0 A_JumpIfInventory("MaceChargeCheck1", 1, "SlashFailed") //if it did, use noclip one
+		V4XE J 0 {A_TakeInventory ("MaceChargeCheck2"); A_TakeInventory ("MaceChargeCheck1");}
+		V4XE KL 1 
+		TNT1 A 11 
+		TNT1 A 0 A_Refire("AltFire")
+		FAXE A 1 Offset (1, 60) A_WeaponReady(WRF_ALLOWRELOAD)
+		FAXE A 1 Offset (0, 52) A_WeaponReady(WRF_ALLOWRELOAD)
+		FAXE A 1 Offset (0, 44) A_WeaponReady(WRF_ALLOWRELOAD)
+		FAXE A 1 Offset (0, 36) A_WeaponReady(WRF_ALLOWRELOAD)
+		Goto Ready			
+	VorpalPurple:	//Snicker-snak-snick-snak! Death to the Purple People Eater!
+		TNT1 A 1 {if(random(0,4) >= 1 && (GetCVar("walp_silentprotagonists")==0) && (CountInv("PowerShutItWilson")) == 0)
+				{A_StartSound("MyrmExerts",CHAN_AUTO,CHANF_OVERLAP,0.9,ATTN_NONE,frandom(0.97,1.04));}}
+		TNT1 A 3 A_StartSound("SwordSwing",CHAN_WEAPON,CHANF_OVERLAP,1,ATTN_STATIC,frandom(0.97,1.04))
+		V5XE FF 1 Offset (15, 32) A_TakeInventory("Mana1W", 1,TIF_NOTAKEINFINITE)	
+		V4XE F 0 A_StartSound("VorpalEffect",0,CHANF_OVERLAP,1,ATTN_STATIC,0.9)
+		V5XE GGHH 1 A_TakeInventory("Mana1W", 1,TIF_NOTAKEINFINITE)	
+		V5XE I 1 		{
+			if(CountInv("AxeUpgrade") == 3 || CountInv("AxeUpgrade") == 4 || CountInv("AxeUpgrade") == 8 || CountInv("AxeUpgrade") == 9)
+			{
+			A_FireProjectile("AxeSlashSuper",0,false,0,0,FPF_NOAUTOAIM);
+			A_CustomPunch (1, 1, CPF_NOTURN, "AxePuffWalpLeft", 600, 0); //purely for decal
+			}
+			else
+			{
+			A_FireProjectile("AxeBladeSlash",0,false,0,0,FPF_NOAUTOAIM);
+			A_CustomPunch (1, 1, CPF_NOTURN, "AxePuffWalpLeft", 300, 0); //purely for decal
+			}
+			A_QuakeEx(2,7,2,12,0,2,"-",QF_SCALEDOWN);
+			A_TakeInventory("Mana1W", 1,TIF_NOTAKEINFINITE);
+			A_AlertMonsters;
+		}
+		V5XE J 2 A_TakeInventory("Mana1W", 2,TIF_NOTAKEINFINITE)
+		V5XE J 0 {
+				if(CountInv("MaceChargeCheck2") < 1) //Check if slash died
+				{
+				A_GiveInventory ("MaceChargeCheck1", 1);
+				}
+		}
+		V5XE J 0 A_JumpIfInventory("MaceChargeCheck1", 1, "SlashFailed") //if it did, use noclip one
+		V5XE J 0 {A_TakeInventory ("MaceChargeCheck2"); A_TakeInventory ("MaceChargeCheck1");}
+		V5XE KL 1 
+		TNT1 A 11 
+		TNT1 A 0 A_Refire("AltFire")
+		FAXE A 1 Offset (1, 60) A_WeaponReady(WRF_ALLOWRELOAD)
+		FAXE A 1 Offset (0, 52) A_WeaponReady(WRF_ALLOWRELOAD)
+		FAXE A 1 Offset (0, 44) A_WeaponReady(WRF_ALLOWRELOAD)
+		FAXE A 1 Offset (0, 36) A_WeaponReady(WRF_ALLOWRELOAD)
+		Goto Ready	
+	VorpalVertical: //mutated
+		TNT1 A 1 {if(random(0,4) >= 1 && (GetCVar("walp_silentprotagonists")==0) && (CountInv("PowerShutItWilson")) == 0)
+				{A_StartSound("MyrmExerts",CHAN_AUTO,CHANF_OVERLAP,0.9,ATTN_NONE,frandom(0.97,1.04));}}
+		TNT1 A 3 A_StartSound("SwordSwing",CHAN_WEAPON,CHANF_OVERLAP,1,ATTN_STATIC,frandom(0.97,1.04))
+		T4XE B 2 Offset (15, 32) {A_AlertMonsters; A_TakeInventory("Mana1W", 2,TIF_NOTAKEINFINITE);}
+		V4XE B 0 A_StartSound("VorpalEffect",CHAN_AUTO,CHANF_OVERLAP,1,false,ATTN_STATIC,1)
+		T4XE C 2 Offset (15, 32) A_TakeInventory("Mana1W", 1,TIF_NOTAKEINFINITE)	
+		T4XE D 1 Offset (15, 32) A_TakeInventory("Mana1W", 1,TIF_NOTAKEINFINITE)	
+		T4XE D 1 Offset (-5, 70) {
+				A_FireProjectile("AxeSlashVertical",0,false,0,0,FPF_NOAUTOAIM);
+				A_CustomPunch (1, 1, CPF_NOTURN, "AxePuffWalp", 300, 0); //purely for decal
+				A_TakeInventory("Mana1W", 1,TIF_NOTAKEINFINITE);
+				}
+		T4XE D 1 Offset (-25, 90) 
+		T4XE E 2 Offset (15, 32) 
+		T4XE E 2 Offset (10, 54) 
+		TNT1 A 11 {A_TakeInventory ("MaceChargeCheck2"); A_TakeInventory ("MaceChargeCheck1");}
+		TNT1 A 0 A_Refire("AltFire")
+		FAXE A 1 Offset (1, 60) A_WeaponReady(WRF_ALLOWRELOAD)
+		FAXE A 1 Offset (0, 52) A_WeaponReady(WRF_ALLOWRELOAD)
+		FAXE A 1 Offset (0, 44) A_WeaponReady(WRF_ALLOWRELOAD)
+		FAXE A 1 Offset (0, 36) A_WeaponReady(WRF_ALLOWRELOAD)
+		Goto Ready
+	SideSlash: //not used since 0.97
+		TNT1 A 1 {if(GetCVar("walp_silentprotagonists")== 0)
+				{A_StartSound("MyrmExertsHeavy",CHAN_6,CHANF_OVERLAP,0.9,false,ATTN_NONE,frandom(0.97,1.04));}}
+		TNT1 A 3 A_PlaySound("SwordSwing",2,1.6)
+		F4XE FFF 1 Offset (15, 32) A_TakeInventory("Mana1W", 1,TIF_NOTAKEINFINITE)
+		FAXE RRRSS 1 A_TakeInventory("Mana1W", 1,TIF_NOTAKEINFINITE)
+		FAXE S 0 //A_CheckBlock("SlashFailed",CBF_NOACTORS,AAPTR_DEFAULT
+		FAXE S 1 Offset (130, 60) 
+		{
+			A_AlertMonsters;
+			if(CountInv("AxeUpgrade") == 3 || CountInv("AxeUpgrade") == 4 || CountInv("AxeUpgrade") == 8 || CountInv("AxeUpgrade") == 9)
+			{
+			A_FireProjectile("AxeSlashSuper",0,false,0,0,FPF_NOAUTOAIM);
+			A_CustomPunch (1, 1, CPF_NOTURN, "AxePuffWalpLeft", 600, 0); //purely for decal
+			}
+			else
+			{
+			A_FireProjectile("AxeBladeSlash",0,false,0,0,FPF_NOAUTOAIM);
+			A_CustomPunch (1, 1, CPF_NOTURN, "AxePuffWalpLeft", 300, 0); //purely for decal
+			}
+			A_QuakeEx(2,7,2,12,0,2,"-",QF_SCALEDOWN);
+		}
+		FAXE T 2 Offset (10, 70) 
+		FAXE T 0 Offset (10, 150) 
+		{
+				if(CountInv("MaceChargeCheck2") < 1) //Check if slash died
+				{
+				A_GiveInventory ("MaceChargeCheck1", 1);
+				}
+		}
+		FAXE T 0 Offset (10, 150) A_JumpIfInventory("MaceChargeCheck1", 1, "SlashFailed") //if it did, use noclip one
+		FAXE T 0 Offset (10, 150) {A_TakeInventory ("MaceChargeCheck2"); A_TakeInventory ("MaceChargeCheck1");}
+		FAXE T 11 Offset (10, 150) 
+		TNT1 A 0 A_Refire("AltFire")
+		FAXE A 1 Offset (1, 60) A_WeaponReady(WRF_ALLOWRELOAD)
+		FAXE A 1 Offset (0, 52) A_WeaponReady(WRF_ALLOWRELOAD)
+		FAXE A 1 Offset (0, 44) A_WeaponReady(WRF_ALLOWRELOAD)
+		FAXE A 1 Offset (0, 36) A_WeaponReady(WRF_ALLOWRELOAD)
+		Goto Ready
+	SlashFailed:
+		TNT1 A 0 Offset (10, 150) 
+		{
+			if(CountInv("AxeUpgrade") == 3 || CountInv("AxeUpgrade") == 4 || CountInv("AxeUpgrade") == 8 || CountInv("AxeUpgrade") == 9)
+			{
+			A_FireProjectile("AxeSlashSuperNoClip",0,false,0,0,FPF_NOAUTOAIM);
+			}
+			else
+			{
+			A_FireProjectile("AxeBladeSlashNoClip",0,false,0,0,FPF_NOAUTOAIM);
+			}
+		}
+		TNT1 A 0 Offset (10, 150) 
+		{
+				A_TakeInventory ("MaceChargeCheck1");
+				A_TakeInventory ("MaceChargeCheck2");
+		}
+		TNT1 A 11 Offset (10, 150) 
+		TNT1 A 0 A_Refire("AltFire")
+		FAXE A 1 Offset (1, 60) A_WeaponReady(WRF_ALLOWRELOAD)
+		FAXE A 1 Offset (0, 52) A_WeaponReady(WRF_ALLOWRELOAD)
+		FAXE A 1 Offset (0, 44) A_WeaponReady(WRF_ALLOWRELOAD)
+		FAXE A 1 Offset (0, 36) A_WeaponReady(WRF_ALLOWRELOAD)
+		Goto Ready
+	Reload:
+		TNT1 A 0 A_Jump(256,"ReloadManaCheck")
+		Goto Fire
+	ReloadManaCheck:
+		TNT1 A 0 A_JumpIfInventory ("PowerAmbitMana", 1, "AxeThrower")
+		TNT1 A 0 A_JumpIfInventory ("Mana1W", 15, "AxeThrower")
+		Goto Fire
+	AxeThrower:
+		TNT1 A 0 {if(CountInv("AxeMutate") == 5 || CountInv("AxeMutate") == 6 || CountInv("AxeMutate") == 8 || CountInv("AxeMutate") == 9)
+					{
+					A_GiveInventory("TKCounter",1);
+					}
+				 }
+		TNT1 A 0 A_JumpIfInventory("TKCounter",1,"AxeSpectral")
+		TNT1 A 0 A_TakeInventory("Mana1W", 3,TIF_NOTAKEINFINITE)
+		FAXE N 2 Offset (15, 32) A_TakeInventory("Mana1W", 2,TIF_NOTAKEINFINITE)
+		FAXE N 2 Offset (15, 32) A_TakeInventory("Mana1W", 2,TIF_NOTAKEINFINITE)
+		FAXE O 2 Offset (15, 32) A_TakeInventory("Mana1W", 2,TIF_NOTAKEINFINITE)
+		FAXE O 1 Offset (15, 32) {if(GetCVar("walp_silentprotagonists")==0)
+				{A_StartSound("MyrmExertsLight",CHAN_6,CHANF_OVERLAP,0.9,false,ATTN_NONE,frandom(0.97,1.04));}}
+		FAXE P 1 Offset (15, 32) A_Playsound("AxeSwing",0)
+		FAXE P 1 Offset (-5, 70) {
+				if(CountInv("AxeUpgrade") == 5 || CountInv("AxeUpgrade") == 6 || CountInv("AxeUpgrade") == 8 || CountInv("AxeUpgrade") == 9)
+				{
+				A_FireCustomMissile("AxeThrowPlus",0,0,0,4,FPF_NOAUTOAIM);	//this throws the upgraded axe
+				}
+				else
+				{
+				A_FireCustomMissile("AxeThrow",0,0,0,4,FPF_NOAUTOAIM);	//this throws the regular axe
+				A_TakeInventory("Mana1W", 3,TIF_NOTAKEINFINITE);
+				}
+				}
+		FAXE P 0 Offset (-25, 90) A_QuakeEx(2,2,7,12,0,2,"-",QF_SCALEDOWN)
+		FAXE Q 0 Offset (15, 32) A_TakeInventory("Mana1W", 3,TIF_NOTAKEINFINITE)
+		FAXE Q 1 Offset (10, 54) A_AlertMonsters
+		FAXE Q 1 Offset (10, 54) A_JumpIfInventory("TKCounter", 1, "Summon")
+		FAXE Q 3 Offset (10, 150) A_JumpIfInventory("MaceCharge", 1, "Ready1") 
+		Goto Ready
+	AxeSpectral: //Mutated Tertiary Fire
+		TNT1 A 2 Offset (15, 32) A_TakeInventory("Mana1W", 2,TIF_NOTAKEINFINITE)
+		T4XE B 2 Offset (15, 32) A_TakeInventory("Mana1W", 2,TIF_NOTAKEINFINITE)
+		T4XE C 2 Offset (15, 32) A_TakeInventory("Mana1W", 2,TIF_NOTAKEINFINITE)
+		T4XE C 1 Offset (15, 32) {if(GetCVar("walp_silentprotagonists")==0)
+				{A_StartSound("MyrmExertsLight",CHAN_6,CHANF_OVERLAP,0.9,false,ATTN_NONE,frandom(0.97,1.04));}}
+		T4XE H 1 Offset (15, 32) A_Playsound("AxeSwing",0)
+		T4XE H 1 Offset (-5, 70) A_FireCustomMissile("AxeSpectralToss",0,0,0,4,FPF_NOAUTOAIM)	//this throws the spectral mutate axe
+		T4XE H 0 Offset (-25, 90) A_QuakeEx(2,2,7,12,0,2,"-",QF_SCALEDOWN)
+		T4XE H 0 Offset (15, 32) 
+		T4XE I 1 Offset (10, 54) A_AlertMonsters
+		T4XE J 1 Offset (10, 54) A_JumpIfInventory("TKCounter", 1, "Summon")
+		T4XE J 3 Offset (10, 150) A_JumpIfInventory("MaceCharge", 1, "Ready1")
+		Goto Ready
+	LectroAxeOverlay: //Uses Fulgur Zap on Right when axe is electrified. 
+		TNT1 A 1
+		SPRK FGHIJKL 2 
+		Stop
+//////----------------------------------------------------------------------//////
+//////																		//////
+//////This section for still using your Gauntlets when your axe is thrown!	//////	
+//////																		//////
+//////----------------------------------------------------------------------//////
+	FirePunch:
+		FPCH A 0 A_JumpIfInventory("MaceCharge", 1, "FirePunchStart")	//0.94 extra checks
+		FPCH A 0 A_JumpIfInventory("TKCounter", 1, "Summon")
+		Goto Summon2	
+	FirePunchStart:
+		Goto ComboStart
+	ComboStart:
+		THOT A 0 A_JumpIfInventory ("ComboCounter", 2, "Shoryuken")
+		THOT A 0 A_JumpIfInventory ("ComboCounter", 1, "ComboDecide1")
+		THOT A 0 {
+		if (random(1,2) == 1) 
+		{	A_GiveInventory("PunchRight",1); }
+		Else {}
+		}
+		Goto ComboDecide
+		//////// COMBO PUNCH /////////
+	ComboDecide:	
+		TNT1 A 0 A_JumpIfInventory ("PunchRight", 1, "ComboPunch1")
+		Goto ComboPunch
+	ComboPunch: //Right Jab
+		FPCH B 1 Offset (25, 36) 
+		FPCH B 1 Offset (-15, 36) 
+		TNT1 A 0 Offset (5, 36) A_JumpIfInventory("TKCounter", 1, "Summon")
+		FPCH C 1 Offset (-10, 36)
+		FPCH D 2 Offset (5, 36) A_CustomPunch (0, true, CPF_NOTURN, "PunchPuff", 104, 0)	//This nondamaging punch is to supply the sound and visuals
+		FPCH D 1 Offset (5, 36) A_CustomPunch (11 * random(3, 5), 1, CPF_NOTURN, "ComboPuff", 114, 0)
+		FPCH C 2 Offset (5, 36)
+		FPCH B 1 Offset (5, 36) A_GiveInventory("ComboCounter",1)
+		TNT1 A 1 Offset (5, 36) A_ReFire("FirePunch")
+		TNT1 A 0 A_JumpIfInventory("TKCounter", 1, "Summon")
+		TNT1 A 0 A_JumpIfInventory("MaceCharge", 1, "ComboFinishIt")
+		Goto Summon2
+	ComboFinishIt:
+		TNT1 A 1 Offset (5, 150) A_WeaponReady(WRF_NOBOB)	//All these allow any attack during the wind down animation
+		THOT A 2 Offset (5, 55) A_WeaponReady(WRF_NOBOB)
+		THOT A 2 Offset (4, 50) A_WeaponReady(WRF_NOBOB)
+		THOT A 1 Offset (3, 45)  A_TakeInventory("ComboCounter")
+		THOT A 1 Offset (2, 40) A_WeaponReady(WRF_NOBOB)
+		THOT A 1 Offset (1, 35) A_WeaponReady(WRF_NOBOB) 
+		Goto Ready1
+	ComboDecide1:	//Left Jab
+		TNT1 A 0 A_JumpIfInventory ("PunchRight", 1, "ComboPunch")
+		Goto ComboPunch1
+	ComboPunch1:
+		FPCH F 1 Offset (5, 36)
+		FPCH F 1 Offset (5, 36)
+		TNT1 A 0 Offset (5, 36) A_JumpIfInventory("TKCounter", 1, "Summon")
+		FPCH G 1 Offset (5, 36)
+		FPCH H 2 Offset (5, 36) A_CustomPunch (0, true, CPF_NOTURN, "PunchPuff", 104, 0)
+		FPCH H 1 Offset (5, 36) A_CustomPunch (11 * random (3, 5), true, CPF_NOTURN, "ComboPuff", 114, 0)
+		FPCH G 2 Offset (5, 36) A_GiveInventory("ComboCounter",1)
+		FPCH F 1 Offset (5, 36) 
+		TNT1 A 1 Offset (5, 36) A_ReFire("FirePunch")
+		TNT1 A 0 A_JumpIfInventory("TKCounter", 1, "Summon")
+		TNT1 A 0 A_JumpIfInventory("MaceCharge", 1, "ComboFinishIt")
+		Goto Summon2
+	Shoryuken:	//Uppercut! 
+		TNT1 A 0 A_JumpIfInventory ("PunchLeft", 1, "MightyBoot")
+		TNT1 A 0 {if(GetCVar("walp_silentprotagonists")==0)
+				{A_StartSound("MyrmExerts",CHAN_AUTO,CHANF_OVERLAP,0.9,ATTN_NONE,frandom(0.97,1.04));}}
+		UPCT A 5 
+		TNT1 A 0 A_JumpIfInventory("TKCounter", 1, "Summon")
+		UPCT A 2 
+		UPCT B 2 Offset (0,30) 
+		TNT1 A 0 A_JumpIfInventory("TKCounter", 1, "Summon")
+		UPCT C 2 
+		{
+			A_CustomPunch(30,1,CPF_NOTURN,"PunchPuff",120);
+			A_CustomPunch (18 * random (3, 6), true, CPF_NOTURN, "ComboPuff", 114, 0);
+			A_RadiusThrust(250,radius+114,RTF_NOTMISSILE,166);
+			A_QuakeEx(0,0,5,20,0,1,"-",QF_SCALEDOWN);
+			A_PlaySound("PlayerFighterFailedUse",7,2,false,ATTN_STATIC);
+		}
+		TNT1 A 0 A_JumpIfInventory("TKCounter", 1, "Summon")
+		UPCT D 2 
+		UPCT D 3 Offset (0,30) A_TakeInventory("ComboCounter")
+		UPCT C 3 Offset (0,30) A_GiveInventory("PunchLeft",1)
+		TNT1 A 0 A_JumpIfInventory("TKCounter", 1, "Summon")
+		UPCT B 3 Offset (0,30) A_TakeInventory("PunchRight")
+		UPCT A 3 Offset (0,30) A_Refire("FirePunch")
+		TNT1 A 0 A_JumpIfInventory("TKCounter", 1, "Summon")
+		TNT1 A 0 A_JumpIfInventory("MaceCharge", 1, "ComboFinishIt")
+		Goto Summon2
+	MightyBoot:
+		TNT1 A 3 
+		KICK A 1 Offset (5,37) {if((GetCVar("walp_silentprotagonists")==0) && (CountInv("PowerShutItWilson")) == 0)
+				{A_StartSound("MyrmExerts",CHAN_AUTO,CHANF_OVERLAP,0.9,ATTN_NONE,frandom(0.97,1.04));}}
+		KICK A 1 A_WeaponOffset(0,42)
+		TNT1 A 0 A_JumpIfInventory("TKCounter", 1, "Summon")
+		KICK B 3 A_TakeInventory("ComboCounter")
+		KICK C 3 A_PlaySound("PlayerFighterFailedUse",7,2,false,ATTN_STATIC)
+		KICK D 2 
+		{
+			A_CustomPunch(30,1,CPF_NOTURN,"PunchPuff",120);
+			A_CustomPunch (15 * random (3, 6), true, CPF_NOTURN, "ComboPuff", 134, 0);
+			A_RadiusThrust(250,radius+134,RTF_NOTMISSILE,166);
+			A_QuakeEx(3,0,2,20,0,2,"-",QF_SCALEDOWN);	
+		}
+		KICK D 1 Offset (0, 39) 
+		KICK E 2 A_WeaponOffset(0,42)
+		KICK F 2
+		KICK F 1 Offset (2, 48) A_TakeInventory("PunchRight")
+		KICK F 1 Offset (5, 52) A_TakeInventory("PunchLeft")
+		TNT1 A 0 A_JumpIfInventory("TKCounter", 1, "Summon")
+		TNT1 A 1 A_WeaponOffset(0,32)
+		TNT1 A 4 Offset (5, 100) A_Refire("FirePunch")
+		TNT1 A 0 A_JumpIfInventory("TKCounter", 1, "Summon")
+		TNT1 A 0 A_JumpIfInventory("MaceCharge", 1, "ComboFinishIt")
+		Goto Summon2
+///End of Fake Fists for Reference	
+	}
+}
+
+ACTOR AxePuffWalp : BaseWalpPuff
+{
+  +NOBLOCKMAP
+  +NOGRAVITY
+  +PUFFONACTORS
+  +BLOODSPLATTER
+  +HITTRACER
+  +ROLLSPRITE
+  +ROLLCENTER
+  RenderStyle Translucent
+  Alpha 0.3
+  Scale 0.7
+  SeeSound "AxeMurder"
+  AttackSound "WallMurder"
+  ActiveSound "None"
+  VSpeed 1
+  //ActiveSound "SwingItNow"
+  States
+  {
+  Spawn:
+    FHFX S 0
+	FHFX S 0 {A_Setroll(random(0,180)); A_GiveInventory("Haemorrage",1,AAPTR_TRACER);}
+	FHFX STU 4
+	FHFX V 4 { if (CountInv("TKCounter",AAPTR_TRACER) == 0)
+				{A_SpawnItemEx("BleedControllerLesser",0,0,0,0,0,0,0,SXF_TRANSFERPOINTERS|SXF_ORIGINATOR|SXF_SETMASTER);}
+				}
+	FHFX W 4 
+    Stop
+  }
+}
+
+ACTOR AxeShockPuff : AxePuffWalp //Mutated primary gives out shocks.
+{
+	+PUFFGETSOWNER
+	DamageType "Electric"
+	Decal "AxeSlashDecal"
+	States
+	{
+	Spawn:
+		TNT1 A 0
+		TNT1 A 0 A_StartSound("ZappitySwings",2,CHANF_OVERLAP,1,ATTN_NORM,1) 
+		TNT1 A 0 {	A_SpawnItemEx ("DecorativeZaps",-12,random(-2,2),random(-1,1),random(-1,1),random(-1,1),random(-3,3));
+					A_SpawnItemEx ("DecorativeZaps",-12,random(-2,2),random(-1,1),random(-1,1),random(-1,1),random(-3,3));
+					A_SpawnItemEx ("DecorativeZaps",-12,random(-2,2),random(-1,1),random(-1,1),random(-1,1),random(-3,3));}
+		TNT1 A 0 A_GiveInventory("Haemorrage",1,AAPTR_TRACER)
+		TNT1 A 0 { if (CountInv("TKCounter",AAPTR_TRACER) == 0)
+					{A_SpawnItemEx("BleedControllerLesser",0,0,0,0,0,0,0,SXF_TRANSFERPOINTERS|SXF_ORIGINATOR|SXF_SETMASTER);}
+				 }
+		TNT1 A 2 A_ChangeVelocity(-5,0,2,CVF_RELATIVE|CVF_REPLACE,AAPTR_TRACER)
+		Stop
+	Crash:
+		TNT1 A 0
+		FHFX S 0 {	A_SpawnItemEx ("DecorativeZaps",-12,random(-2,2),random(-1,1),random(-1,1),random(-1,1),random(-3,3));
+					A_SpawnItemEx ("DecorativeZaps",-12,random(-2,2),random(-1,1),random(-1,1),random(-1,1),random(-3,3));
+					A_SpawnItemEx ("DecorativeZaps",-12,random(-2,2),random(-1,1),random(-1,1),random(-1,1),random(-3,3));
+					A_StartSound("ZappitySwings",2,CHANF_OVERLAP,1,ATTN_STATIC,1);}
+					//A_GiveInventory("Mana1W",1,AAPTR_TARGET);}
+		FHFX STUVW 4
+		Stop
+	Melee:
+		TNT1 A 0
+		TNT1 A 0 {	A_SpawnItemEx ("DecorativeZaps",-12,random(-2,2),random(-1,1),random(-1,1),random(-1,1),random(-3,3));
+					A_SpawnItemEx ("DecorativeZaps",-12,random(-2,2),random(-1,1),random(-1,1),random(-1,1),random(-3,3));
+					A_SpawnItemEx ("DecorativeZaps",-12,random(-2,2),random(-1,1),random(-1,1),random(-1,1),random(-3,3));
+					A_TakeInventory("Mana1W", 1, TIF_NOTAKEINFINITE,AAPTR_TARGET);}
+		TNT1 A 0 A_GiveInventory("Haemorrage",1,AAPTR_TRACER)
+		TNT1 A 0 { if (CountInv("TKCounter",AAPTR_TRACER) == 0)
+					{A_SpawnItemEx("BleedControllerLesser",0,0,0,0,0,0,0,SXF_TRANSFERPOINTERS|SXF_ORIGINATOR|SXF_SETMASTER);}
+				 }
+		TNT1 A 2 A_ChangeVelocity(-5,0,2,CVF_RELATIVE|CVF_REPLACE,AAPTR_TRACER)
+		Stop
+	}
+}
+
+ACTOR AxePuffWalpLeft : AxePuffWalp //purely exists for decal distinction lol. AxeSlashDecalRight
+{
+Decal "AxeSlashDecalLeft"
+}
+
+ACTOR AxePuffWalpRight : AxePuffWalp //purely exists for decal distinction lol. 
+{
+Decal "AxePuffWalpRightDown"
+}
+
+ACTOR AxeShockPuffLeft : AxeShockPuff //purely exists for decal distinction lol. AxeSlashDecalRight
+{
+Decal "AxeSlashDecalLeft"
+}
+
+ACTOR AxeShockPuffRight : AxeShockPuff //purely exists for decal distinction lol. 
+{
+Decal "AxeSlashDecalRight"
+}
+
+ACTOR NewAxePuffGlow : AxePuffGlow
+{
+	SeeSound "AxeHit"
+	ActiveSound "AxeSwing"
+	AttackSound "AxeWall"
+	Damagetype Electric 
+	States
+	{
+	Spawn:
+		AXHT RSTUVWX 4 Bright
+		Stop
+	}
+}
+
+ACTOR AxeBladeSlash : FastProjectile //JT- Vorpal Slash- Rips and Tears, Free of Charge!
+{
+	Radius 20//30
+	Height 12
+	Speed 60//20 - Tripled in 0.8
+	Damage 8 //Reduced by 15% in 0.8 due to higher range.
+	XScale 1.8
+	Damagetype "Physical"
+	Species "PlayerAlly"
+	Projectile
+	Renderstyle Add
+	MissileType "SlashTrail" //0.8, improved Slash Effect derived from FastProjectile
+	MissileHeight 8
+	Deathsound "VorpalSlash"
+	Mass 10
+	Alpha 0.55
+	Args 3
+	Reactiontime 3 //used to be 5, but technically longer now due to speed
+	+RIPPER
+	+BOUNCEONUNRIPPABLES
+	+BUDDHA 
+	+FIXMAPTHINGPOS
+	+NODAMAGETHRUST
+	+EXTREMEDEATH
+	+MTHRUSPECIES 
+	+FORCERADIUSDMG
+	States
+	{
+	Spawn:
+		SLAX A 0 Bright Nodelay A_GiveInventory("MaceChargeCheck2",1,AAPTR_TARGET)
+		SLAX A 0 Bright A_Explode(8,60,XF_THRUSTZ,true,36)
+		SLAX A 1 Bright A_CountdownArg(0,"Death")
+		Loop
+	Death:
+		SLAX A 1 Bright A_Fadeout(0.33) 
+		SLAX A 0 Bright A_Scream
+		Loop
+	Crash:
+		SLAX A 0 Bright //A_GiveInventory("MaceChargeCheck2",1,AAPTR_TARGET)
+		Stop
+	}
+}
+
+ACTOR AxeSlashSuper : AxeBladeSlash //The upgraded version
+{
+	Radius 30
+	Height 24
+	Reactiontime 99
+	MissileType "SlashTrailPurple" 
+	XScale 2.0
+	YScale 1.2
+	Speed 90
+	States
+	{
+	Spawn:
+		SLAX X 0 Bright Nodelay A_GiveInventory("MaceChargeCheck2",1,AAPTR_TARGET)
+		SLAX X 0 Bright A_Explode(10,60,XF_THRUSTZ,true,36)
+		SLAX X 1 Bright A_CountdownArg(0,"Death")
+		Loop
+	Death:
+		SLAX X 1 Bright A_Fadeout(0.33) 
+		SLAX X 0 Bright A_Scream
+		Loop
+	Crash:
+		SLAX X 0 Bright 
+		Stop
+	}
+}
+
+ACTOR AxeBladeSlashNoClip : AxeBladeSlash //what it says on the tin
+{
+	+NOCLIP
+	+PAINLESS
+	States
+	{
+	Spawn:
+		SLAX A 0 Bright 
+		SLAX A 0 Bright A_Explode(95,60,XF_THRUSTZ,true,36)//explodes much harder as its not ripping
+		SLAX A 1 Bright A_CountdownArg(0,"Death")
+		Loop
+	Death:
+		SLAX A 1 Bright A_Fadeout(0.33) 
+		Loop
+	}
+}
+
+ACTOR AxeSlashSuperNoClip : AxeBladeSlashNoClip //The upgraded version
+{
+	Radius 30
+	Height 24
+	Damage 5 //halved because it now lasts ages
+	Reactiontime 99
+	XScale 2.0
+	YScale 1.2
+	Speed 90
+	MissileType "SlashTrailPurple" 
+	States
+	{
+	Spawn:
+		SLAX X 0 Bright 
+		SLAX X 0 Bright A_Explode(95,60,XF_THRUSTZ,true,36)
+		SLAX X 1 Bright A_CountdownArg(0,"Death")
+		Loop
+	Death:
+		SLAX X 1 Bright A_Fadeout(0.33) 
+		Loop
+	}
+}
+
+ACTOR AxeSlashVertical : AxeBladeSlash //mutated primary, defaults to noclip since its tall.
+{
+	Radius 12
+	Height 38
+	MissileType "SlashTrailVertical"
+	XScale 1.8
+	YScale 1.2
+	Damage 9 //it says its the same but this feels better to the player
+	+NOCLIP
+	+PAINLESS	
+	States
+	{
+	Spawn:
+		SLAX D 0 Bright 
+		SLAX D 0 Bright A_Explode(90,38,XF_THRUSTZ,true,25)//smaller radius, as this cheaper.
+		SLAX D 1 Bright A_CountdownArg(0,"Death")
+		Loop
+	Death:
+		SLAX D 1 Bright A_Fadeout(0.33) 
+		Loop
+	}
+}
+
+ACTOR SlashTrail
+{
+	Radius 3
+	Height 3
+	XScale 2.1
+	Speed 10
+	Projectile
+	Species "PlayerAlly"
+	+MTHRUSPECIES 
+	+NODAMAGETHRUST
+	+DONTBLAST
+	+NOINTERACTION
+	Renderstyle Add
+	Alpha 0.3 //0.6
+	States
+	{
+	Spawn:
+		SLAX A 2 Nodelay 
+		SLAX A 1 Bright A_FadeOut(0.1)
+		Goto Spawn+1
+	}
+}
+
+ACTOR SlashTrailVertical : SlashTrail
+{
+	XScale 1.8
+	YScale 1.2
+	States
+	{
+	Spawn:
+		SLAX D 2 Nodelay 
+		SLAX D 1 Bright A_FadeOut(0.1)
+		Goto Spawn+1
+	}
+}
+
+ACTOR SlashTrailPurple : SlashTrail //for powered version
+{
+	States
+	{
+	Spawn:
+		SLAX X 2 Nodelay 
+		SLAX X 1 Bright A_FadeOut(0.05)
+		Goto Spawn+1
+	}
+}
+
+ACTOR UpgradeAxeSlash1 : AxeBladeSlash
+{
+	+NOCLIP 
+	YScale 0.7
+	XScale 2.4
+	Speed 33
+	Alpha 0.3
+	Reactiontime 3
+	MissileType "AxeUpgSlashTrail1"
+	Deathsound "None"
+	States
+	{
+	Spawn:
+		SLAX D 0 Bright Nodelay //A_SetRoll(6)
+		Goto Spawn2
+	Spawn2:
+		SLAX D 0 Bright A_Explode(3,52,XF_THRUSTZ,true,30)
+		SLAX D 1 Bright {A_Countdown;}
+		Loop
+	Death:
+		SLAX D 1 Bright A_Fadeout(0.1)
+		Stop
+	}
+}
+
+ACTOR AxeUpgSlashTrail1 : SlashTrail
+{
+	+NOINTERACTION
+	YScale 0.7
+	XScale 2.4
+	Speed 30
+	Alpha 0.3
+	States
+	{
+	Spawn:
+		SLAX D 0 Bright A_Fadeout(0.1)
+		SLAX D 1 Bright 
+		Loop
+	}
+}
+
+ACTOR UpgradeAxeSlash2 : UpgradeAxeSlash1
+{
+	+NOCLIP 
+	MissileType "AxeUpgSlashTrail2"
+	XScale 1.4
+	YScale 0.9
+	Deathsound "None"
+	States
+	{
+	Spawn:
+		SLAX A 0 Bright A_Explode(3,52,XF_THRUSTZ,true,30)
+		SLAX A 1 Bright {A_Countdown;}
+		Loop
+	Death:
+		SLAX A 1 Bright A_Fadeout(0.1)
+		Stop
+	}
+}
+
+ACTOR AxeUpgSlashTrail2 : SlashTrail
+{
+	XScale 1.4
+	YScale 0.9
+	Alpha 0.3
+	+NOINTERACTION
+	States
+	{
+	Spawn:
+		SLAX A 0 Bright A_Fadeout(0.1)
+		SLAX A 1 Bright 
+		Loop
+	}
+}
+
+ACTOR UpgradeAxeSlash3 : AxeBladeSlash
+{
+	+NOCLIP 
+	+SPRITEFLIP
+	YScale 0.9
+	XScale 2.7
+	Speed 33
+	Alpha 0.3
+	Reactiontime 3
+	MissileType "AxeUpgSlashTrail3"
+	Deathsound "None"
+	States
+	{
+	Spawn:
+		SLAX D 0 Bright Nodelay //A_SetRoll(6)
+		Goto Spawn2
+	Spawn2:
+		SLAX D 0 Bright A_Explode(3,52,XF_THRUSTZ,true,30)
+		SLAX D 1 Bright {A_Countdown;}
+		Loop
+	Death:
+		SLAX D 1 Bright A_Fadeout(0.1)
+		Stop
+	}
+}
+
+ACTOR AxeUpgSlashTrail3 : SlashTrail
+{
+	+NOINTERACTION
+	+SPRITEFLIP
+	YScale 0.9
+	XScale 2.7
+	Speed 30
+	Alpha 0.3
+	States
+	{
+	Spawn:
+		SLAX D 0 Bright A_Fadeout(0.1)
+		SLAX D 1 Bright 
+		Loop
+	}
+}
+
+ACTOR AxeThrow	//THROWS THE AXE, This is basically nearly all 4page's work with a few tweaks.
+{
+	Speed 50
+	Radius 8
+	Height 3
+	Damage 5
+	DamageType Electric
+	Projectile
+	+SEEKERMISSILE
+	+HITMASTER
+	+SKYEXPLODE
+	+DONTREFLECT
+	+FORCERADIUSDMG
+	+BOUNCEONUNRIPPABLES
+	WallBounceSound "AxeWall"
+	States
+	{
+		Spawn:
+			TNT1 A 0
+			THAX ABCDEFGH 2 Bright
+			{	
+				A_GiveInventory("MaceCharge", 1, AAPTR_TARGET);	//This is to tell the player that they don't have the axe right now
+				A_GiveInventory("Mana2", 1);	//This is a counter	for how long to maintain its current speed
+				A_GiveInventory("Walpurgisnacht", 1);	//This is a different counter for playing sound
+				A_SpawnItemEx ("DecorativeZapsShutUp",random (-20,20),random(-8,8),random(-8,8),0,0,0,0,SXF_SETMASTER | SXF_ORIGINATOR);
+				A_SpawnItemEx ("BlueSparklies",random (-20,20),random(-8,8),random(-8,8),0,0,0,0,SXF_SETMASTER | SXF_ORIGINATOR);
+				if(CountInv("Mana2") >= 4)	//When the counter reaches 4 
+				{
+					A_ScaleVelocity(.85);	//Slows the projectile down
+					if((sqrt((sqrt((velx * velx)+(vely * vely)) * sqrt((velx * velx)+(vely * vely)))+(velz * velz))) < 4)
+					{	//When the total speed is only 4
+						return A_Jump(256, "TurnAround");
+					}
+				}
+				
+				if(CountInv("Walpurgisnacht") >= 4)	//When counter reaches 4
+				{
+					A_PlaySound("AxeSwing");	//Plays sounds
+					A_TakeInventory("Walpurgisnacht");	//Resets counter
+				}
+				Return state("");
+			}
+			Loop
+		XDeath:	//Hits an actor
+			THAX A 0 A_PlaySound("AxeMurder",7)
+			Goto TurnAround
+		Crash:	//Hits an actor
+			THAX A 0 A_PlaySound("AxeMurder",7)
+			Goto TurnAround
+		Death:	//Hits a wall
+			THAX A 1 Bright
+			{
+				A_PlaySound("AxeWall",7);
+				A_GiveInventory("Bowcharge",1);	//Adds to a counter to detect if it gets stuck on a wall
+			}
+			Goto TurnAround
+		TurnAround:
+			THAX A 2 Bright
+			{
+				A_GiveInventory("Mana1", (2 * random(35,60)));	//This is how much damage it's going to do
+				A_TakeInventory("Mana2");	//Resets the counter
+				A_FaceTarget(0,0);	//Faces target
+				A_ChangeFlag("RIPPER", TRUE);	//These lines reset the projectile back to its normal state if it dies due to collision
+				A_ChangeFlag("MISSILE", TRUE);
+				A_ChangeFlag("NOBLOCKMAP", TRUE);
+				A_ChangeFlag("ACTIVATEIMPACT", TRUE);
+				A_ChangeFlag("ACTIVATEPCROSS", TRUE);
+				A_ChangeVelocity(1,0,0,CVF_RELATIVE | CVF_REPLACE);	//This sets the projectile to be headed back to the direction it's now facing which should be the player
+				if(CountInv("Bowcharge") >= 5)	//This is if the axe gets stuck on a wall
+				{
+					A_GiveInventory("TKCounter", 1, AAPTR_TARGET);	//This tells the axe that it got caught on a wall and to perform the axe summon sprite set
+					Return A_Jump(256, "Finish");
+				}
+				
+				if(A_CheckFlag("ISMONSTER","Death",AAPTR_MASTER))
+				{	//If the thing that the axe hits is a monster then it deals damage and the electric effect
+					A_Explode(CountInv("Mana1"),40,0,0,40,0,0,"NewAxePuffGlow","Electric");
+					A_SpawnItemEx("NewAxePuffGlow");
+					A_SpawnItemEx ("DecorativeZaps",random (-20,20),random(-8,8),random(-8,8),0,0,0,0,SXF_SETMASTER | SXF_ORIGINATOR);
+				}
+				
+				else
+				{
+					A_TakeInventory("Mana1");	//This removes the variable of damage if no monster was hit
+				}
+				A_RearrangePointers(AAPTR_DEFAULT,AAPTR_DEFAULT,AAPTR_TARGET);	//This sets the player as their tracer
+				Return state ("");
+			}
+			Goto ReturnFlight
+		ReturnFlight:
+			THAX ABCDEFGH 2 Bright
+			{
+				A_ChangeFlag("RIPPER", TRUE);	//This sets the projectile as a ripper to go through enemies
+				A_ChangeFlag("MISSILE", TRUE);	//Again, these reset the projectile to its standard state
+				A_ChangeFlag("NOBLOCKMAP", TRUE);
+				A_ChangeFlag("ACTIVATEIMPACT", TRUE);
+				A_ChangeFlag("ACTIVATEPCROSS", TRUE);
+				A_SpawnItemEx ("DecorativeSparks",random (-20,20),random(-8,8),random(-8,8),0,0,0,0,SXF_SETMASTER | SXF_ORIGINATOR);
+				if((sqrt((sqrt((velx * velx)+(vely * vely)) * sqrt((velx * velx)+(vely * vely)))+(velz * velz))) <= 1)
+				{	//If the speed ever falls below 1 then it resets the speed to 1
+					A_ChangeVelocity(1,0,0,CVF_RELATIVE | CVF_REPLACE);
+				}
+				
+				if((sqrt((sqrt((velx * velx)+(vely * vely)) * sqrt((velx * velx)+(vely * vely)))+(velz * velz))) <= 40)
+				{	//While the speed is below 40, this speeds it up
+					A_ScaleVelocity(1.4);
+					A_SeekerMissile(90,90,SMF_PRECISE | SMF_CURSPEED);	//And this seeks the player
+				}
+				
+				else
+				{
+					A_SeekerMissile(90,90,SMF_PRECISE | SMF_CURSPEED);	//This seeks the player but does not speed up the projectile
+				}
+				
+				if(A_CheckProximity("Death","ACTOR",60,1,CPXF_ANCESTOR | CPXF_SETMASTER, AAPTR_DEFAULT))
+				{	//Checks if there is an actor nearby
+					if(A_CheckFlag("ISMONSTER","Death",AAPTR_MASTER))
+					{
+						//Checks if that actor is a monster.  If so plays a sound and deals damage in an area
+						A_PlaySound("AxeMurder",0);
+						A_Explode((30),60,0,0,60);
+					}
+				}
+				
+				if(A_CheckProximity("Death","PlayerPawn",70,1,CPXF_ANCESTOR,AAPTR_DEFAULT) && (sqrt((sqrt((velx * velx)+(vely * vely)) * sqrt((velx * velx)+(vely * vely)))+(velz * velz))) > 20)
+				{	//If it's close to the player and going fairly fast it slows it down.  This is to solve issues with the axe missing the player and swinging around in weird ways
+					A_FaceTracer;
+					A_ScaleVelocity(.7);
+				}
+				
+				if(A_CheckProximity("Death","PlayerPawn",40,1,CPXF_ANCESTOR,AAPTR_DEFAULT))
+				{	//If it's even closer to the player it ends
+					A_FaceTracer;
+					Return A_Jump(256, "Finish");
+				}
+				A_GiveInventory("Walpurgisnacht", 1);
+				//These play sound every 4 tics
+				if(CountInv("Walpurgisnacht") >= 4)
+				{
+					A_PlaySound("AxeSwing");
+					A_TakeInventory("Walpurgisnacht");
+				}
+				
+				if(CountInv("Mana2") >= 30)
+				{	//This ends the projectile after 30 tics
+					Return A_Jump(256, "Finish");
+				}
+				A_GiveInventory("Mana2", 1);
+				Return state ("");
+			}
+			Loop
+		Finish:
+			THAX H 0 A_TakeInventory("MaceCharge", 100, 0, AAPTR_TARGET)	//this indicates that the axe has returned.
+			THAX H 0 {				
+				if(CountInv("Mana1") > 0)
+				{	//JT- If it hit someting, heals the player
+					A_DamageTarget(((-1) * (CountInv("Mana1")*0.15)));
+				}
+				else
+				{
+					A_GiveInventory("Mana1W",7,AAPTR_TARGET); //JT- else get a partial mana refund if it misses entirely
+				}
+				}
+			Stop
+	}
+}
+
+ACTOR AxeThrowPlus : AxeThrow 
+{
+	Speed 75
+	Damage 6
+	States
+	{
+		Spawn:
+			TNT1 A 0 Nodelay A_SeekerMissile(15,15,SMF_PRECISE | SMF_LOOK)
+			THAX ABCDEFGH 2 Bright
+			{	
+				A_GiveInventory("MaceCharge", 1, AAPTR_TARGET);	//This is to tell the player that they don't have the axe right now
+				A_GiveInventory("Mana2", 1);	//This is a counter	for how long to maintain its current speed
+				A_GiveInventory("Walpurgisnacht", 1);	//This is a different counter for playing sound
+				A_SpawnItemEx ("BlueSparklies",random (-20,20),random(-8,8),random(-8,8),0,0,0,0,SXF_SETMASTER | SXF_ORIGINATOR);
+				A_SpawnItemEx ("DecorativeZaps",random (-20,20),random(-8,8),random(-8,8),0,0,0,0,SXF_SETMASTER | SXF_ORIGINATOR);
+				A_SeekerMissile(1,1,SMF_PRECISE);
+				if(CountInv("Mana2") >= 4)	//When the counter reaches 4 
+				{
+					A_ScaleVelocity(.85);	//Slows the projectile down
+					if((sqrt((sqrt((velx * velx)+(vely * vely)) * sqrt((velx * velx)+(vely * vely)))+(velz * velz))) < 4)
+					{	//When the total speed is only 4
+						return A_Jump(256, "TurnAround");
+					}
+				}
+				
+				if(CountInv("Walpurgisnacht") >= 4)	//When counter reaches 4
+				{
+					A_PlaySound("AxeSwing");	//Plays sounds
+					A_TakeInventory("Walpurgisnacht");	//Resets counter
+				}
+				Return state("");
+			}
+			Loop
+		XDeath:	//Hits an actor
+			THAX A 0 
+			{
+				A_PlaySound("AxeMurder",7);
+				A_SpawnItemEx ("FakeLightningForceAxe",0,0,0,0,0,0,0,SXF_SETMASTER | SXF_ORIGINATOR);
+			}
+			Goto TurnAround
+		Crash:	//Hits an actor
+			THAX A 0 
+			{
+				A_PlaySound("AxeMurder",7);
+				A_SpawnItemEx ("FakeLightningForceAxe",0,0,0,0,0,0,0,SXF_SETMASTER | SXF_ORIGINATOR);
+			}
+			Goto TurnAround
+		Death:	//Hits a wall
+			THAX A 1 Bright
+			{
+				A_PlaySound("AxeWall",7);
+				A_SpawnItemEx ("FakeLightningForceAxe",0,0,0,0,0,0,0,SXF_SETMASTER | SXF_ORIGINATOR);
+				A_GiveInventory("Bowcharge",1);	//Adds to a counter to detect if it gets stuck on a wall
+			}
+			Goto TurnAround
+	}
+}
+
+Actor FakeLightningForceAxe 
+{
+	Radius 15
+	Height 15
+	Damage (1) 
+	Alpha 0.8
+	Scale 0.55
+	Renderstyle Add
+	Speed 0
+	Projectile
+	Species "PlayerAlly"
+	DamageType "Electric"
+	DeathSound "Thunderbolt"
+	+ALLOWTHRUFLAGS
+	+FRIENDLY
+	+DONTHARMSPECIES
+	+NOINTERACTION
+	+THRUACTORS
+	+FORCERADIUSDMG
+	+NOBLOCKMAP
+	+THRUSPECIES
+	States
+	{
+		Spawn:
+			TNT1 A 0 
+			TNT1 A 1
+		Death:
+			ZA99 A 0 {A_Explode(random(50,70),96,XF_NOTMISSILE,TRUE,96); A_Quake(5, 35,0,345,"None");}
+			ZA99 ABCDEFG 3 Bright A_SpawnItemEx ("DecorativeZapsShutUp",random(-20,20),random(1,8),20,0,0,0,3,SXF_SETMASTER | SXF_ORIGINATOR)
+			Stop
+	}
+}
+
+Actor FakeLightningForceAxeSmol : FakeLightningForceAxe
+{
+	Scale 0.4
+	States
+	{
+		Spawn:
+			TNT1 A 0 
+			TNT1 A 1
+		Death:
+			ZA99 A 0 {A_Explode(random(40,60),96,XF_NOTMISSILE,TRUE,96); A_Quake(4, 35,0,345,"None");}
+			ZA99 ABCDEFG 3 Bright A_SpawnItemEx ("DecorativeZapsShutUp",random(-20,20),random(1,8),20,0,0,0,3,SXF_SETMASTER | SXF_ORIGINATOR)
+			Stop
+	}
+}
+
+ACTOR AxeSpectralToss
+{
+	Speed 45
+	Radius 8
+	Height 4
+	Damage 2
+	DamageType Electric
+	Projectile
+	Damage (6 * random (2, 4))
+	Renderstyle Translucent
+	Translation Ice
+	Alpha 0.8
+	Projectile
+	+NOGRAVITY
+	+FORCERADIUSDMG
+	+SEEKERMISSILE
+	+HITMASTER
+	+SKYEXPLODE
+	+DONTREFLECT
+	+FORCERADIUSDMG
+	WallBounceSound "AxeWall"
+	DeathSound "BallBoom"
+	States
+	{
+	Spawn:
+		THAX A 0 Bright			
+		THAX ABCDEFGH 2 Bright {
+				A_SpawnItemEx ("DecorativeZapsShutUp",random (-20,20),random(-8,8),random(-8,8),0,0,0,0,SXF_SETMASTER | SXF_ORIGINATOR);
+				A_SpawnItemEx ("BlueSparklies",random (-20,20),random(-8,8),random(-8,8),0,0,0,0,SXF_SETMASTER | SXF_ORIGINATOR);
+				if(CountInv("Walpurgisnacht") >= 4)	//When counter reaches 4
+				{
+					A_PlaySound("AxeSwing");	//Plays sounds
+					A_TakeInventory("Walpurgisnacht");	//Resets counter
+				}
+				A_GiveInventory("Walpurgisnacht",1); 
+				}	
+		Loop
+	Death:
+		SBEX A 0 
+		{
+			A_ChangeFlag("NOGRAVITY", TRUE);
+			A_Explode ((random(30,70)), 120, 0, 0, 90,0,0,"None","Electric");
+			A_SpawnItemEx ("FakeLightningForceAxeSmol",0,0,0,0,0,0,0,SXF_SETMASTER | SXF_ORIGINATOR);
+			A_GiveInventory("Mana1",1);
+			A_SetTranslation("None");
+		}
+		SBEX ABCDEFGHIJ 2 Bright A_SpawnItemEx ("DecorativeZaps",random (-20,20),random(-8,8),random(-8,8),0,0,0,0,SXF_SETMASTER | SXF_ORIGINATOR)
+		Stop
+	}
+}

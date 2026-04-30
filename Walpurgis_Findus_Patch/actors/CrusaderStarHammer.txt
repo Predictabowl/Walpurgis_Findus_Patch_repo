@@ -1,0 +1,2303 @@
+ACTOR StarHammer : CrusaderWeapon //CWeapWraithverge
+{
+	//"The Astral Hammer of Saint Aria Alcyone". This replaces Crux Calicus.
+	//Aria is a recurring character of mine, a tomboyish, short, silver haired gal.
+	//She actually normally uses a Spear, but sometimes uses a large Hammer too,
+	//due her extraordinary super-strength. She was created for a long running D&D
+	//campaign I GM'ed in 2009, as an NPC Paladin of the Star Traveller God, Al Kinah. 
+	//
+	//"Al Kinah" is lit. "The Shining One" in the language of the Hal-Castemourites.
+	//Their culture is a mix of Mayan and Arabian influences, and funnily enough
+	//a lot of the inspiration for Parias' god and powers comes from Al Kinah!
+	Inventory.RestrictedTo CrusaderPlayer
+	Weapon.SelectionOrder 1
+	Weapon.SlotNumber 4
+	Weapon.SlotPriority 0
+	Health 3
+	+WEAPON.PRIMARY_USES_BOTH
+	+INVENTORY.NOATTENPICKUPSOUND
+	+UNDROPPABLE
+	Weapon.AmmoGive1 25
+	Weapon.AmmoGive2 25
+	Weapon.KickBack 150
+	Weapon.AmmoType1 "Mana1W"
+	Weapon.AmmoType2 "Mana2W"
+	Weapon.AmmoUse1 3
+	Weapon.AmmoUse2 3
+	Inventory.PickupMessage "The \c[blue]Astral Hammer\c[white] of \c[gold]Saint \c[green]Aria Alcyone\c[white]! \c[white]Praise \c[gold]The Shining One\c[white]! [\c[yellow]4\c[white]]"
+	Tag "Aria Alcyone's Hammer"
+	Inventory.PickupSound "WeaponBuild"
+	Obituary "%o got to to see the inevitable heat death of the universe."
+	//Decal "HornyRainMaker"
+	States
+	{
+	Spawn:
+		TNT1 A -1
+		Stop
+	Select:
+		TNT1 A 1
+		TNT1 A 0 A_GiveInventory("CruxInHand",1)
+		TNT1 A 0 { A_Overlay(23,"ShieldRaise");
+			A_OverlayFlags(23,PSPF_POWDOUBLE,true);
+			A_OverlayFlags(23,PSPF_ADDWEAPON,false);}
+		Goto Select2
+	Deselect:
+		TNT1 A 0 A_TakeInventory("CruxInHand")
+		Goto Deselect2
+	Select2:
+		ST4H A 1 A_Raise
+		Loop
+	Deselect2:
+		ST4H A 1 A_Lower
+		Loop
+	ShieldRaise: //The shield is an overlay called just before the A_Raise, playing simultaneously
+		SH13 L 2 Offset(-30,60)
+		SH13 L 1 Offset(-26,56)
+		SH13 L 1 Offset(-22,52)
+		SH13 L 1 Offset(-18,48)
+		SH13 L 1 Offset(-14,44)
+		SH13 L 1 Offset(-10,40)
+		SH13 L 1 Offset(-5,36)
+		SH13 L 1 Offset(0,32) A_OverlayOffset(23,0,32,0)
+		Goto ShieldSteady
+	ShieldSteady: //It sits in this state unless MaceChargeCheck is given or MaceInHand dissapears.
+		SH13 L 1 A_JumpIfInventory("MaceChargeCheck1", 1, "ShieldSmite")
+		SH13 L 0 A_JumpIfInventory("CruxInHand", 1, "ShieldSteady") 
+		Goto ShieldDrop
+	ShieldSmite:
+		SH13 L 1 {
+				A_OverlayOffset(23,10,-10,WOF_ADD); 
+				A_StartSound("SwingItNow",0,CHANF_OVERLAP|CHANF_LOCAL,0.6,ATTN_STATIC,0.8); 
+				A_ChangeFlag("REFLECTIVE", TRUE); 
+				A_ChangeFlag("SHIELDREFLECT", TRUE); 
+				A_ChangeFlag("INVULNERABLE", TRUE); //I didn't want to use this; but the chance of getting big chunks of damage during block is really high otherwise.
+				if(CountInv("MaceUpgrade") == 3 || CountInv("MaceUpgrade") == 4 || CountInv("MaceUpgrade") == 8 || CountInv("MaceUpgrade") == 9)
+				{
+				A_ChangeFlag("MIRRORREFLECT", TRUE); //Upgrade improves reflect behaviour
+				A_GiveInventory("MaceChargeCheck2",1);
+				}		
+				 }
+		SH13 L 2 {A_OverlayOffset(23,7,-10,WOF_ADD); A_WeaponOffset(10,0,WOF_ADD);}
+		SH13 L 2 {A_OverlayOffset(23,7,-20,WOF_ADD); A_WeaponOffset(10,0,WOF_ADD);}
+		SH13 L 2 {
+				A_OverlayOffset(23,0,-40,WOF_ADD); 
+				if(CountInv("MaceChargeCheck2") == 1)
+				{
+				A_CustomPunch (random(16,28), 1, 0, "ShieldPuffPlus", 144, 0);
+				A_TakeInventory("MaceChargeCheck2");
+				}	
+				else
+				{
+				A_CustomPunch (random(12,24), 1, 0, "ShieldPuff", 144, 0);
+				}
+				}
+		SH13 L 2 {A_OverlayOffset(23,-7,50,WOF_ADD); A_WeaponOffset(-10,0,WOF_ADD); } //A_Blast(BF_NOIMPACTDAMAGE, 3000, 200, 25.0,"MacePuffGlow","MaceHoly")
+		SH13 L 2 {A_OverlayOffset(23,-17,30,WOF_ADD); A_WeaponOffset(-10,0,WOF_ADD); }
+		SH13 L 1 {A_ChangeFlag("REFLECTIVE", FALSE); A_ChangeFlag("SHIELDREFLECT", FALSE); A_ChangeFlag("INVULNERABLE", FALSE); A_TakeInventory("MaceChargeCheck1");}
+		Goto ShieldSteady
+	ShieldDrop:
+		SH13 L 1 Offset(0,32)
+		SH13 L 1 Offset(-5,36)
+		SH13 L 1 Offset(-10,40)
+		SH13 L 1 Offset(-14,44)
+		SH13 L 1 Offset(-18,48)
+		SH13 L 1 Offset(-22,52)
+		SH13 L 1 Offset(-26,56)
+		SH13 L 2 Offset(-30,60)
+		Stop
+	Ready:
+		ST4H ABCDEFGHIJKLMNOPQRSTU 3 A_WeaponReady(WRF_ALLOWRELOAD)
+		Loop
+	Fire:
+		CRUX A 0 A_JumpIfInventory("PowerAmbitMana", 1, "FlameSwings")
+		CRUX A 0 A_JumpIfInventory("Mana1W", 3, "Check")
+		CRUX A 0 A_CheckReload
+		Goto Ready
+	Check:
+		CRUX A 0 A_JumpIfInventory("Mana2W", 3, "FlameSwings")
+		CRUX A 0 A_CheckReload
+		Goto Ready
+	HammerSwings: //Actually these aren't used in the end; felt too weedy for an Ult's Melee.
+		CRUX A 0 {if(CountInv("CruxUpgrade") == 1 || CountInv("CruxUpgrade") == 4 || CountInv("CruxUpgrade") == 6 || CountInv("CruxUpgrade") == 9)
+				{	A_GiveInventory("MaceChargeCheck2",1);}		}
+		CRUX A 0 A_JumpIfInventory("MaceChargeCheck2",1,"FlameSwings")
+		CRUX A 0 A_JumpIfInventory("PunchRight",1,"HammerSwingsSkipper")
+		ST5H AB 2 
+		ST5H C 1
+	HammerSwingsSkipper:
+		TNT1 A 5 A_OverlayOffset(23,-20,5,WOF_ADD)
+		ST5H D 3 {A_StartSound("SwingItNow",0,CHANF_OVERLAP|CHANF_LOCAL,0.6,ATTN_STATIC,0.85); A_OverlayOffset(23,-20,5,WOF_ADD); A_AlertMonsters;}
+		ST5H D 1 {A_OverlayOffset(23,-20,5,WOF_ADD);
+				if(random(0,4) >= 3 && (GetCVar("walp_silentprotagonists")==0))
+				{A_StartSound("CrusExerts",CHAN_AUTO,CHANF_OVERLAP,0.9,ATTN_NONE,frandom(0.97,1.04));}}
+		ST5H E 3 A_OverlayOffset(23,-20,5,WOF_ADD)
+		ST5H F 2 {
+				A_CustomPunch (random(82,154), 1, 0, "CrusHammerPuff", 164, 0);
+				A_FireProjectile("ForceBlastHammer",0,0,0,0,FPF_NOAUTOAIM);
+				A_TakeInventory("Mana1W", 1,TIF_NOTAKEINFINITE);
+				A_TakeInventory("Mana2W", 1,TIF_NOTAKEINFINITE);
+				}
+		ST5H GHI 2
+		TNT1 A 2 A_Refire("HammerSwingsSideCheck")
+		Goto EndSwings
+	EndSwings:
+		TNT1 A 5 A_CheckReload
+		ST5H CB 2 A_OverlayOffset(23,40,-10,WOF_ADD)
+		ST5H A 2 
+		Goto Ready
+	EndSwingsSide:
+		TNT1 A 0 A_TakeInventory("PunchRight")
+		TNT1 A 5 A_CheckReload
+		ST5H CBA 2 
+		Goto Ready		
+	HammerSwingsSideCheck:
+		CRUX A 0 A_JumpIfInventory("PowerAmbitMana", 1, "HammerSwingsSide")
+		CRUX A 0 A_JumpIfInventory("Mana1W", 1, "CheckTwo")
+		CRUX A 0 A_CheckReload
+		Goto Ready
+	CheckTwo:
+		CRUX A 0 A_JumpIfInventory("Mana2W", 1, "HammerSwingsSide")
+		CRUX A 0 A_CheckReload
+		Goto Ready
+	HammerSwingsSide:
+		TNT1 A 4 
+		ST6H A 3 {A_StartSound("SwingItNow",0,CHANF_OVERLAP|CHANF_LOCAL,0.6,ATTN_STATIC,0.85); A_AlertMonsters;}
+		ST6H B 3 {
+				if(random(0,4) >= 3 && (GetCVar("walp_silentprotagonists")==0))
+				{A_StartSound("CrusExerts",CHAN_AUTO,CHANF_OVERLAP,0.9,ATTN_NONE,frandom(0.97,1.04));}}
+		ST6H C 2 
+		ST6H D 2 {
+				A_CustomPunch (random(82,154), 1, 0, "CrusHammerPuff", 164, 0);
+				A_GiveInventory("PunchRight",1);
+				A_TakeInventory("Mana1W", 1,TIF_NOTAKEINFINITE);
+				A_TakeInventory("Mana2W", 1,TIF_NOTAKEINFINITE);
+				}
+		ST6H EF 2 A_OverlayOffset(23,40,-10,WOF_ADD)
+		TNT1 A 6 A_Refire("Fire")
+		TNT1 A 2
+		Goto EndSwingsSide		
+	FlameSwings: 
+		CRUX A 0 A_JumpIfTargetInLOS("FireShieldGo",120,JLOSF_COMBATANTONLY,95,0)
+		CRUX A 0 A_JumpIfInventory("PunchRight",1,"HammerFlameSkipper")
+		CRUX A 0 {if(CountInv("CruxUpgrade") == 1 || CountInv("CruxUpgrade") == 4 || CountInv("CruxUpgrade") == 6 || CountInv("CruxUpgrade") == 9)
+				{	A_GiveInventory("MaceChargeCheck2",1);}		}
+		ST7H AB 2 
+		ST7H C 1
+	HammerFlameSkipper:
+		TNT1 A 5 A_OverlayOffset(23,-20,5,WOF_ADD)
+		ST7H D 3 {A_StartSound("SwingItNow",0,CHANF_OVERLAP|CHANF_LOCAL,0.7,ATTN_STATIC,0.7); A_OverlayOffset(23,-20,5,WOF_ADD); A_AlertMonsters;}
+		ST7H D 1 {	A_OverlayOffset(23,-20,5,WOF_ADD);
+					A_StartSound("FireBlue",0,CHANF_OVERLAP,1,ATTN_STATIC,1);
+				if(random(0,4) >= 3 && (GetCVar("walp_silentprotagonists")==0))
+				{A_StartSound("CrusExerts",CHAN_AUTO,CHANF_OVERLAP,0.9,ATTN_NONE,frandom(0.97,1.04));}}
+		ST7H E 3 {A_OverlayOffset(23,-20,5,WOF_ADD);}
+		ST7H F 2 {
+				A_CustomPunch (random(82,154), 1, 0, "CrusHammerPuff", 164, 0);
+				A_QuakeEx(0,0,8,20,0,1,"-",QF_SCALEDOWN);
+				if(CountInv("CruxUpgrade") == 1 || CountInv("CruxUpgrade") == 4 || CountInv("CruxUpgrade") == 6 || CountInv("CruxUpgrade") == 9)
+				{A_SpawnItemEx("FlamePillarWallBlue",60,-20,0,3,0,0.2,0,SXF_SETTARGET|SXF_SETMASTER);
+				 A_SpawnItemEx("FlamePillarWallBlue",60,20,0,3,0,0.2,0,SXF_SETTARGET|SXF_SETMASTER);
+				 A_SpawnItemEx("FlamePillarWallBlue",60,-35,0,3,0,0.2,0,SXF_SETTARGET|SXF_SETMASTER);
+				 A_SpawnItemEx("FlamePillarWallBlue",60,35,0,3,0,0.2,0,SXF_SETTARGET|SXF_SETMASTER);
+				 A_FireProjectile("ForceBlastHammer",0,0,0,0,FPF_NOAUTOAIM);}
+				else
+				{A_SpawnItemEx("FlamePillarWallBlue",60,-20,0,3,0,0.2,0,SXF_SETTARGET|SXF_SETMASTER);
+				 A_SpawnItemEx("FlamePillarWallBlue",60,20,0,3,0,0.2,0,SXF_SETTARGET|SXF_SETMASTER);}
+				A_TakeInventory("Mana1W", 3,TIF_NOTAKEINFINITE);
+				A_TakeInventory("Mana2W", 3,TIF_NOTAKEINFINITE);
+				}
+		ST7H GH 2
+		ST7H I 2 A_StartSound("HammerAndAnvil",0,CHANF_OVERLAP|CHANF_LOCAL,0.7,ATTN_STATIC,0.7)
+		ST7H J 2
+		TNT1 A 2 A_Refire("HammerSwingsFSideCheck")
+		Goto EndSwings
+	HammerSwingsFSideCheck:
+		CRUX A 0 A_JumpIfInventory("PowerAmbitMana", 1, "HammerSwingsSideFlame")
+		CRUX A 0 A_JumpIfInventory("Mana1W", 1, "CheckThree")
+		CRUX A 0 A_CheckReload
+		Goto Ready
+	CheckThree:
+		CRUX A 0 A_JumpIfInventory("Mana2W", 1, "HammerSwingsSideFlame")
+		CRUX A 0 A_CheckReload
+		Goto Ready
+	HammerSwingsSideFlame:
+		TNT1 A 4 
+		ST7H S 3 {A_StartSound("SwingItNow",0,CHANF_OVERLAP|CHANF_LOCAL,0.7,ATTN_STATIC,0.7); A_AlertMonsters;}
+		ST7H T 3 {
+				A_StartSound("FireBlue",0,CHANF_OVERLAP,1,ATTN_STATIC,1);
+				if(random(0,4) >= 3 && (GetCVar("walp_silentprotagonists")==0))
+				{A_StartSound("CrusExerts",CHAN_AUTO,CHANF_OVERLAP,0.9,ATTN_NONE,frandom(0.97,1.04));}}
+		ST7H U 2 
+		ST7H V 2 {
+				A_CustomPunch (random(82,154), 1, 0, "CrusHammerPuff", 164, 0);
+				A_GiveInventory("PunchRight",1);
+				A_QuakeEx(5,0,0,20,0,1,"-",QF_SCALEDOWN);
+				if(CountInv("CruxUpgrade") == 1 || CountInv("CruxUpgrade") == 4 || CountInv("CruxUpgrade") == 6 || CountInv("CruxUpgrade") == 9)
+				{A_SpawnItemEx("FlamePillarWallBlue",60,-20,0,3,0,0.2,0,SXF_SETTARGET|SXF_SETMASTER);
+				 A_SpawnItemEx("FlamePillarWallBlue",60,20,0,3,0,0.2,0,SXF_SETTARGET|SXF_SETMASTER);
+				 A_SpawnItemEx("FlamePillarWallBlue",60,-35,0,3,0,0.2,0,SXF_SETTARGET|SXF_SETMASTER);
+				 A_SpawnItemEx("FlamePillarWallBlue",60,35,0,3,0,0.2,0,SXF_SETTARGET|SXF_SETMASTER);
+				 A_FireProjectile("ForceBlastHammer",0,0,0,0,FPF_NOAUTOAIM);}
+				else
+				{A_SpawnItemEx("FlamePillarWallBlue",60,-20,0,3,0,0.2,0,SXF_SETTARGET|SXF_SETMASTER);
+				 A_SpawnItemEx("FlamePillarWallBlue",60,20,0,3,0,0.2,0,SXF_SETTARGET|SXF_SETMASTER);}
+				A_TakeInventory("Mana1W", 2,TIF_NOTAKEINFINITE);
+				A_TakeInventory("Mana2W", 2,TIF_NOTAKEINFINITE);
+				}
+		ST7H WX 2 A_OverlayOffset(23,40,-10,WOF_ADD)
+		TNT1 A 6 A_Refire("Fire")
+		TNT1 A 2
+		Goto EndSwingsSide	
+	FireShieldGo:
+		TNT1 A 0 {
+		if(CountInv("MaceChargeCheck1") == 0 )
+			{
+			A_GiveInventory("MaceChargeCheck1",1);
+			if(GetCVar("walp_silentprotagonists")==0)
+				{A_StartSound("CrusExerts",CHAN_AUTO,CHANF_OVERLAP,0.9,ATTN_NONE,frandom(0.97,1.04));}
+			}
+		else
+			{
+			}
+		}
+		TNT1 A 7
+		Goto FlameSwings	
+	Reload:
+		CRUX A 0 A_JumpIfInventory("PowerAmbitMana", 1, "FireRocket")
+		CRUX A 0 A_JumpIfInventory("Mana1W", 40, "AltCheck")
+		CRUX A 0 A_JumpIfInventory("Mana1W", 3, "Fire")
+		CRUX A 0 A_CheckReload
+		Goto Ready
+	AltCheck:
+		CRUX A 0 A_JumpIfInventory("Mana2W", 40, "FireRocket")
+		CRUX A 0 A_JumpIfInventory("Mana2W", 3, "Fire")
+		CRUX A 0 A_CheckReload
+		Goto Ready
+	FireRocket:
+		ST5H A 3 
+		ST5H BQ 3
+		ST7H KL 3 		
+		{	
+			A_TakeInventory("Mana1W", 10,TIF_NOTAKEINFINITE);
+			A_TakeInventory("Mana2W", 10,TIF_NOTAKEINFINITE);
+			A_AlertMonsters;
+		}
+		ST7H M 2 A_StartSound("AStarIsBorn",0,CHANF_OVERLAP,0.5,ATTN_NORM)
+		ST7H N 4 Offset(0, 36) 
+		{ 
+			if(CountInv("CruxUpgrade") == 5 || CountInv("CruxUpgrade") == 6 || CountInv("CruxUpgrade") == 8 || CountInv("CruxUpgrade") == 9)
+				{
+				A_FireProjectile("CalicusRocketSuper",0,0,0,3);
+				}
+				else
+				{
+				A_FireProjectile("CalicusRocket",0,0,0,3);
+				}
+			A_Recoil(4);
+			A_Playsound("FireSummon",7,0.9,false);
+			A_SetPitch(pitch-2.5);
+		}
+		ST7H O 2 A_SetBlend("0000ff", 1.0, 40)
+		ST7H O 1 
+		ST7H PM 2 Offset(0, 32) A_SetPitch(pitch+0.5)
+		ST7H LK 1
+		ST5H QBA 3
+		Goto Ready
+	AltFire: //Yes this was switched around
+		ST5H A 0 A_JumpIfInventory("PowerAmbitMana", 1, "BarrageAnime")
+		ST5H A 0 A_JumpIfInventory("Mana1W", 14, "BarrageCheck")
+		CRUX A 0 A_CheckReload
+		Goto Fire
+	BarrageCheck:
+		ST5H A 0 A_JumpIfInventory("Mana2W", 14, "BarrageAnime")
+		CRUX A 0 A_CheckReload
+		Goto Fire
+	BarrageAnime:
+		//CRUX A 2 A_StartSound("AStarIsBorn",0,CHANF_OVERLAP,0.5,ATTN_NORM) A_FireProjectile ("CometShotA", 0, 0, 0, 0, FPF_NOAUTOAIM,0)
+		ST5H AB 3 
+		ST5H Q 3 A_StartSound("FluxShotC",7,CHANF_OVERLAP,1,ATTN_NORM)
+		ST8H A 0 A_AlertMonsters
+		ST8H ABCDEF 2 {
+		A_TakeInventory("Mana1W", 2,TIF_NOTAKEINFINITE);
+		A_TakeInventory("Mana2W", 2,TIF_NOTAKEINFINITE);
+		}
+		ST8H G 0 A_StartSound("FluxShotF",7,CHANF_OVERLAP,1,ATTN_NORM)
+		ST8H G 2 	{	
+		A_TakeInventory("Mana1W", 2,TIF_NOTAKEINFINITE);
+		A_TakeInventory("Mana2W", 2,TIF_NOTAKEINFINITE);
+		if(CountInv("CruxUpgrade") == 3 || CountInv("CruxUpgrade") == 4 || CountInv("CruxUpgrade") == 8 || CountInv("CruxUpgrade") == 9)
+			{
+			A_SpawnItemEx("CometShotB",30,0,40,36,0,0,0,SXF_SETMASTER);
+			}
+			else
+			{
+			A_SpawnItemEx("CometShotA",30,0,40,36,0,0,0,SXF_SETMASTER);
+			}}			
+		ST8H H 2 A_SetBlend("0000ff", 0.4, 40)
+		ST8H IJKL 2
+		ST8H M 3
+		ST8H N 3 A_Refire("AltfireBack")
+		ST5H QBA 2
+		Goto Ready
+	AltFireBack:
+		ST8H O 3
+		Goto AltFire
+	}
+}
+
+ACTOR CrusHammerPuff : BaseWalpPuff
+{
+	SeeSound "HammerSlammer"
+	AttackSound "HammerAndAnvil"
+	//ActiveSound "SwingItNow"
+	Scale 0.8
+	States
+	{
+		Spawn:
+			FHFX STUVW 4 
+			Stop
+	}
+}
+
+ACTOR ForceBlastHammer : FastProjectile	//Main forceblast
+{					
+	Damage ((12 * random(4, 5))+random(2,6))
+	Radius 15	
+	Height 15
+	Speed 13
+	DamageType "Force"
+	+HITTRACER
+	+ACTIVATEIMPACT
+	//+INVISIBLE
+	+FORCEXYBILLBOARD
+	+ROLLSPRITE
+	+ROLLCENTER
+	+INTERPOLATEANGLES
+	+BLOODLESSIMPACT
+	+NOTIMEFREEZE
+	Projectile
+	MissileType "ForceBlastRing"
+	MissileHeight 8
+	Seesound "VrockBlade"
+	Alpha 0.12
+	XScale 0.9
+	YScale 0.95
+	RenderStyle Add
+	States
+	{
+		Spawn:
+			FORD C 1
+			FORD DDD 1 A_SetRoll(roll-44)
+			Goto Death
+		XDeath:
+			TNT1 A 0 A_Changeflag("NOCLIP",1)
+			FORD D 2 Bright 
+			{
+			A_RadiusThrust(275, 25, RTF_THRUSTZ, 15);
+			A_ChangeVelocity(-20,random(-1,1),12,CVF_RELATIVE,AAPTR_TRACER);
+			A_Fadeout(0.02);
+			A_SetRoll(roll+44);
+			A_StartSound("ForceExplosion",0,CHANF_OVERLAP,1,false,ATTN_NONE);
+			}
+			FORD D 2 Bright 
+			{
+			A_Fadeout(0.02); 
+			A_SetRoll(roll+44); 
+			A_Warp(AAPTR_TRACER,random(-1,1),random(-1,1),32,0,WARPF_COPYVELOCITY|WARPF_NOCHECKPOSITION);
+			} 	
+			FORD ABE 2 Bright {A_Fadeout(0.01); A_SetRoll(roll+44); A_Warp(AAPTR_TRACER,random(-1,1),random(-1,1),32,0,WARPF_COPYVELOCITY|WARPF_NOCHECKPOSITION);}
+			TNT1 AAAAA 2 
+			Stop
+		Death:
+			FORD D 1 Bright 
+			{
+			//A_RadiusThrust(75, 25, RTF_THRUSTZ, 15);
+			A_Fadeout(0.03);
+			A_SetRoll(roll+44);
+			}
+			FORD D 1 Bright {A_Fadeout(0.03); A_SetRoll(roll+44);} 	
+			FORD ABE 2 Bright {A_Fadeout(0.03); A_SetRoll(roll+44);}
+			Stop
+	}
+}
+
+ACTOR FlamePillarWallBlue : FlamePillar
+{
+	+INVISIBLE
+	Decal "None"
+	States
+	{
+		Spawn: 
+			CFFX A 1 Bright
+			CFFX A 1 Bright A_PlaySound ("FireStart", 0, .2)
+			CFFX BB 1 Bright A_GiveInventory("Mana1", 4)	//This simultaneously counts to death and contributes to the pillar location
+			CFFX CC 1 Bright A_Warp (AAPTR_TRACER, 0 + CountInv("Mana1"), 0, 0, 15,WARPF_USECALLERANGLE | WARPF_NOCHECKPOSITION)
+			Goto Spawn2
+		Spawn2: 
+			CFFX DDEEFFGGHHII 1  Bright
+			{
+				if(GetCVar("walp_wheresthefire")==1)	
+				{	A_SpawnItemEx("CoronaBurnBlue",0,0,0,0,2,random(-2,2)); }
+				else
+				{	A_SpawnItemEx("CoronaBurnBlue",0,0,0,0,2,random(-2,2));}	
+				A_Explode (random(0,3), 80, 0,0,35,0,0,"None", "Blast");
+				A_Warp (AAPTR_TRACER, 0 + CountInv("Mana1"), 0, 0, 15,WARPF_USECALLERANGLE | WARPF_NOCHECKPOSITION);
+				A_SetRoll(Roll - Random(35,45), SPF_INTERPOLATE);
+				A_GiveInventory("Mana1", 4);
+				A_GiveInventory("ICONCOUNTER",1);
+			}
+			CFFX I 0 A_JumpIfInventory("ICONCOUNTER", 120, "Death")
+			Loop
+		Death:
+			CFFX DDEEFF 1 Bright A_Warp (AAPTR_TRACER, 0, 0, 0, 13,WARPF_USECALLERANGLE | WARPF_NOCHECKPOSITION)
+			CFFX F 0 A_Explode ((2 * randompick(1,2,2,3,4)),145,0,0,100,0,0,"None", "Blast")
+			CFFX F 0 {if(GetCVar("walp_wheresthefire")==1)	
+				{	A_SpawnItemEx ("CoronaBurnBlue",0, 0, 15, 0, 0, 3, SXF_TRANSFERTRANSLATION);}
+				else
+				{	A_SpawnItemEx ("CoronaBurnBlue",0, 0, 15, 0, 0, 3, SXF_TRANSFERTRANSLATION);}}		
+			CFFX JJJJKKKKLLLL 1 Bright	A_Warp (AAPTR_TRACER, 0, 0, 0, 23,WARPF_USECALLERANGLE | WARPF_NOCHECKPOSITION)
+			Stop
+	}
+}
+
+ACTOR CometShotA 
+{
+   Radius 12
+   Height 12
+   Damage (0)
+   DamageType "None"
+   Obituary "%o was sent flying on a star." 
+   WeaveIndexXY 0
+   Speed 25
+   PROJECTILE
+   +MISSILE
+   +BRIGHT
+   +THRUSPECIES
+   +MTHRUSPECIES
+   +SPAWNCEILING
+   +NOBLOCKMAP
+   +THRUACTORS
+   +CEILINGHUGGER
+   Species "PlayerAlly"      
+   States
+   {
+   Spawn:
+   	  TNT1 A 1 
+	  Goto Spawn2
+   Spawn2:
+	  TNT1 AAAAAA 1 A_Weave(9,0,8.5,0)
+	  TNT1 A 0 A_SpawnProjectile("CometCreator",-36,random(75,-75),0,CMF_AIMDIRECTION|CMF_TRACKOWNER,random(89,91))
+	  Loop
+   Death: 
+      TNT1 A 1
+	  Stop  
+   }
+}
+
+ACTOR CometShotB //Upgraded, drops more comets over wider area.
+{
+   Radius 12
+   Height 12
+   Damage (0)
+   DamageType "None"
+   Obituary "%o was sent flying on a star." 
+   WeaveIndexXY 0
+   Speed 20
+   PROJECTILE
+   +MISSILE
+   +BRIGHT
+   +THRUSPECIES
+   +MTHRUSPECIES
+   +SPAWNCEILING
+   +NOBLOCKMAP
+   +THRUACTORS
+   +CEILINGHUGGER
+   Species "PlayerAlly"      
+   States
+   {
+   Spawn:
+   	  TNT1 A 1 
+	  Goto Spawn2
+   Spawn2:
+	  TNT1 AAAA 1 A_Weave(15,0,12.5,0) //A_Weave(9,0,8.5,0)
+	  TNT1 A 0 A_SpawnProjectile("CometCreator",-36,random(75,-75),0,CMF_AIMDIRECTION|CMF_TRACKOWNER,random(89,91))
+	  Loop
+   Death: 
+      TNT1 A 1
+	  Stop  
+   }
+}
+
+ACTOR CometShotBQ  //Upgraded, drops more comets over wider area.
+{
+   Radius 1
+   Height 1
+   Damage (0)
+   DamageType "None"
+   Obituary "%o was sent flying on a star." 
+   WeaveIndexXY 0
+   Speed 20
+   PROJECTILE
+   +MISSILE
+   +BRIGHT
+   +THRUSPECIES
+   +MTHRUSPECIES
+   +SPAWNCEILING
+   +NOBLOCKMAP
+   +THRUACTORS
+   +CEILINGHUGGER
+   Species "PlayerAlly"      
+   States
+   {
+   Spawn:
+   	  TNT1 A 1 
+	  Goto Spawn2
+   Spawn2:
+	  TNT1 AAAA 1 A_Weave(15,0,12.5,0)
+	  TNT1 A 0 A_SpawnProjectile("CometCreator",-36,random(95,-95),0,CMF_AIMDIRECTION|CMF_TRACKOWNER,random(89,91))
+	  Loop
+   Death: 
+      TNT1 A 1
+	  Stop  
+   }
+}
+
+ACTOR CometCreator
+{
+	Radius 1
+	Height 1
+	Projectile
+	Speed 0
+	+CEILINGHUGGER
+	+NOINTERACTION
+	States
+	{
+	Spawn:
+		TNT1 A 1 
+	Death:
+		TNT1 A 1 A_SpawnProjectile("DamoclesLaserCometShit",-36,0,0,CMF_AIMDIRECTION|CMF_TRACKOWNER,random(89,91)) //A_SpawnItemEx("FallingStone",0,0,-38,0,0,-3) 
+		Stop
+	}
+}
+
+ACTOR DamoclesLaserCometShit  
+{						  
+	//Nothing to do with a bloke from Sicily, but there was an old Atari ST game named
+	//Damocles about stopping a Comet. I wasn't very good at it, being 6 and all, lol. :D
+	//It's got shit at the end because it was acting in really fucking stupid ways for no
+	//reason when testing, and I had to debug it for nearly 3 fucking hours.
+	Scale 0.1
+	Speed 12
+	Radius 20
+	Height 20
+	//BounceCount 2
+	Gravity 0.9
+	Friction 1.2
+	Damage (10)
+	Renderstyle Add
+	Alpha 0.9
+	Mass 4000
+	Obituary "%o was sent flying on a star." 
+	Damagetype "Holy"
+	//DeathSound "ForceExplosion"
+	+MISSILE
+	+ROLLSPRITE
+	+ROLLCENTER
+	-NOGRAVITY
+	-DROPOFF
+	+FRIENDLY
+	+EXTREMEDEATH
+	+FORCEPAIN
+	+EXPLODEONWATER
+	+FORCERADIUSDMG
+	+BLOODLESSIMPACT
+	+THRUACTORS
+	+NOBLOCKMAP
+	States
+	{
+	Spawn:
+		ST8H X 2 Nodelay Bright {
+			A_Setroll(roll+random(-10,-30));
+			A_Setscale(frandom(0.08,0.12),frandom(0.08,0.12));
+			A_SpawnItemEx("CoronaTailCometBlue",0,0,0,0,1,velz+1);
+			A_SpawnItemEx("CoronaTailCometBlue",0,0,0,0,-1,velz+1);
+			A_SpawnItemEx("CoronaTailCometBlue",0,0,0,1,0,velz+1);
+			A_SpawnItemEx("CoronaTailCometBlue",0,0,0,-1,0,velz+1);
+			A_SpawnItemEx("CoronaTailCometBlue",0,0,0,0,0,velz+1);
+			if((sqrt((sqrt((velx * velx)+(vely * vely)) * sqrt((velx * velx)+(vely * vely)))+(velz * velz))) <= 12)
+				{	//While the speed is below 12, this speeds it up
+					A_ScaleVelocity(1.4);
+				}
+			}
+		Loop
+	Death:
+		CFFX I 0 Bright {
+					A_StartSound("ForceExplosion",256,CHANF_OVERLAP,0.85,ATTN_NONE);
+					A_QuakeEx(0,2,2,75,200,1000,"world/quake");
+					A_Explode(56,120,0,1,110);
+					A_Setscale(0.6,0.6);
+					A_SetRenderStyle(0.6,STYLE_Add);
+					}
+		Z499 A 2 Bright 	{	
+					A_Explode(66,200,0,1,200,0,0,"None","Blast");
+					A_SpawnItemEx("HammerBlastSparkBlue",random(-4,4),random(-4,4),1,-2,random(-3,1),random(3,7));
+					A_SpawnItemEx("HammerBlastSparkBlue",random(-4,4),random(-4,4),1,-2,random(-1,3),random(3,7));
+					A_SpawnItemEx("HammerBlastSparkBlue",random(-4,4),random(-4,4),1,-2,random(-1,3),random(3,7));
+							}
+		Z499 BC 2 Bright 	{	
+					A_SpawnItemEx("HammerBlastSparkBlue",random(-4,4),random(-4,4),1,-2,random(-3,1),random(3,7));
+					A_SpawnItemEx("HammerBlastSparkBlue",random(-4,4),random(-4,4),1,-2,random(-1,3),random(3,7));
+					A_SpawnItemEx("HammerBlastSparkBlue",random(-4,4),random(-4,4),1,-2,random(-1,3),random(3,7));
+					}
+		Z499 DEFG 2 Bright 
+		TNT1 A 1 A_Remove(AAPTR_DEFAULT,RMVF_EVERYTHING) //Had one instance where this failed to kill itself on Stop.
+		Stop	
+	Crash:
+		TNT1 A 0
+		Goto Death
+	}
+}
+
+ACTOR CoronaTailCometBlue : CoronaTail
+{
+	Radius 1
+	Height 1
+	+ROLLSPRITE
+	+ROLLCENTER
+	+SPAWNSOUNDSOURCE
+	+BLOODLESSIMPACT
+	Projectile
+	RenderStyle Add
+	Damage (0)
+	Speed 5
+	DamageType "Fire"
+	Decal "None"
+	XScale 0.08
+	YScale 0.12
+	Alpha 0.3
+	States
+	{
+	Spawn:
+		ST8H Y 0 
+	Death:
+		ST8H Y 2 Bright {A_FadeIn(0.05); A_Setroll(roll+random(-10,-100));}
+		ST8H Y 3 Bright {A_FadeIn(0.05); A_Setroll(roll+random(-10,-100)); A_SpawnItemEx("HammerBlastSparkBlue",random(-4,4),random(-4,4),1,-2,random(-3,1),random(3,7));}
+		ST8H Y 3 Bright {A_FadeIn(0.05); A_Setroll(roll+random(-10,-100));}
+		ST8H YY 3 Bright {A_Setroll(roll+random(-10,-100));}
+		ST8H Y 0 Bright A_SpawnItemEx("HammerBlastSparkBlue",random(-4,4),random(-4,4),1,-2,random(-3,1),random(3,7))
+		ST8H YYYYY 1 {A_Fadeout(0.1); A_Setscale(frandom(0.07,0.13),frandom(0.07,0.13)); A_Setroll(roll+random(-10,-100));}
+		Stop
+	}
+}
+
+//THIS Calicus Shot is used by the upgraded Ichival since Calicus is gone now.
+ACTOR CalicusShot : FastProjectile	//Bouncy Holy Lasers Batman!! 
+{					
+	//Damage ((40+random(1,8))) 0.91~ It was revised to be a ripper!
+	Damage (9+random(1,4))
+	Radius 4	
+	Height 4
+	Speed 110
+	DamageType "Holy"
+	Species "PlayerAlly"
+	Projectile
+	Alpha 0.6
+	Scale 0.8
+	RenderStyle Add
+	ProjectileKickBack 50
+	Translation "128:230=@52[255,255,128]"
+	//Seesound "CruxShots"
+	MissileType "YellowSparklies" 
+	MissileHeight 8
+	+ROLLSPRITE
+	+ROLLCENTER
+	+MTHRUSPECIES 
+	+DONTBLAST
+	+NOBLOCKMAP
+	+RIPPER
+	+BOUNCEONUNRIPPABLES
+	+NODAMAGETHRUST
+	+EXTREMEDEATH
+	States
+	{
+		Spawn:
+			UXSH ABCDEF 1 Bright Nodelay A_SetRoll(roll-15)
+			Goto Spin
+		Spin:
+			UXSH G 1 Bright A_SetRoll(roll-15)
+			Loop
+		Crash:
+			UXSH FEDCBA 1 Bright A_SpawnProjectile("CalicusShot2", 0, 0, random(0, 360), CMF_AIMDIRECTION, random(0, 30))
+			Stop
+		XDeath:
+			UXSH DCBA 1 Bright 
+			Stop
+		Death:
+			UXSH FEDCBA 1 Bright A_SpawnProjectile("CalicusShot2", 0, 0, random(0, 360), CMF_AIMDIRECTION, random(0, 30))
+			Stop
+	}
+}
+
+ACTOR CalicusShot2 : CalicusShot //It ain't no Beethoven, but it SUUURE bounces!
+{
+	-RIPPER
+	Gravity 0.1
+	Speed 28
+	Scale 0.5
+	Damage ((7 * random(2, 4))+random(1,8))
+	States
+	{
+		Crash:
+			UXSH DCBA 1 Bright 
+			Stop
+		Death:
+			UXSH DCBA 1 Bright 
+			Stop
+	}		
+}
+
+ACTOR CalicusShotIchival : CalicusShot //Actually used by Druid's Ichival 2ndary upgrade
+{
+	-RIPPER
+	Gravity 0.1
+	Speed 28
+	Scale 0.5
+	Damage ((6 * random(2, 4))+random(1,8))
+	DamageType "Light"
+	States
+	{
+		Crash:
+			UXSH DCBA 1 Bright 
+			Stop
+		Death:
+			UXSH DCBA 1 Bright 
+			Stop
+	}		
+}
+
+ACTOR CalicusRocket : FastProjectile	//Holy ROKKITS!!
+{					
+	Damage (36)
+	Radius 4	
+	Height 4
+	Speed 450
+	DamageType "Holy"
+	Translation Ice
+	Species "PlayerAlly"
+	MissileType "BlueSparklies" 
+	MissileHeight 8
+	Projectile
+	Alpha 0.7
+	Scale 1.3
+	RenderStyle Add
+	+SEEKERMISSILE
+	+DONTREFLECT
+	+EXTREMEDEATH
+	+PIERCEARMOR
+	+MTHRUSPECIES 
+	+DONTBLAST
+	+NODAMAGETHRUST
+	States
+	{
+		Spawn:
+			CRX9 AB 1 Bright //A_SeekerMissile(45,20,SMF_LOOK | SMF_PRECISE,256,8) USED TO BE A HOMING ROCKET, but Vortex was more badass
+			Loop
+		Crash:
+			CRX0 C 0 A_ChangeFlag("NOCLIP",true)
+			CRX9 C 0 A_Stop
+			CRX9 CDEFG 1 Bright 
+			CRX9 G 0 A_SpawnItemEx("CalicusVortex",0,0,80,0,0,0)
+			Stop
+		XDeath:
+			CRX0 C 0 A_ChangeFlag("NOCLIP",true)
+			CRX9 C 0 A_Stop
+			CRX9 CDEFG 1 Bright 
+			CRX9 G 0 A_SpawnItemEx("CalicusVortex",0,0,60,0,0,0)
+			Stop
+		Death:
+			CRX0 C 0 A_ChangeFlag("NOCLIP",true)
+			CRX9 CDEFG 1 Bright 
+			CRX9 G 0 A_SpawnItemEx("CalicusVortex",-35,0,60,-2,0,0) //If it dies against a wall/floor, moves a bit to reduce clipping sprites
+			Stop
+	}
+}
+
+ACTOR CalicusRocketSuper : CalicusRocket 
+{
+	States
+	{
+		Crash:
+			CRX0 C 0 A_ChangeFlag("NOCLIP",true)
+			CRX9 C 0 A_Stop
+			CRX9 C 0 {
+			While (CountInv("Mana2")<180)
+			{
+				A_GiveInventory("Walpurgisnacht",random(1,151));
+				A_SpawnItemEx("CruxExplodeBlue",0,0,12,sqrt(22500-((CountInv("Walpurgisnacht")-1)*(CountInv("Walpurgisnacht")-1)))*.0667,0,(CountInv("Walpurgisnacht")-1)*.0667,2*CountInv("Mana2"));
+				A_SpawnItemEx("CruxExplodeBlue",0,0,12,sqrt(22500-((CountInv("Walpurgisnacht")-1)*(CountInv("Walpurgisnacht")-1)))*.0667,0,((CountInv("Walpurgisnacht")-1)*.0667)*(-1),2*CountInv("Mana2"));
+				A_GiveInventory("Mana2",1);
+				A_TakeInventory("Walpurgisnacht");
+			}
+			A_Setscale(scalex+0.2,scaley+0.2);
+			A_Explode (180,340,0,true,180);
+			A_PlaySound("PerunC",0,1,false,ATTN_NONE,0.9);
+			}
+			CRX9 CDEFG 1 Bright 
+			CRX9 G 0 A_SpawnItemEx("CalicusVortexPlus",0,0,80,0,0,0)
+			Stop
+		XDeath:
+			CRX0 C 0 A_ChangeFlag("NOCLIP",true)
+			CRX9 C 0 A_Stop
+			CRX9 C 0 {
+			While (CountInv("Mana2")<180)
+			{
+				A_GiveInventory("Walpurgisnacht",random(1,151));
+				A_SpawnItemEx("CruxExplodeBlue",0,0,12,sqrt(22500-((CountInv("Walpurgisnacht")-1)*(CountInv("Walpurgisnacht")-1)))*.0667,0,(CountInv("Walpurgisnacht")-1)*.0667,2*CountInv("Mana2"));
+				A_SpawnItemEx("CruxExplodeBlue",0,0,12,sqrt(22500-((CountInv("Walpurgisnacht")-1)*(CountInv("Walpurgisnacht")-1)))*.0667,0,((CountInv("Walpurgisnacht")-1)*.0667)*(-1),2*CountInv("Mana2"));
+				A_GiveInventory("Mana2",1);
+				A_TakeInventory("Walpurgisnacht");
+			}
+			A_Setscale(scalex+0.2,scaley+0.2);
+			A_Explode (180,340,0,true,180);
+			A_PlaySound("PerunC",0,1,false,ATTN_NONE,0.9);
+			}
+			CRX9 CDEFG 1 Bright 
+			CRX9 G 0 A_SpawnItemEx("CalicusVortexPlus",0,0,60,0,0,0)
+			Stop
+		Death:
+			CRX0 C 0 A_ChangeFlag("NOCLIP",true)
+			CRX9 C 0 {
+			While (CountInv("Mana2")<180)
+			{
+				A_GiveInventory("Walpurgisnacht",random(1,151));
+				A_SpawnItemEx("CruxExplodeBlue",0,0,12,sqrt(22500-((CountInv("Walpurgisnacht")-1)*(CountInv("Walpurgisnacht")-1)))*.0667,0,(CountInv("Walpurgisnacht")-1)*.0667,2*CountInv("Mana2"));
+				A_SpawnItemEx("CruxExplodeBlue",0,0,12,sqrt(22500-((CountInv("Walpurgisnacht")-1)*(CountInv("Walpurgisnacht")-1)))*.0667,0,((CountInv("Walpurgisnacht")-1)*.0667)*(-1),2*CountInv("Mana2"));
+				A_GiveInventory("Mana2",1);
+				A_TakeInventory("Walpurgisnacht");
+			}
+			A_Setscale(scalex+0.2,scaley+0.2);
+			A_Explode (180,340,0,true,180);
+			A_PlaySound("PerunC",0,1,false,ATTN_NONE,0.9);
+			}
+			CRX9 CDEFG 1 Bright 
+			CRX9 G 0 A_SpawnItemEx("CalicusVortexPlus",-35,0,60,-2,0,0) //If it dies against a wall/floor, moves a bit to reduce clipping sprites
+			Stop
+	}
+}
+
+ACTOR CalicusVortex
+{
+	Radius 16
+	Height 30
+	Damage 5
+	Health 9899
+	Speed 0
+	Scale 0.1
+	Damagetype "Astral"
+	Renderstyle Add
+	Alpha 1 //0.8
+	+NOGRAVITY
+	+NOCLIP
+	+INVULNERABLE
+	+FORCERADIUSDMG
+	+NOBLOCKMAP
+	+RIPPER
+	+ROLLSPRITE
+	+ROLLCENTER
+	+FORCEPAIN
+	+DONTBLAST
+	+EXTREMEDEATH
+	+STANDSTILL
+	-SOLID
+	-SHOOTABLE
+	States
+	{
+		Spawn:
+			TNT1 A 0 Nodelay A_GiveInventory("Mana1",1)
+			TNT1 A 9 A_SpawnItemEx("VortexSparklies",random(-4,4),random(-4,4),1,-2,random(-3,1),random(3,7))
+			TNT1 A 0 A_JumpIfInventory("Mana1", 2, "VortexGo")
+			Loop
+		VortexGo:
+			TNT1 A 0 
+			{	
+				A_PlaySound("VortexOpen", 0, 1.6,false,ATTN_NONE);
+				A_Playsound("VortexLoop", 6, 0.9,true,ATTN_NONE);
+			}
+			Goto VortexStarts
+		VortexStarts:
+			TNT1 A 0 A_GiveInventory("Mana1",1)
+			NOVA RQPONMLKJIHGFEDCBA 1 A_SpawnItemEx("VortexSparklies",random(-4,4),random(-4,4),1,-2,random(-3,1),random(3,7))
+			Goto VortexForm
+		VortexForm:
+			W1RL ABCDEF 1 Bright
+			{	
+				A_SetScale(scalex+0.025,scaley+0.025);
+				A_SetRoll(roll-5);
+				A_SetAngle(angle+15);
+				A_SpawnItemEx("VortexOrbiter",(scalex*30),(scaley*30),random(-45,45),0,3,0,0,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*30),(scaley*30),random(-45,45),0,3,0,90,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*30),(scaley*30),random(-45,45),0,3,0,180,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*30),(scaley*30),random(-45,45),0,3,0,270,SXF_SETTRACER | SXF_ORIGINATOR );
+			}
+			W1RL F 0 Bright 
+			{
+				A_Explode(1,30*scalex);
+				A_SpawnItemEx("VortexSparklies",random(-4,4),random(-4,4),1,-2,random(-3,1),random(8,15));
+				A_RadiusThrust(-200*scalex,55*scalex,RTF_AFFECTSOURCE|RTF_THRUSTZ);
+				A_GiveInventory("Mana1",1);
+				A_SpawnItemEx("RoflBocchi",random(20,60),0,40,0,0,0,0,SXF_SETMASTER);
+				A_Stop;
+			}
+			W1RL GHIJKL 1 Bright
+			{
+				A_SetScale(scalex+0.025,scaley+0.025);
+				A_SetRoll(roll-5);
+				A_SetAngle(angle+15);
+				A_Explode(random(0,1),30*scalex);
+				A_SpawnItemEx("VortexOrbiter",(scalex*40),(scaley*40),random(-45,45),0,3,0,0,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*40),(scaley*40),random(-45,45),0,3,0,90,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*40),(scaley*40),random(-45,45),0,3,0,180,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*40),(scaley*40),random(-45,45),0,3,0,270,SXF_SETTRACER | SXF_ORIGINATOR );
+			}
+			W1RL L 0 Bright 
+			{
+				A_Explode(2,30*scalex);
+				A_SpawnItemEx("VortexSparklies",random(-4,4),random(-4,4),1,-2,random(-3,1),random(8,15));
+				A_RadiusThrust(-200*scalex,55*scalex,RTF_AFFECTSOURCE|RTF_THRUSTZ);
+				A_GiveInventory("Mana1",1);
+				A_SpawnItemEx("RoflBocchi",random(20,60),0,40,0,0,0,0,SXF_SETMASTER);
+			}
+			W1RL MNOPQR 1 Bright
+			{	
+				A_SetScale(scalex+0.025,scaley+0.025);
+				A_SetRoll(roll-5);
+				A_SetAngle(angle+15);
+				A_Explode(random(0,1),30*scalex);
+				A_SpawnItemEx("VortexOrbiter",(scalex*50),(scaley*50),random(-45,45),0,0,0,0,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*50),(scaley*50),random(-45,45),0,0,0,90,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*50),(scaley*50),random(-45,45),0,0,0,180,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*50),(scaley*50),random(-45,45),0,0,0,270,SXF_SETTRACER | SXF_ORIGINATOR );
+			}
+			W1RL R 0 Bright 
+			{
+				A_Explode(2,30*scalex);
+				A_SpawnItemEx("VortexSparklies",random(-4,4),random(-4,4),1,-2,random(-3,1),random(8,15));
+				A_RadiusThrust(-200*scalex,55*scalex,RTF_AFFECTSOURCE|RTF_THRUSTZ);
+				A_GiveInventory("Mana1",1);
+				A_SpawnItemEx("RoflBocchi",random(20,60),0,40,0,0,0,0,SXF_SETMASTER);
+			}
+			W1RL STUVWX 1 Bright
+			{	
+				A_SetScale(scalex+0.025,scaley+0.025);
+				A_SetRoll(roll-5);
+				A_SetAngle(angle+15);
+				A_Explode(random(0,1),30*scalex);
+				A_SpawnItemEx("VortexOrbiter",(scalex*50),(scaley*50),random(-45,45),0,0,0,0,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*50),(scaley*50),random(-45,45),0,0,0,90,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*50),(scaley*50),random(-45,45),0,0,0,180,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*50),(scaley*50),random(-45,45),0,0,0,270,SXF_SETTRACER | SXF_ORIGINATOR );
+			}
+			W1RL Y 1 Bright 
+			{
+				A_Explode(1,30*scalex);
+				A_SpawnItemEx("VortexSparklies",random(-4,4),random(-4,4),1,-2,random(-3,1),random(8,15));
+				A_RadiusThrust(-200*scalex,55*scalex,RTF_AFFECTSOURCE|RTF_THRUSTZ);
+				A_GiveInventory("Mana1",1);
+				A_SpawnItemEx("RoflBocchi",random(20,60),0,40,0,0,0,0,SXF_SETMASTER);
+			}
+			Goto VortexBigger
+		VortexBigger:
+			W1RL ABCDEF 1 Bright
+			{	
+				A_SetScale(scalex+0.04,scaley+0.04);
+				A_SetRoll(roll-5);
+				A_SetAngle(angle+15);
+				A_Explode(random(0,1),30*scalex);
+				A_SpawnItemEx("VortexOrbiter",(scalex*75),(scaley*75),random(-45,45),0,0,0,0,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*75),(scaley*75),random(-45,45),0,0,0,90,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*75),(scaley*75),random(-45,45),0,0,0,180,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*75),(scaley*75),random(-45,45),0,0,0,270,SXF_SETTRACER | SXF_ORIGINATOR );
+			}
+			W1RL F 0 Bright 
+			{
+				A_Explode(1*scalex,40*scalex);
+				A_SpawnItemEx("VortexSparklies",random(-4,4),random(-4,4),1,-2,random(-3,1),random(8,15));
+				A_RadiusThrust(-450*scalex,85*scalex,RTF_AFFECTSOURCE|RTF_THRUSTZ);
+				A_GiveInventory("Mana1",1);
+				A_SpawnItemEx("RoflBocchi",random(20,60),0,40,0,0,0,0,SXF_SETMASTER);
+			}
+			W1RL GHIJKL 1 Bright
+			{
+				A_SetScale(scalex+0.04,scaley+0.04);
+				A_SetRoll(roll-5);
+				A_SetAngle(angle+15);
+				A_Explode(random(0,1),30*scalex);
+				A_SpawnItemEx("VortexOrbiter",(scalex*75),(scaley*75),random(-45,45),0,0,0,0,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*75),(scaley*75),random(-45,45),0,0,0,90,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*75),(scaley*75),random(-45,45),0,0,0,180,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*75),(scaley*75),random(-45,45),0,0,0,270,SXF_SETTRACER | SXF_ORIGINATOR );
+			}
+			W1RL L 0 Bright 
+			{
+				A_Explode(1*scalex,40*scalex);
+				A_SpawnItemEx("VortexSparklies",random(-4,4),random(-4,4),1,-2,random(-3,1),random(8,15));
+				A_RadiusThrust(-450*scalex,85*scalex,RTF_AFFECTSOURCE|RTF_THRUSTZ);
+				A_GiveInventory("Mana1",1);
+				A_SpawnItemEx("RoflBocchi",random(20,60),0,40,0,0,0,0,SXF_SETMASTER);
+			}
+			W1RL MNOPQR 1 Bright
+			{	
+				A_SetScale(scalex+0.04,scaley+0.04);
+				A_SetRoll(roll-5);
+				A_SetAngle(angle+15);
+				A_Explode(random(0,1),30*scalex);
+				A_SpawnItemEx("VortexOrbiter",(scalex*75),(scaley*75),random(-45,45),0,0,0,0,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*75),(scaley*75),random(-45,45),0,0,0,90,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*75),(scaley*75),random(-45,45),0,0,0,180,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*75),(scaley*75),random(-45,45),0,0,0,270,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*75),(scaley*75),random(-45,45),0,0,0,0,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*75),(scaley*75),random(-45,45),0,0,0,90,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*75),(scaley*75),random(-45,45),0,0,0,180,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*75),(scaley*75),random(-45,45),0,0,0,270,SXF_SETTRACER | SXF_ORIGINATOR );
+			}
+			W1RL R 0 Bright 
+			{
+				A_Explode(1*scalex,40*scalex);
+				A_SpawnItemEx("VortexSparklies",random(-4,4),random(-4,4),1,-2,random(-3,1),random(8,15));
+				A_RadiusThrust(-450*scalex,85*scalex,RTF_AFFECTSOURCE|RTF_THRUSTZ);
+				A_GiveInventory("Mana1",1);
+				A_SpawnItemEx("RoflBocchi",random(20,60),0,40,0,0,0,0,SXF_SETMASTER);
+			}
+			W1RL STUVWX 1 Bright
+			{	
+				A_SetScale(scalex+0.04,scaley+0.04);
+				A_SetRoll(roll-5);
+				A_SetAngle(angle+15);
+				A_Explode(random(0,1),30*scalex);
+				A_SpawnItemEx("VortexOrbiter",(scalex*75),(scaley*75),random(-45,45),0,0,0,0,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*75),(scaley*75),random(-45,45),0,0,0,90,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*75),(scaley*75),random(-45,45),0,0,0,180,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*75),(scaley*75),random(-45,45),0,0,0,270,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*75),(scaley*75),random(-45,45),0,0,0,0,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*75),(scaley*75),random(-45,45),0,0,0,90,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*75),(scaley*75),random(-45,45),0,0,0,180,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*75),(scaley*75),random(-45,45),0,0,0,270,SXF_SETTRACER | SXF_ORIGINATOR );
+				
+			}
+			W1RL Y 1 Bright 
+			{
+				A_Explode(1*scalex,40*scalex);
+				A_SpawnItemEx("VortexSparklies",random(-4,4),random(-4,4),1,-2,random(-3,1),random(8,15));
+				A_SpawnItemEx("VortexSparklies",random(-4,4),random(-4,4),1,-2,random(-3,1),random(8,15));
+				A_RadiusThrust(-450*scalex,85*scalex,RTF_AFFECTSOURCE|RTF_THRUSTZ);
+				A_GiveInventory("Mana1",1);
+			}
+			W1RL A 0 A_JumpIfInventory("Mana1", 24, "VortexPeak") //run this loop twice
+			Loop
+		VortexPeak:
+			W1RL ABCDEF 1 Bright
+			{	
+				A_SetRoll(roll-5);
+				A_SetAngle(angle+15);
+				A_Explode(random(1,3),30*scalex);
+				A_SpawnItemEx("VortexOrbiter",(scalex*60),(scaley*60),random(-45,45),0,0,0,0,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*60),(scaley*60),random(-45,45),0,0,0,90,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*60),(scaley*60),random(-45,45),0,0,0,180,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*60),(scaley*60),random(-45,45),0,0,0,270,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*60),(scaley*60),random(-45,45),0,0,0,0,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*60),(scaley*60),random(-45,45),0,0,0,90,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*60),(scaley*60),random(-45,45),0,0,0,180,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*60),(scaley*60),random(-45,45),0,0,0,270,SXF_SETTRACER | SXF_ORIGINATOR );
+			}
+			W1RL F 0 Bright 
+			{
+				A_Explode(2*scalex,50*scalex);
+				A_SpawnItemEx("VortexSparklies",random(-4,4),random(-4,4),1,-2,random(-3,1),random(8,15));
+				A_SpawnItemEx("VortexSparklies",random(-4,4),random(-4,4),1,-2,random(-3,1),random(8,15));
+				A_RadiusThrust(-650*scalex,100*scalex,RTF_AFFECTSOURCE|RTF_THRUSTZ);
+				A_GiveInventory("Mana1",1);
+				A_SetPitch(pitch+random(-90,90));
+				A_SetAngle(angle-random(-180,180));
+				A_CustomRailgun(0, 10, "6ac7ed", "6ac7ed", RGF_SILENT|RGF_FULLBRIGHT|RGF_EXPLICITANGLE|RGF_NOPIERCING|RGF_CENTERZ,0,265,"DecorativeZaps",0,0,random(222,444),20,0,0,"LaserBall",0,110);
+				A_SetPitch(pitch+random(-90,90));
+				A_SetAngle(angle-random(-180,180));
+				A_CustomRailgun(0,0, "6ac7ed", "6ac7ed", RGF_SILENT|RGF_FULLBRIGHT|RGF_EXPLICITANGLE|RGF_NOPIERCING|RGF_CENTERZ,0,265,"DecorativeZaps",0,0,random(222,333),20,0,0,"LaserBall",0,220);
+			}
+			W1RL GHIJKL 1 Bright
+			{
+				A_SetRoll(roll-5);
+				A_SetAngle(angle+15);
+				A_Explode(random(1,3),30*scalex);
+				A_SpawnItemEx("VortexOrbiter",(scalex*60),(scaley*60),random(-45,45),0,0,0,0,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*60),(scaley*60),random(-45,45),0,0,0,90,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*60),(scaley*60),random(-45,45),0,0,0,180,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*60),(scaley*60),random(-45,45),0,0,0,270,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*60),(scaley*60),random(-45,45),0,0,0,0,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*60),(scaley*60),random(-45,45),0,0,0,90,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*60),(scaley*60),random(-45,45),0,0,0,180,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*60),(scaley*60),random(-45,45),0,0,0,270,SXF_SETTRACER | SXF_ORIGINATOR );
+			}
+			W1RL L 0 Bright 
+			{
+				A_Explode(2*scalex,50*scalex);
+				A_SpawnItemEx("VortexSparklies",random(-4,4),random(-4,4),1,-2,random(-3,1),random(8,15));
+				A_SpawnItemEx("VortexSparklies",random(-4,4),random(-4,4),1,-2,random(-3,1),random(8,15));
+				A_RadiusThrust(-650*scalex,100*scalex,RTF_AFFECTSOURCE|RTF_THRUSTZ);
+				A_GiveInventory("Mana1",1);
+				A_SetPitch(pitch+random(-90,90));
+				A_SetAngle(angle-random(-180,180));
+				A_CustomRailgun(0, 10, "6ac7ed", "6ac7ed", RGF_SILENT|RGF_FULLBRIGHT|RGF_EXPLICITANGLE|RGF_NOPIERCING|RGF_CENTERZ,0,365,"DecorativeZaps",0,0,random(222,444),20,0,0,"LaserBall",0,110);
+				A_SetPitch(pitch+random(-90,90));
+				A_SetAngle(angle-random(-180,180));
+				A_CustomRailgun(0,0, "6ac7ed", "6ac7ed", RGF_SILENT|RGF_FULLBRIGHT|RGF_EXPLICITANGLE|RGF_NOPIERCING|RGF_CENTERZ,0,365,"DecorativeZaps",0,0,random(222,333),20,0,0,"LaserBall",0,220);
+			}
+			W1RL MNOPQR 1 Bright
+			{	
+				A_SetRoll(roll-5);
+				A_SetAngle(angle+15);
+				A_Explode(random(1,3),30*scalex);
+				A_SpawnItemEx("VortexOrbiter",(scalex*60),(scaley*60),random(-45,45),0,0,0,0,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*60),(scaley*60),random(-45,45),0,0,0,90,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*60),(scaley*60),random(-45,45),0,0,0,180,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*60),(scaley*60),random(-45,45),0,0,0,270,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*60),(scaley*60),random(-45,45),0,0,0,0,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*60),(scaley*60),random(-45,45),0,0,0,90,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*60),(scaley*60),random(-45,45),0,0,0,180,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*60),(scaley*60),random(-45,45),0,0,0,270,SXF_SETTRACER | SXF_ORIGINATOR );
+			}
+			W1RL R 0 Bright 
+			{
+				A_Explode(2*scalex,50*scalex);
+				A_SpawnItemEx("VortexSparklies",random(-4,4),random(-4,4),1,-2,random(-3,1),random(8,15));
+				A_SpawnItemEx("VortexSparklies",random(-4,4),random(-4,4),1,-2,random(-3,1),random(8,15));
+				A_RadiusThrust(-650*scalex,100*scalex,RTF_AFFECTSOURCE|RTF_THRUSTZ);
+				A_GiveInventory("Mana1",1);
+				A_SetPitch(pitch+random(-90,90));
+				A_SetAngle(angle-random(-180,180));
+				A_CustomRailgun(0, 10, "6ac7ed", "6ac7ed", RGF_SILENT|RGF_FULLBRIGHT|RGF_EXPLICITANGLE|RGF_NOPIERCING|RGF_CENTERZ,0,165,"DecorativeZaps",0,0,random(222,444),20,0,0,"LaserBall",0,110);
+				A_SetPitch(pitch+random(-90,90));
+				A_SetAngle(angle-random(-180,180));
+				A_CustomRailgun(0,0, "6ac7ed", "6ac7ed", RGF_SILENT|RGF_FULLBRIGHT|RGF_EXPLICITANGLE|RGF_NOPIERCING|RGF_CENTERZ,0,165,"DecorativeZaps",0,0,random(222,333),20,0,0,"LaserBall",0,220);
+			}
+			W1RL STUVWX 1 Bright
+			{	
+				A_SetRoll(roll-5);
+				A_SetAngle(angle+15);
+				A_Explode(random(1,3),30*scalex);
+				A_SpawnItemEx("VortexOrbiter",(scalex*60),(scaley*60),random(-45,45),0,0,0,0,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*60),(scaley*60),random(-45,45),0,0,0,90,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*60),(scaley*60),random(-45,45),0,0,0,180,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*60),(scaley*60),random(-45,45),0,0,0,270,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*60),(scaley*60),random(-45,45),0,0,0,0,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*60),(scaley*60),random(-45,45),0,0,0,90,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*60),(scaley*60),random(-45,45),0,0,0,180,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*60),(scaley*60),random(-45,45),0,0,0,270,SXF_SETTRACER | SXF_ORIGINATOR );
+			}
+			W1RL Y 1 Bright 
+			{
+				A_Explode(2*scalex,50*scalex);
+				A_SpawnItemEx("VortexSparklies",random(-4,4),random(-4,4),1,-2,random(-3,1),random(8,15));
+				A_SpawnItemEx("VortexSparklies",random(-4,4),random(-4,4),1,-2,random(-3,1),random(8,15));
+				A_RadiusThrust(-650*scalex,100*scalex,RTF_AFFECTSOURCE|RTF_THRUSTZ);
+				A_GiveInventory("Mana1",1);
+				A_SetPitch(pitch+random(-90,90));
+				A_SetAngle(angle-random(-180,180));
+				A_CustomRailgun(0, 10, "6ac7ed", "6ac7ed", RGF_SILENT|RGF_FULLBRIGHT|RGF_EXPLICITANGLE|RGF_NOPIERCING|RGF_CENTERZ,0,165,"DecorativeZaps",0,0,random(222,444),20,0,0,"LaserBall",0,110);
+				A_SetPitch(pitch+random(-90,90));
+				A_SetAngle(angle-random(-180,180));
+				A_CustomRailgun(0,0, "6ac7ed", "6ac7ed", RGF_SILENT|RGF_FULLBRIGHT|RGF_EXPLICITANGLE|RGF_NOPIERCING|RGF_CENTERZ,0,165,"DecorativeZaps",0,0,random(222,333),20,0,0,"LaserBall",0,220);
+			}
+			W1RL A 0 A_JumpIfInventory("Mana1", 36, "VortexDies") //run this loop twice
+			Loop
+		VortexDies:
+			W1RL YXWVUTSRQPONMLKJIHGFEDCBA 1 Bright
+			{	
+				A_GiveInventory("Mana1",1);
+				A_SetScale(scalex-0.09,scaley-0.09);
+				A_SetRoll(roll+15);
+				A_SetAngle(angle+15);
+				A_Explode(2,30*scalex);
+				A_SpawnItemEx("VortexSparklies",random(-4,4),random(-4,4),1,-2,random(-3,1),random(3,7));
+				A_RadiusThrust(-300*scalex,60*scalex,RTF_AFFECTSOURCE|RTF_THRUSTZ);
+				A_SetPitch(pitch+random(-90,90));
+				A_SetAngle(angle-random(-180,180));
+				A_SpawnItemEx("VortexOrbiter",(scalex*55),(scaley*55),random(-45,45),0,0,0,0,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*55),(scaley*55),random(-45,45),0,0,0,90,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*55),(scaley*55),random(-45,45),0,0,0,180,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*55),(scaley*55),random(-45,45),0,0,0,270,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*55),(scaley*55),random(-45,45),0,0,0,0,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*55),(scaley*55),random(-45,45),0,0,0,90,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*55),(scaley*55),random(-45,45),0,0,0,180,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*55),(scaley*55),random(-45,45),0,0,0,270,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_CustomRailgun(0,0,"6ac7ed", "6ac7ed", RGF_SILENT|RGF_FULLBRIGHT|RGF_EXPLICITANGLE|RGF_NOPIERCING|RGF_CENTERZ,0,165,"DecorativeZaps",0,0,random(122,222),20,0,0,"LaserBall",0,270);
+			}
+			SUCC A 0 A_JumpIfInventory("Mana1", 100, "Death")
+			Loop
+		Death:
+			TNT1 A 0 A_Stopsound(6)
+			TNT1 A 0 {A_Playsound("VortexEnd", 5, 1.5,false,ATTN_NONE); A_KillChildren("Normal",KILS_FOILINVUL|KILS_KILLMISSILES);}
+			NOVA ABCDEFGHIJKLMNOPQR 1 Bright A_SpawnItemEx("VortexSparklies",random(-4,4),random(-4,4),1,-2,random(-3,1),random(3,7))
+			Stop
+  }
+}
+
+Actor CalicusVortexPlus  //You upgraded this bloody thing!? You monster!!
+{
+	Radius 16
+	Height 30
+	Damage 5
+	Health 9899
+	Speed 0
+	Scale 0.1
+	Damagetype "Astral"
+	Renderstyle Add
+	Alpha 1 //0.8
+	+NOGRAVITY
+	+NOCLIP
+	+INVULNERABLE
+	+FORCERADIUSDMG
+	+NOBLOCKMAP
+	+RIPPER
+	+ROLLSPRITE
+	+ROLLCENTER
+	+FORCEPAIN
+	+DONTBLAST
+	+EXTREMEDEATH
+	+STANDSTILL
+	-SOLID
+	-SHOOTABLE
+	States
+	{
+		Spawn:
+			TNT1 A 0 Nodelay A_GiveInventory("Mana1",1)
+			TNT1 A 9 A_SpawnItemEx("VortexSparklies",random(-4,4),random(-4,4),1,-2,random(-3,1),random(3,7))
+			TNT1 A 0 A_JumpIfInventory("Mana1", 2, "VortexGo")
+			Loop
+		VortexGo:
+			TNT1 A 0 
+			{	
+				A_PlaySound("VortexOpen", 0, 1.6,false,ATTN_NONE);
+				A_Playsound("VortexLoop", 6, 0.9,true,ATTN_NONE);
+			}
+			Goto VortexStarts
+		VortexStarts:
+			TNT1 A 0 A_GiveInventory("Mana1",1)
+			NOVA RQPONMLKJIHGFEDCBA 1 A_SpawnItemEx("VortexSparklies",random(-4,4),random(-4,4),1,-2,random(-3,1),random(3,7))
+			Goto VortexForm
+		VortexForm:
+			W1RL ABCDEF 1 Bright
+			{	
+				A_SetScale(scalex+0.025,scaley+0.025);
+				A_SetRoll(roll-5);
+				A_SetAngle(angle+15);
+				A_SpawnItemEx("VortexOrbiter",(scalex*30),(scaley*30),random(-45,45),0,3,0,0,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*30),(scaley*30),random(-45,45),0,3,0,90,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*30),(scaley*30),random(-45,45),0,3,0,180,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*30),(scaley*30),random(-45,45),0,3,0,270,SXF_SETTRACER | SXF_ORIGINATOR );
+			}
+			W1RL F 0 Bright 
+			{
+				A_Explode(1,30*scalex);
+				A_SpawnItemEx("VortexSparklies",random(-4,4),random(-4,4),1,-2,random(-3,1),random(8,15));
+				A_RadiusThrust(-200*scalex,55*scalex,RTF_AFFECTSOURCE|RTF_THRUSTZ);
+				A_GiveInventory("Mana1",1);
+				A_SpawnItemEx("RoflBocchiPlus",random(20,60),0,40,0,0,0,0,SXF_SETMASTER);
+				A_Stop;
+			}
+			W1RL GHIJKL 1 Bright
+			{
+				A_SetScale(scalex+0.025,scaley+0.025);
+				A_SetRoll(roll-5);
+				A_SetAngle(angle+15);
+				A_Explode(random(0,1),30*scalex);
+				A_SpawnItemEx("VortexOrbiter",(scalex*40),(scaley*40),random(-45,45),0,3,0,0,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*40),(scaley*40),random(-45,45),0,3,0,90,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*40),(scaley*40),random(-45,45),0,3,0,180,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*40),(scaley*40),random(-45,45),0,3,0,270,SXF_SETTRACER | SXF_ORIGINATOR );
+			}
+			W1RL L 0 Bright 
+			{
+				A_Explode(2,30*scalex);
+				A_SpawnItemEx("VortexSparklies",random(-4,4),random(-4,4),1,-2,random(-3,1),random(8,15));
+				A_RadiusThrust(-200*scalex,55*scalex,RTF_AFFECTSOURCE|RTF_THRUSTZ);
+				A_GiveInventory("Mana1",1);
+				A_SpawnItemEx("RoflBocchiPlus",random(20,60),0,40,0,0,0,0,SXF_SETMASTER);
+			}
+			W1RL MNOPQR 1 Bright
+			{	
+				A_SetScale(scalex+0.025,scaley+0.025);
+				A_SetRoll(roll-5);
+				A_SetAngle(angle+15);
+				A_Explode(random(0,1),30*scalex);
+				A_SpawnItemEx("VortexOrbiter",(scalex*50),(scaley*50),random(-45,45),0,0,0,0,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*50),(scaley*50),random(-45,45),0,0,0,90,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*50),(scaley*50),random(-45,45),0,0,0,180,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*50),(scaley*50),random(-45,45),0,0,0,270,SXF_SETTRACER | SXF_ORIGINATOR );
+			}
+			W1RL R 0 Bright 
+			{
+				A_Explode(2,30*scalex);
+				A_SpawnItemEx("VortexSparklies",random(-4,4),random(-4,4),1,-2,random(-3,1),random(8,15));
+				A_RadiusThrust(-200*scalex,55*scalex,RTF_AFFECTSOURCE|RTF_THRUSTZ);
+				A_GiveInventory("Mana1",1);
+				A_SpawnItemEx("RoflBocchiPlus",random(20,60),0,40,0,0,0,0,SXF_SETMASTER);
+			}
+			W1RL STUVWX 1 Bright
+			{	
+				A_SetScale(scalex+0.025,scaley+0.025);
+				A_SetRoll(roll-5);
+				A_SetAngle(angle+15);
+				A_Explode(random(0,1),30*scalex);
+				A_SpawnItemEx("VortexOrbiter",(scalex*50),(scaley*50),random(-45,45),0,0,0,0,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*50),(scaley*50),random(-45,45),0,0,0,90,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*50),(scaley*50),random(-45,45),0,0,0,180,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*50),(scaley*50),random(-45,45),0,0,0,270,SXF_SETTRACER | SXF_ORIGINATOR );
+			}
+			W1RL Y 1 Bright 
+			{
+				A_Explode(1,30*scalex);
+				A_SpawnItemEx("VortexSparklies",random(-4,4),random(-4,4),1,-2,random(-3,1),random(8,15));
+				A_RadiusThrust(-200*scalex,55*scalex,RTF_AFFECTSOURCE|RTF_THRUSTZ);
+				A_GiveInventory("Mana1",1);
+				A_SpawnItemEx("RoflBocchiPlus",random(20,60),0,40,0,0,0,0,SXF_SETMASTER);
+			}
+			Goto VortexBigger
+		VortexBigger:
+			W1RL ABCDEF 1 Bright
+			{	
+				A_SetScale(scalex+0.04,scaley+0.04);
+				A_SetRoll(roll-5);
+				A_SetAngle(angle+15);
+				A_Explode(random(0,1),30*scalex);
+				A_SpawnItemEx("VortexOrbiter",(scalex*75),(scaley*75),random(-45,45),0,0,0,0,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*75),(scaley*75),random(-45,45),0,0,0,90,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*75),(scaley*75),random(-45,45),0,0,0,180,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*75),(scaley*75),random(-45,45),0,0,0,270,SXF_SETTRACER | SXF_ORIGINATOR );
+			}
+			W1RL F 0 Bright 
+			{
+				A_Explode(1*scalex,40*scalex);
+				A_SpawnItemEx("VortexSparklies",random(-4,4),random(-4,4),1,-2,random(-3,1),random(8,15));
+				A_RadiusThrust(-450*scalex,85*scalex,RTF_AFFECTSOURCE|RTF_THRUSTZ);
+				A_GiveInventory("Mana1",1);
+				A_SpawnItemEx("RoflBocchiPlus",random(20,60),0,40,0,0,0,0,SXF_SETMASTER);
+			}
+			W1RL GHIJKL 1 Bright
+			{
+				A_SetScale(scalex+0.04,scaley+0.04);
+				A_SetRoll(roll-5);
+				A_SetAngle(angle+15);
+				A_Explode(random(0,1),30*scalex);
+				A_SpawnItemEx("VortexOrbiter",(scalex*75),(scaley*75),random(-45,45),0,0,0,0,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*75),(scaley*75),random(-45,45),0,0,0,90,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*75),(scaley*75),random(-45,45),0,0,0,180,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*75),(scaley*75),random(-45,45),0,0,0,270,SXF_SETTRACER | SXF_ORIGINATOR );
+			}
+			W1RL L 0 Bright 
+			{
+				A_Explode(1*scalex,40*scalex);
+				A_SpawnItemEx("VortexSparklies",random(-4,4),random(-4,4),1,-2,random(-3,1),random(8,15));
+				A_RadiusThrust(-450*scalex,85*scalex,RTF_AFFECTSOURCE|RTF_THRUSTZ);
+				A_GiveInventory("Mana1",1);
+				A_SpawnItemEx("RoflBocchiPlus",random(20,60),0,40,0,0,0,0,SXF_SETMASTER);
+			}
+			W1RL MNOPQR 1 Bright
+			{	
+				A_SetScale(scalex+0.04,scaley+0.04);
+				A_SetRoll(roll-5);
+				A_SetAngle(angle+15);
+				A_Explode(random(0,1),30*scalex);
+				A_SpawnItemEx("VortexOrbiter",(scalex*75),(scaley*75),random(-45,45),0,0,0,0,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*75),(scaley*75),random(-45,45),0,0,0,90,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*75),(scaley*75),random(-45,45),0,0,0,180,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*75),(scaley*75),random(-45,45),0,0,0,270,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*75),(scaley*75),random(-45,45),0,0,0,0,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*75),(scaley*75),random(-45,45),0,0,0,90,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*75),(scaley*75),random(-45,45),0,0,0,180,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*75),(scaley*75),random(-45,45),0,0,0,270,SXF_SETTRACER | SXF_ORIGINATOR );
+			}
+			W1RL R 0 Bright 
+			{
+				A_Explode(1*scalex,40*scalex);
+				A_SpawnItemEx("VortexSparklies",random(-4,4),random(-4,4),1,-2,random(-3,1),random(8,15));
+				A_RadiusThrust(-450*scalex,85*scalex,RTF_AFFECTSOURCE|RTF_THRUSTZ);
+				A_GiveInventory("Mana1",1);
+				A_SpawnItemEx("RoflBocchiPlus",random(20,60),0,40,0,0,0,0,SXF_SETMASTER);
+			}
+			W1RL STUVWX 1 Bright
+			{	
+				A_SetScale(scalex+0.04,scaley+0.04);
+				A_SetRoll(roll-5);
+				A_SetAngle(angle+15);
+				A_Explode(random(0,1),30*scalex);
+				A_SpawnItemEx("VortexOrbiter",(scalex*75),(scaley*75),random(-45,45),0,0,0,0,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*75),(scaley*75),random(-45,45),0,0,0,90,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*75),(scaley*75),random(-45,45),0,0,0,180,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*75),(scaley*75),random(-45,45),0,0,0,270,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*75),(scaley*75),random(-45,45),0,0,0,0,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*75),(scaley*75),random(-45,45),0,0,0,90,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*75),(scaley*75),random(-45,45),0,0,0,180,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*75),(scaley*75),random(-45,45),0,0,0,270,SXF_SETTRACER | SXF_ORIGINATOR );
+				
+			}
+			W1RL Y 1 Bright 
+			{
+				A_Explode(1*scalex,40*scalex);
+				A_SpawnItemEx("VortexSparklies",random(-4,4),random(-4,4),1,-2,random(-3,1),random(8,15));
+				A_SpawnItemEx("VortexSparklies",random(-4,4),random(-4,4),1,-2,random(-3,1),random(8,15));
+				A_RadiusThrust(-450*scalex,85*scalex,RTF_AFFECTSOURCE|RTF_THRUSTZ);
+				A_GiveInventory("Mana1",1);
+			}
+			W1RL A 0 A_JumpIfInventory("Mana1", 24, "VortexPeak") //run this loop twice
+			Loop
+		VortexPeak:
+			W1RL ABCDEF 1 Bright
+			{	
+				A_SetRoll(roll-5);
+				A_SetAngle(angle+15);
+				A_Explode(random(1,3),30*scalex);
+				A_SpawnItemEx("VortexOrbiter",(scalex*60),(scaley*60),random(-45,45),0,0,0,0,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*60),(scaley*60),random(-45,45),0,0,0,90,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*60),(scaley*60),random(-45,45),0,0,0,180,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*60),(scaley*60),random(-45,45),0,0,0,270,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*60),(scaley*60),random(-45,45),0,0,0,0,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*60),(scaley*60),random(-45,45),0,0,0,90,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*60),(scaley*60),random(-45,45),0,0,0,180,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*60),(scaley*60),random(-45,45),0,0,0,270,SXF_SETTRACER | SXF_ORIGINATOR );
+			}
+			W1RL F 0 Bright 
+			{
+				A_Explode(2*scalex,50*scalex);
+				A_SpawnItemEx("VortexSparklies",random(-4,4),random(-4,4),1,-2,random(-3,1),random(8,15));
+				A_SpawnItemEx("VortexSparklies",random(-4,4),random(-4,4),1,-2,random(-3,1),random(8,15));
+				A_RadiusThrust(-650*scalex,100*scalex,RTF_AFFECTSOURCE|RTF_THRUSTZ);
+				A_GiveInventory("Mana1",1);
+				A_SetPitch(pitch+random(-90,90));
+				A_SetAngle(angle-random(-180,180));
+				A_CustomRailgun(0, 10, "6ac7ed", "6ac7ed", RGF_SILENT|RGF_FULLBRIGHT|RGF_EXPLICITANGLE|RGF_NOPIERCING|RGF_CENTERZ,0,265,"DecorativeZaps",0,0,random(222,444),20,0,0,"LaserBall",0,110);
+				A_SetPitch(pitch+random(-90,90));
+				A_SetAngle(angle-random(-180,180));
+				A_CustomRailgun(0,0, "6ac7ed", "6ac7ed", RGF_SILENT|RGF_FULLBRIGHT|RGF_EXPLICITANGLE|RGF_NOPIERCING|RGF_CENTERZ,0,265,"DecorativeZaps",0,0,random(222,333),20,0,0,"LaserBall",0,220);
+			}
+			W1RL GHIJKL 1 Bright
+			{
+				A_SetRoll(roll-5);
+				A_SetAngle(angle+15);
+				A_Explode(random(1,3),30*scalex);
+				A_SpawnItemEx("VortexOrbiter",(scalex*60),(scaley*60),random(-45,45),0,0,0,0,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*60),(scaley*60),random(-45,45),0,0,0,90,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*60),(scaley*60),random(-45,45),0,0,0,180,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*60),(scaley*60),random(-45,45),0,0,0,270,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*60),(scaley*60),random(-45,45),0,0,0,0,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*60),(scaley*60),random(-45,45),0,0,0,90,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*60),(scaley*60),random(-45,45),0,0,0,180,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*60),(scaley*60),random(-45,45),0,0,0,270,SXF_SETTRACER | SXF_ORIGINATOR );
+			}
+			W1RL L 0 Bright 
+			{
+				A_Explode(2*scalex,50*scalex);
+				A_SpawnItemEx("VortexSparklies",random(-4,4),random(-4,4),1,-2,random(-3,1),random(8,15));
+				A_SpawnItemEx("VortexSparklies",random(-4,4),random(-4,4),1,-2,random(-3,1),random(8,15));
+				A_RadiusThrust(-650*scalex,100*scalex,RTF_AFFECTSOURCE|RTF_THRUSTZ);
+				A_GiveInventory("Mana1",1);
+				A_SetPitch(pitch+random(-90,90));
+				A_SetAngle(angle-random(-180,180));
+				A_CustomRailgun(0, 10, "6ac7ed", "6ac7ed", RGF_SILENT|RGF_FULLBRIGHT|RGF_EXPLICITANGLE|RGF_NOPIERCING|RGF_CENTERZ,0,365,"DecorativeZaps",0,0,random(222,444),20,0,0,"LaserBall",0,110);
+				A_SetPitch(pitch+random(-90,90));
+				A_SetAngle(angle-random(-180,180));
+				A_CustomRailgun(0,0, "6ac7ed", "6ac7ed", RGF_SILENT|RGF_FULLBRIGHT|RGF_EXPLICITANGLE|RGF_NOPIERCING|RGF_CENTERZ,0,365,"DecorativeZaps",0,0,random(222,333),20,0,0,"LaserBall",0,220);
+			}
+			W1RL MNOPQR 1 Bright
+			{	
+				A_SetRoll(roll-5);
+				A_SetAngle(angle+15);
+				A_Explode(random(1,3),30*scalex);
+				A_SpawnItemEx("VortexOrbiter",(scalex*60),(scaley*60),random(-45,45),0,0,0,0,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*60),(scaley*60),random(-45,45),0,0,0,90,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*60),(scaley*60),random(-45,45),0,0,0,180,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*60),(scaley*60),random(-45,45),0,0,0,270,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*60),(scaley*60),random(-45,45),0,0,0,0,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*60),(scaley*60),random(-45,45),0,0,0,90,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*60),(scaley*60),random(-45,45),0,0,0,180,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*60),(scaley*60),random(-45,45),0,0,0,270,SXF_SETTRACER | SXF_ORIGINATOR );
+			}
+			W1RL R 0 Bright 
+			{
+				A_Explode(2*scalex,50*scalex);
+				A_SpawnItemEx("VortexSparklies",random(-4,4),random(-4,4),1,-2,random(-3,1),random(8,15));
+				A_SpawnItemEx("VortexSparklies",random(-4,4),random(-4,4),1,-2,random(-3,1),random(8,15));
+				A_RadiusThrust(-650*scalex,100*scalex,RTF_AFFECTSOURCE|RTF_THRUSTZ);
+				A_GiveInventory("Mana1",1);
+				A_SetPitch(pitch+random(-90,90));
+				A_SetAngle(angle-random(-180,180));
+				A_CustomRailgun(0, 10, "6ac7ed", "6ac7ed", RGF_SILENT|RGF_FULLBRIGHT|RGF_EXPLICITANGLE|RGF_NOPIERCING|RGF_CENTERZ,0,165,"DecorativeZaps",0,0,random(222,444),20,0,0,"LaserBall",0,110);
+				A_SetPitch(pitch+random(-90,90));
+				A_SetAngle(angle-random(-180,180));
+				A_CustomRailgun(0,0, "6ac7ed", "6ac7ed", RGF_SILENT|RGF_FULLBRIGHT|RGF_EXPLICITANGLE|RGF_NOPIERCING|RGF_CENTERZ,0,165,"DecorativeZaps",0,0,random(222,333),20,0,0,"LaserBall",0,220);
+			}
+			W1RL STUVWX 1 Bright
+			{	
+				A_SetRoll(roll-5);
+				A_SetAngle(angle+15);
+				A_Explode(random(1,3),30*scalex);
+				A_SpawnItemEx("VortexOrbiter",(scalex*60),(scaley*60),random(-45,45),0,0,0,0,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*60),(scaley*60),random(-45,45),0,0,0,90,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*60),(scaley*60),random(-45,45),0,0,0,180,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*60),(scaley*60),random(-45,45),0,0,0,270,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*60),(scaley*60),random(-45,45),0,0,0,0,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*60),(scaley*60),random(-45,45),0,0,0,90,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*60),(scaley*60),random(-45,45),0,0,0,180,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*60),(scaley*60),random(-45,45),0,0,0,270,SXF_SETTRACER | SXF_ORIGINATOR );
+			}
+			W1RL Y 1 Bright 
+			{
+				A_Explode(2*scalex,50*scalex);
+				A_SpawnItemEx("VortexSparklies",random(-4,4),random(-4,4),1,-2,random(-3,1),random(8,15));
+				A_SpawnItemEx("VortexSparklies",random(-4,4),random(-4,4),1,-2,random(-3,1),random(8,15));
+				A_RadiusThrust(-650*scalex,100*scalex,RTF_AFFECTSOURCE|RTF_THRUSTZ);
+				A_GiveInventory("Mana1",1);
+				A_SetPitch(pitch+random(-90,90));
+				A_SetAngle(angle-random(-180,180));
+				A_CustomRailgun(0, 10, "6ac7ed", "6ac7ed", RGF_SILENT|RGF_FULLBRIGHT|RGF_EXPLICITANGLE|RGF_NOPIERCING|RGF_CENTERZ,0,165,"DecorativeZaps",0,0,random(222,444),20,0,0,"LaserBall",0,110);
+				A_SetPitch(pitch+random(-90,90));
+				A_SetAngle(angle-random(-180,180));
+				A_CustomRailgun(0,0, "6ac7ed", "6ac7ed", RGF_SILENT|RGF_FULLBRIGHT|RGF_EXPLICITANGLE|RGF_NOPIERCING|RGF_CENTERZ,0,165,"DecorativeZaps",0,0,random(222,333),20,0,0,"LaserBall",0,220);
+			}
+			W1RL A 0 A_JumpIfInventory("Mana1", 36, "VortexDies") //run this loop twice
+			Loop
+		VortexDies:
+			W1RL YXWVUTSRQPONMLKJIHGFEDCBA 1 Bright
+			{	
+				A_GiveInventory("Mana1",1);
+				A_SetScale(scalex-0.09,scaley-0.09);
+				A_SetRoll(roll+15);
+				A_SetAngle(angle+15);
+				A_Explode(2,30*scalex);
+				A_SpawnItemEx("VortexSparklies",random(-4,4),random(-4,4),1,-2,random(-3,1),random(3,7));
+				A_RadiusThrust(-300*scalex,60*scalex,RTF_AFFECTSOURCE|RTF_THRUSTZ);
+				A_SetPitch(pitch+random(-90,90));
+				A_SetAngle(angle-random(-180,180));
+				A_SpawnItemEx("VortexOrbiter",(scalex*55),(scaley*55),random(-45,45),0,0,0,0,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*55),(scaley*55),random(-45,45),0,0,0,90,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*55),(scaley*55),random(-45,45),0,0,0,180,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*55),(scaley*55),random(-45,45),0,0,0,270,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*55),(scaley*55),random(-45,45),0,0,0,0,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*55),(scaley*55),random(-45,45),0,0,0,90,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*55),(scaley*55),random(-45,45),0,0,0,180,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_SpawnItemEx("VortexOrbiter",(scalex*55),(scaley*55),random(-45,45),0,0,0,270,SXF_SETTRACER | SXF_ORIGINATOR );
+				A_CustomRailgun(0,0,"6ac7ed", "6ac7ed", RGF_SILENT|RGF_FULLBRIGHT|RGF_EXPLICITANGLE|RGF_NOPIERCING|RGF_CENTERZ,0,165,"DecorativeZaps",0,0,random(122,222),20,0,0,"LaserBall",0,270);
+			}
+			SUCC A 0 A_JumpIfInventory("Mana1", 100, "Death")
+			Loop
+		Death:
+			TNT1 A 0 A_Stopsound(6)
+			TNT1 A 0 A_Playsound("VortexEnd", 5, 1.5,false,ATTN_NONE)
+			NOVA ABCDEFGHIJK 1 Bright A_SpawnItemEx("VortexSparklies",random(-4,4),random(-4,4),1,-2,random(-3,1),random(3,7))
+			NOVA L 1 Bright {
+			While (CountInv("Mana2")<180)
+			{
+				A_GiveInventory("Walpurgisnacht",random(1,151));
+				A_SpawnItemEx("CruxExplodeBlue",0,0,12,sqrt(22500-((CountInv("Walpurgisnacht")-1)*(CountInv("Walpurgisnacht")-1)))*.0667,0,(CountInv("Walpurgisnacht")-1)*.0667,2*CountInv("Mana2"));
+				A_SpawnItemEx("CruxExplodeBlue",0,0,12,sqrt(22500-((CountInv("Walpurgisnacht")-1)*(CountInv("Walpurgisnacht")-1)))*.0667,0,((CountInv("Walpurgisnacht")-1)*.0667)*(-1),2*CountInv("Mana2"));
+				A_GiveInventory("Mana2",1);
+				A_TakeInventory("Walpurgisnacht");
+			}
+			A_Setscale(scalex+0.2,scaley+0.2);
+			A_Explode (180,340,0,true,180);
+			}
+			NOVA MNOPQR 1 Bright A_SpawnItemEx("VortexSparklies",random(-4,4),random(-4,4),1,-2,random(-3,1),random(3,7))
+			Stop	
+	}
+}
+
+ACTOR RoflBocchi //An unholy hybrid of Bocchi and a Roflcopter. What has science done!?
+{
+	Height 12
+	Radius 12
+	Mass 60
+	Damage 4
+	RenderStyle Translucent
+	Speed 30
+	Alpha 1
+	XScale 0.3
+	YScale 0.3
+	FloatBobStrength 1.0
+	FloatBobPhase 1 
+	Deathsound "RockSmasher"
+	DamageType "Smash"
+	BounceType Grenade
+	BounceCount 2
+	BounceFactor 0.8
+	WallBounceFactor 0.4
+	Deathsound "RockSmasher"
+	Gravity 1.4
+	//+MISSILE
+	+DONTREFLECT
+	+FRIENDLY
+	+NOTIMEFREEZE
+	+NOGRAVITY
+	+FLOATBOB
+	+FORCERADIUSDMG
+	+ICESHATTER
+	+SKYEXPLODE
+	+NONSHOOTABLE
+	+THRUSPECIES
+	+MTHRUSPECIES
+	+BLOODSPLATTER
+	+EXTREMEDEATH
+	+STEPMISSILE
+	+FORCEXYBILLBOARD
+	+HITTRACER
+	+ROLLSPRITE
+	+ROLLCENTER
+	+SOLID
+	States	
+	{		
+		Spawn:
+			RCK7 A 0
+			RCK7 A 0 A_SetFloat
+			Goto Hover
+		Hover:
+			RCK9 A 0 A_Jump(88,"Hover2")
+			RCK9 BCDEFGH 3 Bright 
+			{
+				A_Warp(AAPTR_MASTER,80,0,10,17,WARPF_USECALLERANGLE|WARPF_INTERPOLATE|WARPF_NOCHECKPOSITION);
+			}
+			RCK9 A 0 A_CheckProximity("Bounce.Floor","CalicusVortex",800,1)
+			Loop
+		Hover2:
+			RCK9 A 0 A_Jump(88,"Hover3")
+			RCK9 BCDEFGH 3 Bright 
+			{
+				A_Warp(AAPTR_MASTER,135,0,10,22,WARPF_USECALLERANGLE|WARPF_INTERPOLATE|WARPF_NOCHECKPOSITION);
+			}
+			RCK9 A 0 A_CheckProximity("Bounce.Floor","CalicusVortex",800,1)
+			Loop
+		Hover3:
+			RCK9 A 0 A_Jump(88,"Hover")
+			RCK9 BCDEFGH 3 Bright 
+			{
+				A_Warp(AAPTR_MASTER,180,0,10,26,WARPF_USECALLERANGLE|WARPF_INTERPOLATE|WARPF_NOCHECKPOSITION);
+			}
+			RCK9 A 0 A_CheckProximity("Bounce.Floor","CalicusVortex",800,1)
+			RCK9 A 0 A_GiveInventory("LightningCheck",1)
+			RCK9 A 0 A_JumpIfInventory("LightningCheck",2,"Bounce.Floor")
+			Loop
+		Flight:
+			RCK9 A 0 A_JumpIfInventory("Walpurgisnacht",40,"XDeath")
+			RCK9 ABCDEFGHIJ 3  
+			{
+			if((sqrt((sqrt((velx * velx)+(vely * vely)) * sqrt((velx * velx)+(vely * vely)))+(velz * velz))) >= 39)
+				{	//While the speed is above 38, slows it down since the bounce goes a bit wild sometimes!
+					A_ScaleVelocity(0.8);
+				}}
+			Loop
+		Bounce.Floor:
+			RCK9 A 0 A_CheckProximity("Bounce.Floor","CalicusVortexPlus",800,1)
+			RCK4 A 0 A_JumpIfInventory("Walpurgisnacht",40,"Death")
+			RCK4 A 0 A_Changeflag("NOGRAVITY",false)
+			RCK4 A 0
+			{
+			A_GiveInventory("Walpurgisnacht",10); 
+			A_Explode ((random(40,50)-(CountInv("Walpurgisnacht"))), 90, 0, 0, 90,0,0,"None","Smash");
+			While(CountInv("Mana1") < 6)
+			{	
+				A_SpawnItemEx("DirtWalp",random(15,30),0,Frandom(1,30),Frandom(1,5),0,Frandom(1,6),60*CountInv("Mana1"));
+				A_GiveInventory("Mana1",1);
+			}
+			A_SpawnItemEx("SprayingDirt");
+			A_TakeInventory("Mana1");
+			ThrustThingZ(0,20,0,1);
+			ThrustThing((angle*256/360) + randompick(-10,10,4,-4),6,0,0);
+			A_StartSound("RockImpactor",CHAN_AUTO,CHANF_OVERLAP,1,ATTN_NORM,1);
+			}
+			Goto Flight
+		Bounce.Wall:
+			RCK4 A 0 A_JumpIfInventory("Walpurgisnacht",40,"Death")
+			RCK4 A 0 A_Changeflag("NOGRAVITY",false)
+			RCK4 A 0
+			{
+			A_GiveInventory("Walpurgisnacht",10); 
+			A_Explode ((random(40,50)-(CountInv("Walpurgisnacht"))), 90, 0, 0, 90,0,0,"None","Smash");
+			While(CountInv("Mana1") < 6)
+			{	
+				A_SpawnItemEx("DirtWalp",random(15,30),0,Frandom(1,30),Frandom(1,5),0,Frandom(1,6),60*CountInv("Mana1"));
+				A_GiveInventory("Mana1",1);
+			}
+			A_TakeInventory("Mana1");
+			ThrustThing((angle*256/360 + 128) + randompick(-10,10,4,-4),4,0,0);
+			A_StartSound("RockImpactor",CHAN_AUTO,CHANF_OVERLAP,1,ATTN_NORM,1);
+			}
+			Goto Flight
+		Bounce.Actor:
+			RCK4 A 0 A_JumpIfInventory("Walpurgisnacht",40,"Death")
+			RCK4 A 0 A_Changeflag("NOGRAVITY",false)
+			RCK4 A 0
+			{
+			A_Stop;
+			A_GiveInventory("Walpurgisnacht",10); 
+			A_Explode ((random(40,50)-(CountInv("Walpurgisnacht"))), 90, 0, 0, 90,0,0,"None","Smash");
+			While(CountInv("Mana1") < 6)
+			{	
+				A_SpawnItemEx("DirtWalp",random(15,30),0,Frandom(1,30),Frandom(1,5),0,Frandom(1,6),60*CountInv("Mana1"));
+				A_GiveInventory("Mana1",1);
+			}
+			A_TakeInventory("Mana1");
+			A_SpawnItemEx("SprayingDirt");
+			A_ChangeVelocity (-11,random(-2,2),5,CVF_RELATIVE,AAPTR_TRACER);
+			ThrustThingZ(0,26,0,1);
+			ThrustThing((angle*256/360)+randompick(128,128,128,128,64,192),7,1,0);
+			A_StartSound("RockImpactor",CHAN_AUTO,CHANF_OVERLAP,1,ATTN_NORM,1);
+			}
+			Goto Flight
+		Death:
+			R0CK S 2 
+			{
+				A_RadiusThrust(275, 25, RTF_THRUSTZ, 15);
+				A_ChangeVelocity (-9,0,5,CVF_RELATIVE,AAPTR_TRACER);
+				A_StartSound("RockImpactor",CHAN_AUTO,CHANF_OVERLAP,1,ATTN_NORM,1);
+				A_Explode ((random(40,50)-(CountInv("Walpurgisnacht"))), 90, 0, 0, 90,0,0,"None","Smash");
+				While(CountInv("Mana1") < 6)
+				{	
+					A_SpawnItemEx("DirtWalp",random(15,30),0,Frandom(1,30),Frandom(1,5),0,Frandom(1,6),60*CountInv("Mana1"));
+					A_GiveInventory("Mana1",1);
+				}
+				A_SpawnItemEx("SprayingDirt");
+			}
+			R0CK TUVWX 2  
+			Stop
+	}
+}
+
+ACTOR RoflBocchiPlus //Literally 2 lines of code changed but GZDoom crashes if I use Inheritance. Why?!?
+{
+	Height 12
+	Radius 12
+	Mass 60
+	Damage 4
+	RenderStyle Translucent
+	Speed 30
+	Alpha 1
+	XScale 0.3
+	YScale 0.3
+	FloatBobStrength 1.0
+	FloatBobPhase 1 
+	Deathsound "RockSmasher"
+	DamageType "Smash"
+	BounceType Grenade
+	BounceCount 2
+	BounceFactor 0.8
+	WallBounceFactor 0.4
+	Deathsound "RockSmasher"
+	Gravity 1.4
+	//+MISSILE
+	+DONTREFLECT
+	+FRIENDLY
+	+NOTIMEFREEZE
+	+NOGRAVITY
+	+FLOATBOB
+	+FORCERADIUSDMG
+	+ICESHATTER
+	+SKYEXPLODE
+	+NONSHOOTABLE
+	+THRUSPECIES
+	+MTHRUSPECIES
+	+BLOODSPLATTER
+	+EXTREMEDEATH
+	+STEPMISSILE
+	+FORCEXYBILLBOARD
+	+HITTRACER
+	+ROLLSPRITE
+	+ROLLCENTER
+	+SOLID
+	States	
+	{		
+		Spawn:
+			RCK7 A 0
+			RCK7 A 0 A_SetFloat
+			Goto Hover
+		Hover:
+			RCK9 A 0 A_Jump(88,"Hover2")
+			RCK9 BCDEFGH 3 Bright 
+			{
+				A_Warp(AAPTR_MASTER,80,0,10,17,WARPF_USECALLERANGLE|WARPF_INTERPOLATE|WARPF_NOCHECKPOSITION);
+			}
+			RCK9 A 0 A_CheckProximity("Bounce.Floor","CalicusVortexPlus",800,1)
+			Loop
+		Hover2:
+			RCK9 A 0 A_Jump(88,"Hover3")
+			RCK9 BCDEFGH 3 Bright 
+			{
+				A_Warp(AAPTR_MASTER,135,0,10,22,WARPF_USECALLERANGLE|WARPF_INTERPOLATE|WARPF_NOCHECKPOSITION);
+			}
+			RCK9 A 0 A_CheckProximity("Bounce.Floor","CalicusVortexPlus",800,1)
+			Loop
+		Hover3:
+			RCK9 A 0 A_Jump(88,"Hover")
+			RCK9 BCDEFGH 3 Bright 
+			{
+				A_Warp(AAPTR_MASTER,180,0,10,26,WARPF_USECALLERANGLE|WARPF_INTERPOLATE|WARPF_NOCHECKPOSITION);
+			}
+			RCK9 A 0 A_CheckProximity("Bounce.Floor","CalicusVortexPlus",800,1)
+			RCK9 A 0 A_GiveInventory("LightningCheck",1)
+			RCK9 A 0 A_JumpIfInventory("LightningCheck",2,"Bounce.Floor")
+			Loop
+		Flight:
+			RCK9 A 0 A_JumpIfInventory("Walpurgisnacht",40,"XDeath")
+			RCK9 ABCDEFGHIJ 3  
+			{
+			if((sqrt((sqrt((velx * velx)+(vely * vely)) * sqrt((velx * velx)+(vely * vely)))+(velz * velz))) >= 39)
+				{	//While the speed is above 38, slows it down since the bounce goes a bit wild sometimes!
+					A_ScaleVelocity(0.8);
+				}}
+			Loop
+		Bounce.Floor:
+			RCK4 A 0 A_JumpIfInventory("Walpurgisnacht",40,"Death")
+			RCK4 A 0 A_Changeflag("NOGRAVITY",false)
+			RCK4 A 0
+			{
+			A_GiveInventory("Walpurgisnacht",10); 
+			A_Explode ((random(40,50)-(CountInv("Walpurgisnacht"))), 90, 0, 0, 90,0,0,"None","Smash");
+			While(CountInv("Mana1") < 6)
+			{	
+				A_SpawnItemEx("DirtWalp",random(15,30),0,Frandom(1,30),Frandom(1,5),0,Frandom(1,6),60*CountInv("Mana1"));
+				A_GiveInventory("Mana1",1);
+			}
+			A_SpawnItemEx("SprayingDirt");
+			A_TakeInventory("Mana1");
+			ThrustThingZ(0,20,0,1);
+			ThrustThing((angle*256/360) + randompick(-10,10,4,-4),6,0,0);
+			A_StartSound("RockImpactor",CHAN_AUTO,CHANF_OVERLAP,1,ATTN_NORM,1);
+			}
+			Goto Flight
+		Bounce.Wall:
+			RCK4 A 0 A_JumpIfInventory("Walpurgisnacht",40,"Death")
+			RCK4 A 0 A_Changeflag("NOGRAVITY",false)
+			RCK4 A 0
+			{
+			A_GiveInventory("Walpurgisnacht",10); 
+			A_Explode ((random(40,50)-(CountInv("Walpurgisnacht"))), 90, 0, 0, 90,0,0,"None","Smash");
+			While(CountInv("Mana1") < 6)
+			{	
+				A_SpawnItemEx("DirtWalp",random(15,30),0,Frandom(1,30),Frandom(1,5),0,Frandom(1,6),60*CountInv("Mana1"));
+				A_GiveInventory("Mana1",1);
+			}
+			A_TakeInventory("Mana1");
+			ThrustThing((angle*256/360 + 128) + randompick(-10,10,4,-4),4,0,0);
+			A_StartSound("RockImpactor",CHAN_AUTO,CHANF_OVERLAP,1,ATTN_NORM,1);
+			}
+			Goto Flight
+		Bounce.Actor:
+			RCK4 A 0 A_JumpIfInventory("Walpurgisnacht",40,"Death")
+			RCK4 A 0 A_Changeflag("NOGRAVITY",false)
+			RCK4 A 0
+			{
+			A_Stop;
+			A_GiveInventory("Walpurgisnacht",10); 
+			A_Explode ((random(40,50)-(CountInv("Walpurgisnacht"))), 90, 0, 0, 90,0,0,"None","Smash");
+			While(CountInv("Mana1") < 6)
+			{	
+				A_SpawnItemEx("DirtWalp",random(15,30),0,Frandom(1,30),Frandom(1,5),0,Frandom(1,6),60*CountInv("Mana1"));
+				A_GiveInventory("Mana1",1);
+			}
+			A_TakeInventory("Mana1");
+			A_SpawnItemEx("SprayingDirt");
+			A_ChangeVelocity (-11,random(-2,2),5,CVF_RELATIVE,AAPTR_TRACER);
+			ThrustThingZ(0,26,0,1);
+			ThrustThing((angle*256/360)+randompick(128,128,128,128,64,192),7,1,0);
+			A_StartSound("RockImpactor",CHAN_AUTO,CHANF_OVERLAP,1,ATTN_NORM,1);
+			}
+			Goto Flight
+		Death:
+			R0CK S 2 
+			{
+				A_RadiusThrust(275, 25, RTF_THRUSTZ, 15);
+				A_ChangeVelocity (-9,0,5,CVF_RELATIVE,AAPTR_TRACER);
+				A_StartSound("RockImpactor",CHAN_AUTO,CHANF_OVERLAP,1,ATTN_NORM,1);
+				A_Explode ((random(40,50)-(CountInv("Walpurgisnacht"))), 90, 0, 0, 90,0,0,"None","Smash");
+				While(CountInv("Mana1") < 6)
+				{	
+					A_SpawnItemEx("DirtWalp",random(15,30),0,Frandom(1,30),Frandom(1,5),0,Frandom(1,6),60*CountInv("Mana1"));
+					A_GiveInventory("Mana1",1);
+				}
+				A_SpawnItemEx("SprayingDirt");
+			}
+			R0CK TUVWX 2  
+			Stop
+	}
+}
+
+Actor VortexSparklies //OOOH! SPARKLIES!! Used in lots of effects!
+{
+ +NOGRAVITY
+ +NOCLIP
+ +NOINTERACTION
+ +ROLLSPRITE
+ +ROLLCENTER
+ +FORCEXYBILLBOARD
+ +DONTBLAST
+ -SOLID
+ Radius 0
+ Height 0
+ RenderStyle Add
+ Alpha 1.0
+ Scale 0.1
+ States
+ {
+  Spawn:
+   BLUS A 0 Bright 
+   BLUS A 1 Bright {A_FadeOut(0.1);	A_SetRoll(roll+30);}
+   BLUS A 1 Bright A_SetScale(0.1)   
+   BLUS A 1 Bright {A_FadeOut(0.1);	A_SetRoll(roll+30);}  
+   BLUS A 1 Bright A_SetScale(0.15)   
+   BLUS A 1 Bright {A_FadeOut(0.1);	A_SetRoll(roll+30);}
+   BLUS A 1 Bright A_SetScale(0.2)   
+   BLUS A 1 Bright {A_FadeOut(0.1);	A_SetRoll(roll+30);}
+   BLUS A 1 Bright A_SetScale(0.25)   
+   BLUS A 1 Bright {A_FadeOut(0.1);	A_SetRoll(roll+30);}
+   BLUS A 1 Bright A_SetScale(0.3)   
+   BLUS A 1 Bright {A_FadeOut(0.1);	A_SetRoll(roll+30);}  
+   BLUS A 1 Bright A_SetScale(0.35)   
+   BLUS A 1 Bright {A_FadeOut(0.1);	A_SetRoll(roll+30);}
+   BLUS A 1 Bright A_SetScale(0.4)   
+   BLUS A 1 Bright {A_FadeOut(0.1);	A_SetRoll(roll+30);} 
+   BLUS A 1 Bright A_SetScale(0.45)   
+   BLUS A 1 Bright {A_FadeOut(0.1);	A_SetRoll(roll+30);}  
+   BLUS A 1 Bright A_SetScale(0.5)   
+   BLUS A 1 Bright {A_FadeOut(0.1);	A_SetRoll(roll+30);}  	
+ }
+}
+
+Actor VortexSparkliesPhat //A phatter, brighter sparkly; used by orbiters.
+{
+ +NOGRAVITY
+ +NOCLIP
+ +NOINTERACTION
+ +FORCEXYBILLBOARD
+ +ROLLSPRITE
+ +ROLLCENTER
+ -SOLID
+ Radius 0
+ Height 0
+ RenderStyle Add
+ Alpha 1.0
+ Scale 0.1
+ States
+ {
+  Spawn:
+   CRAX A 0 Bright 
+   CRAX A 1 Bright {A_FadeOut(0.1);	A_SetRoll(roll+30);}
+   CRAX A 1 Bright A_SetScale(0.1)   
+   CRAX A 1 Bright {A_FadeOut(0.1);	A_SetRoll(roll+30);}  
+   CRAX A 1 Bright A_SetScale(0.15)   
+   CRAX A 1 Bright {A_FadeOut(0.1);	A_SetRoll(roll+30);}
+   CRAX A 1 Bright A_SetScale(0.2)   
+   CRAX A 1 Bright {A_FadeOut(0.1);	A_SetRoll(roll+30);}
+   CRAX A 1 Bright A_SetScale(0.25)   
+   CRAX A 1 Bright {A_FadeOut(0.1);	A_SetRoll(roll+30);}
+   CRAX A 1 Bright A_SetScale(0.3)   
+   CRAX A 1 Bright {A_FadeOut(0.1);	A_SetRoll(roll+30);}  
+   CRAX A 1 Bright A_SetScale(0.35)   
+   CRAX A 1 Bright {A_FadeOut(0.1);	A_SetRoll(roll+30);}
+   CRAX A 1 Bright A_SetScale(0.4)   
+   CRAX A 1 Bright {A_FadeOut(0.1);	A_SetRoll(roll+30);} 
+   CRAX A 1 Bright A_SetScale(0.45)   
+   CRAX A 1 Bright {A_FadeOut(0.1);	A_SetRoll(roll+30);}  
+   CRAX A 1 Bright A_SetScale(0.5)   
+   CRAX A 1 Bright {A_FadeOut(0.1);	A_SetRoll(roll+30);}  	
+ }
+}
+
+ACTOR YellowSparklies //actually used by the Crusaders Icon of the Defender
+{
+ +NOGRAVITY
+ +NOCLIP
+ +NOINTERACTION
+ +FORCEXYBILLBOARD
+ +ROLLSPRITE
+ +ROLLCENTER
+ -SOLID
+ Radius 0
+ Height 0
+ RenderStyle Add
+ Alpha 0.5
+ Scale 0.1
+ States
+ {
+  Spawn:
+   YGLW A 0 Bright 
+   YGLW A 1 Bright {A_FadeOut(0.05);	A_SetRoll(roll+30);}
+   YGLW A 1 Bright A_SetScale(0.1)   
+   YGLW A 1 Bright {A_FadeOut(0.05);	A_SetRoll(roll+30);}  
+   YGLW A 1 Bright A_SetScale(0.15)   
+   YGLW A 1 Bright {A_FadeOut(0.05);	A_SetRoll(roll+30);}
+   YGLW A 1 Bright A_SetScale(0.2)   
+   YGLW A 1 Bright {A_FadeOut(0.05);	A_SetRoll(roll+30);}
+   YGLW A 1 Bright A_SetScale(0.25)   
+   YGLW A 1 Bright {A_FadeOut(0.05);	A_SetRoll(roll+30);}
+   YGLW A 1 Bright A_SetScale(0.3)   
+   YGLW A 1 Bright {A_FadeOut(0.05);	A_SetRoll(roll+30);}  
+   YGLW A 1 Bright A_SetScale(0.35)   
+   YGLW A 1 Bright {A_FadeOut(0.05);	A_SetRoll(roll+30);}
+   YGLW A 1 Bright A_SetScale(0.4)   
+   YGLW A 1 Bright {A_FadeOut(0.05);	A_SetRoll(roll+30);} 
+   YGLW A 1 Bright A_SetScale(0.45)   
+   YGLW A 1 Bright {A_FadeOut(0.05);	A_SetRoll(roll+30);}  
+   YGLW A 1 Bright A_SetScale(0.5)   
+   YGLW A 1 Bright {A_FadeOut(0.05);	A_SetRoll(roll+30);}  	
+ }
+}
+
+ACTOR YellowCruxTrail : YellowSparklies
+{
+Scale 0.05
+}
+
+ACTOR YellowCruxTrail2 : YellowSparklies //Actually used by Ichival
+{
+Scale 0.15
+Alpha 0.6
+ States
+ {
+  Spawn:
+   YGLW A 0 Bright 
+   YGLW A 1 Bright {A_FadeOut(0.05);	A_SetRoll(roll+30);}
+   YGLW A 1 Bright {A_FadeOut(0.05);	A_SetRoll(roll+30);}  
+   YGLW A 1 Bright {A_FadeOut(0.05);	A_SetRoll(roll+30);} 
+   YGLW A 1 Bright {A_FadeOut(0.05);	A_SetRoll(roll+30);}
+   YGLW A 1 Bright {A_FadeOut(0.05);	A_SetRoll(roll+30);}
+   YGLW A 1 Bright {A_FadeOut(0.05);	A_SetRoll(roll+30);}  
+   YGLW A 1 Bright {A_FadeOut(0.05);	A_SetRoll(roll+30);}
+   YGLW A 1 Bright {A_FadeOut(0.05);	A_SetRoll(roll+30);}  
+   YGLW A 1 Bright {A_FadeOut(0.05);	A_SetRoll(roll+30);}  
+   YGLW A 1 Bright {A_FadeOut(0.05);	A_SetRoll(roll+30);}  
+   Stop
+ }
+
+}
+
+Actor BlueSparklies //OOOH! SPARKLIES!! Used in lots of effects!
+{
+ +NOGRAVITY
+ +NOCLIP
+ +NOINTERACTION
+ +FORCEXYBILLBOARD
+ +ROLLSPRITE
+ +ROLLCENTER
+ -SOLID
+ Radius 0
+ Height 0
+ RenderStyle Add
+ Alpha 1.0
+ Scale 0.03
+ States
+ {
+  Spawn:
+   BLUS A 0 Bright
+   BLUS A 1 Bright {A_FadeOut(0.1);	A_SetRoll(roll+30);}
+   BLUS A 1 Bright 
+   BLUS A 1 Bright {A_FadeOut(0.1);	A_SetRoll(roll+30);}  
+   BLUS A 1 Bright 
+   BLUS A 1 Bright {A_FadeOut(0.1);	A_SetRoll(roll+30);}
+   BLUS A 1 Bright
+   BLUS A 1 Bright {A_FadeOut(0.1);	A_SetRoll(roll+30);}
+   BLUS A 1 Bright 
+   BLUS A 1 Bright {A_FadeOut(0.1);	A_SetRoll(roll+30);}
+   BLUS A 1 Bright 
+   BLUS A 1 Bright {A_FadeOut(0.1);	A_SetRoll(roll+30);}  
+   BLUS A 1 Bright  
+   BLUS A 1 Bright {A_FadeOut(0.1);	A_SetRoll(roll+30);}
+   BLUS A 1 Bright  
+   BLUS A 1 Bright {A_FadeOut(0.1);	A_SetRoll(roll+30);} 
+   BLUS A 1 Bright  
+   BLUS A 1 Bright {A_FadeOut(0.1);	A_SetRoll(roll+30);}  
+   BLUS A 1 Bright  
+   BLUS A 1 Bright {A_FadeOut(0.1);	A_SetRoll(roll+30);}  
+   Stop
+ }
+}
+
+Actor YellowSparklies2 //OOOH! SPARKLIES!! Used in lots of effects!
+{
+ +NOGRAVITY
+ +NOCLIP
+ +NOINTERACTION
+ +FORCEXYBILLBOARD
+ +ROLLSPRITE
+ +ROLLCENTER
+ -SOLID
+ Radius 0
+ Height 0
+ RenderStyle Add
+ Alpha 1.0
+ Scale 0.03
+ States
+ {
+  Spawn:
+   RNBW A 0 Bright
+   RNBW A 1 Bright {A_FadeOut(0.1);	A_SetRoll(roll+30);}
+   RNBW A 1 Bright 
+   RNBW A 1 Bright {A_FadeOut(0.1);	A_SetRoll(roll+30);}  
+   RNBW A 1 Bright 
+   RNBW A 1 Bright {A_FadeOut(0.1);	A_SetRoll(roll+30);}
+   RNBW A 1 Bright
+   RNBW A 1 Bright {A_FadeOut(0.1);	A_SetRoll(roll+30);}
+   RNBW A 1 Bright 
+   RNBW A 1 Bright {A_FadeOut(0.1);	A_SetRoll(roll+30);}
+   RNBW A 1 Bright 
+   RNBW A 1 Bright {A_FadeOut(0.1);	A_SetRoll(roll+30);}  
+   RNBW A 1 Bright  
+   RNBW A 1 Bright {A_FadeOut(0.1);	A_SetRoll(roll+30);}
+   RNBW A 1 Bright  
+   RNBW A 1 Bright {A_FadeOut(0.1);	A_SetRoll(roll+30);} 
+   RNBW A 1 Bright  
+   RNBW A 1 Bright {A_FadeOut(0.1);	A_SetRoll(roll+30);}  
+   RNBW A 1 Bright  
+   RNBW A 1 Bright {A_FadeOut(0.1);	A_SetRoll(roll+30);}  
+   Stop
+ }
+}
+
+Actor VortexOrbiter : VortexSparklies //special sparklies showing the Vortex Border
+{
+ Scale 0.25
+ Speed 1
+ States
+ {
+  Spawn:
+   CRAX A 0 Bright Nodelay A_ChangeVelocity(random(-2,2),-10,-2,CVF_RELATIVE|CVF_REPLACE)
+   CRAX A 0 Bright A_Warp(AAPTR_TRACER,GetDistance(false,AAPTR_TRACER),GetDistance(false,AAPTR_TRACER),(GetZAt(0,0,0,GZF_NOPORTALS,AAPTR_TRACER))+random(10,50),10,WARPF_USECALLERANGLE|WARPF_NOCHECKPOSITION)
+   CRAX A 1 Bright {A_FadeOut(0.1);	A_SetRoll(roll+random(-40,40)); A_FaceTarget(0,0,0,0,FAF_TOP,0);}
+   CRAX A 1 Bright A_SetScale(0.225)
+   CRAX A 1 Bright {A_FadeOut(0.1);	A_SetRoll(roll+random(-40,40)); A_FaceTarget(0,0,0,0,FAF_TOP,0); A_SpawnItemEx("VortexSparklies",0,0,0,0,-2,0);}  
+   CRAX A 1 Bright A_SetScale(0.2)    
+   CRAX A 1 Bright {A_FadeOut(0.1);	A_SetRoll(roll+random(-40,40)); A_FaceTarget(0,0,0,0,FAF_TOP,0);}
+   CRAX A 1 Bright A_SetScale(0.175)   
+   CRAX A 1 Bright {A_FadeOut(0.1);	A_SetRoll(roll+random(-40,40)); A_FaceTarget(0,0,0,0,FAF_TOP,0);}
+   CRAX A 1 Bright A_SetScale(0.15)     
+   CRAX A 1 Bright {A_FadeOut(0.1);	A_SetRoll(roll+random(-40,40)); A_FaceTarget(0,0,0,0,FAF_TOP,0); A_SpawnItemEx("VortexSparklies",0,0,0,0,-2,0);}
+   CRAX A 1 Bright A_SetScale(0.125)     
+   CRAX A 1 Bright {A_FadeOut(0.1);	A_SetRoll(roll+random(-40,40)); A_FaceTarget(0,0,0,0,FAF_TOP,0);}  
+   CRAX A 1 Bright A_SetScale(0.1)    
+   CRAX A 1 Bright {A_FadeOut(0.1);	A_SetRoll(roll+random(-40,40)); A_FaceTarget(0,0,0,0,FAF_TOP,0);}
+   CRAX A 1 Bright A_SetScale(0.075)   
+   CRAX A 1 Bright {A_FadeOut(0.1);	A_SetRoll(roll+random(-40,40)); A_FaceTarget(0,0,0,0,FAF_TOP,0);} 
+   CRAX A 1 Bright A_SetScale(0.05)      
+   CRAX A 1 Bright {A_FadeOut(0.1);	A_SetRoll(roll+random(-40,40)); A_FaceTarget(0,0,0,0,FAF_TOP,0);}  
+   CRAX A 1 Bright A_SetScale(0.025)   
+   CRAX A 1 Bright {A_FadeOut(0.1);	A_SetRoll(roll+random(-40,40));}  
+   Stop
+ }
+}
+
+Actor LBShieldSpawner //JT- Creates the floating shields for Tertiary Fire.
+{
+	radius 0
+	height 0
+	damage 0
+	speed 15
+	+NOCLIP
+	+DROPOFF
+	+FLOORCLIP
+	+NOBLOCKMAP
+	+DONTBLAST
+	States
+	{
+	Spawn:
+		TNT1 A 10 
+	Death:
+		TNT1 A 0 
+		TNT1 A 1 A_SpawnItemEx("HolyTowerShield",0,0,6,0,0,0,0,SXF_TRANSFERPOINTERS)
+		Stop
+	}
+}	
+
+Actor LBGShieldSpawner : LBShieldSpawner
+{
+	States
+	{
+	Death:
+		TNT1 A 0 
+		TNT1 A 1 A_SpawnItemEx("GuardianTowerShield",0,0,6,0,0,0,0,SXF_TRANSFERPOINTERS)
+		Stop
+	}
+}
+		
+Actor HolyTowerShield //JT- Counted as ally & solid, so protects and gains some aggro.
+{
+	Renderstyle Add
+	Radius 15
+	Height 70
+	Scale 0.6
+	Mass 1000000
+	Health 55
+	Alpha 0.6
+	DamageType "Holy"
+	Species "PlayerAlly"
+	Translation Ice
+	WeaveIndexXY 33
+	WeaveIndexZ 33
+	+SHOOTABLE
+	+NOGRAVITY
+	+NOTELEPORT
+	+DONTHARMSPECIES
+	+REFLECTIVE
+	+MIRRORREFLECT
+	+AIMREFLECT
+	+NOBLOOD
+	+DONTBLAST
+	+CANTSEEK
+	+FRIENDLY
+	+THRUSPECIES
+	+MTHRUSPECIES
+	+SOLID
+	+FORCEPAIN
+	States
+	{
+	Spawn:
+		HSLD ABCDE 2 Bright 
+		{	
+		A_Explode(Random(0,1), 300, XF_NOTMISSILE|XF_EXPLICITDAMAGETYPE,true,255); //JT- Draws Aggro
+		A_Weave(1, 0, 1.0, 0); //JT- makes the shield a bit 'floaty'
+		}
+		HSLD ABCDEABCDEABCDEABCDEABCDEABCDEABCDE 2 Bright A_Weave(1, 0, 1.0, 0)
+		HSLD ABCDEABCDEABCDEABCDEABCDEABCDEABCDE 2 Bright A_Weave(1, 0, 1.0, 0)
+		HSLD ABCDEABCDEABCDEABCDEABCDEABCDEABCDE 2 Bright A_Weave(1, 0, 1.0, 0)
+		HSLD ABCDEABCDEABCDEABCDEABCDEABCDEABCDE 2 Bright A_Weave(1, 0, 1.0, 0)
+		HSLD ABCDEABCDEABCDEABCDEABCDEABCDEABCDE 2 Bright A_Weave(1, 0, 1.0, 0)
+		HSLD ABCDEABCDEABCDEABCDEABCDEABCDEABCDE 2 Bright A_Weave(1, 0, 1.0, 0)
+		HSLD ABCDEABCDEABCDEABCDEABCDEABCDEABCDE 2 Bright A_Weave(1, 0, 1.0, 0)
+	Death:
+		HSLD ABCDE 2 Bright A_FadeOut(0.05)
+		Loop
+	}
+}
+
+ACTOR GuardianTowerShield : HolyTowerShield
+{
+	+FLATSPRITE 
+	+ROLLSPRITE
+	+ROLLCENTER
+	Translation None
+	Alpha 0.2
+	Health 45
+	States
+	{
+	Spawn:
+		TNT1 A 0 Bright Nodelay {A_Setpitch(-90);}
+		HSLD ABCDEABCDE 2 Bright {A_Warp(AAPTR_MASTER, 88,0,15,4,WARPF_USECALLERANGLE|WARPF_NOCHECKPOSITION|WARPF_COPYVELOCITY); A_Setroll(roll+18);}
+		HSLD ABCDEABCDEABCDEABCDEABCDEABCDEABCDE 2 Bright {A_Warp(AAPTR_MASTER, 88,0,15,4,WARPF_USECALLERANGLE|WARPF_NOCHECKPOSITION|WARPF_COPYVELOCITY);}
+		HSLD ABCDEABCDE 2 Bright {A_Warp(AAPTR_MASTER, 88,0,15,4,WARPF_USECALLERANGLE|WARPF_NOCHECKPOSITION|WARPF_COPYVELOCITY); A_Setroll(roll+18);}
+		HSLD ABCDEABCDEABCDEABCDEABCDEABCDEABCDE 2 Bright {A_Warp(AAPTR_MASTER, 88,0,15,-4,WARPF_USECALLERANGLE|WARPF_NOCHECKPOSITION|WARPF_COPYVELOCITY);}
+		HSLD ABCDEABCDE 2 Bright {A_Warp(AAPTR_MASTER, 88,0,15,4,WARPF_USECALLERANGLE|WARPF_NOCHECKPOSITION|WARPF_COPYVELOCITY); A_Setroll(roll+18);}
+		HSLD ABCDEABCDEABCDEABCDEABCDEABCDEABCDE 2 Bright {A_Warp(AAPTR_MASTER, 88,0,15,4,WARPF_USECALLERANGLE|WARPF_NOCHECKPOSITION|WARPF_COPYVELOCITY);}
+		HSLD ABCDEABCDE 2 Bright {A_Warp(AAPTR_MASTER, 88,0,15,4,WARPF_USECALLERANGLE|WARPF_NOCHECKPOSITION|WARPF_COPYVELOCITY); A_Setroll(roll+18);}
+		HSLD ABCDEABCDEABCDEABCDEABCDEABCDEABCDE 2 Bright {A_Warp(AAPTR_MASTER, 88,0,15,-4,WARPF_USECALLERANGLE|WARPF_NOCHECKPOSITION|WARPF_COPYVELOCITY);}
+		HSLD ABCDEABCDE 2 Bright {A_Warp(AAPTR_MASTER, 88,0,15,4,WARPF_USECALLERANGLE|WARPF_NOCHECKPOSITION|WARPF_COPYVELOCITY); A_Setroll(roll+18);}
+		HSLD ABCDEABCDEABCDEABCDEABCDEABCDEABCDE 2 Bright {A_Warp(AAPTR_MASTER, 88,0,15,4,WARPF_USECALLERANGLE|WARPF_NOCHECKPOSITION|WARPF_COPYVELOCITY);}
+	Death:
+		HSLD ABCDEABCDE 2 Bright {A_Warp(AAPTR_MASTER, 88,0,15,4,WARPF_USECALLERANGLE|WARPF_NOCHECKPOSITION|WARPF_COPYVELOCITY); A_Setroll(roll+18); A_Fadeout(0.02);}
+		Stop
+	}
+
+}

@@ -1,0 +1,1196 @@
+ACTOR Aestus : MagisterWeapon 23822 //replaces MWeapFrost 
+{
+	//Should probably actually be called 'Incendium' as 'Aestus' is more
+	//relating to 'fires of passion' or 'fires in your loins' hahahaha.
+	//But oh well. Stupid sexy Latin. It's this way simply because it sounds
+	//better to have both Algor and Aestus with A's in English, as Fire & Ice.
+	+UNDROPPABLE
+	Inventory.RestrictedTo MagisterPlayer
+	Weapon.SelectionOrder 3
+	Weapon.SlotNumber 3
+	Weapon.SlotPriority 0
+	Weapon.AmmoGive1 25
+	Weapon.KickBack 150
+	Weapon.YAdjust 6
+	Weapon.AmmoUse 1
+	Weapon.AmmoType "Mana1W"
+	Inventory.PickupMessage "\c[white]Obtained \c[Orange]'Aestus'\c[white]: the \c[Orange]Secrets of the Blaze\c[white]! [\c[sapphire]2\c[white]]"
+	Inventory.PickupSound "Pickup/WeaponMageFrost"
+	Obituary "$OB_MPMWEAPFROST"
+	Tag "Aestus"
+	Obituary "%o was melted to wax by magical fire."
+	States
+	{
+	Spawn:
+		A35T W 16 
+		A35T XYX 4 {				
+				if(random(1,4) == 1)
+				{	A_SpawnItemEx("DecorativeEmberH",random(20,40)* cos(pitch),random(-4,4),(20 - (40 * sin(pitch))),-2+velx,random(-1,3)+vely,random(3,7)+velz);}
+				}
+		Loop
+	Select:
+		TNT1 A 1
+		TNT1 A 0 A_GiveInventory("AestusInHand",1)
+		TNT1 A 0 A_GiveInventory("ChainHook",1) //to trigger start anim
+		Goto Select2
+	Deselect:
+		TNT1 A 0 A_TakeInventory("AestusInHand")
+		TNT1 A 0 
+		{
+			A_Stopsound(6);
+		}
+		Goto Deselect2
+	Select2:
+		A35T A 1  {A_Raise; A_Raise;}
+		Loop
+	Deselect2:
+		A35T I 1  A_Lower
+		Loop
+	Ready:
+		A35T A 0 A_JumpIfInventory("ChainHook",1,"ReadyClick")
+		A35T IJKL 2 {	A_WeaponReady(WRF_ALLOWRELOAD);
+			if (random(1,4) == 1) // Spews decorative embers because why not?
+			{	A_SpawnItemEx("DecorativeEmberH",random(45,50),random(-40,40),16,random(-1,1),random(-1,1),random(1,2));}
+					}
+		Loop
+	ReadyClick:
+		A35T AB 3
+		A35T C 3 A_Playsound("Thanos",2,2,false,ATTN_STATIC)
+		A35T D 3 
+		A35T E 3 A_Playsound("FlmGysr2",6,0.8,false,ATTN_STATIC)
+		A35T FGH 2 A_SpawnItemEx("DecorativeEmberH",random(45,50),random(-40,40),16,random(-1,1),random(-1,1),random(1,2))
+		A35T H 0 A_TakeInventory("ChainHook",1)
+		Goto Ready
+	Fire:
+		TNT1 A 0 A_JumpIfInventory("Mana1W", 1, "Fire2")
+		TNT1 A 0 A_SelectWeapon("DeliberatelyNothingMagi",SWF_SELECTPRIORITY) 
+		Goto Ready
+	Fire2:
+		A35T M 0 {if(CountInv("AestusUpgrade") == 1 || CountInv("AestusUpgrade") == 4 || CountInv("AestusUpgrade") == 6 || CountInv("AestusUpgrade") == 9)
+				{A_GiveInventory("BowCharge1",1);}}
+		A35T M 0 A_JumpIfInventory("ComboCounter",1,"ShotRight")
+		Goto ShotLeft
+	ShotLeft:
+		A35T M 0 {A_AlertMonsters; 
+				if(random(0,5) >= 4 && (GetCVar("walp_silentprotagonists")==0) && (CountInv("PowerShutItWilson")) == 0)
+				{A_StartSound("MagiExertsLight",CHAN_AUTO,CHANF_OVERLAP,0.9,ATTN_NONE,frandom(0.97,1.04));}}
+		A35T M 0 A_JumpIfInventory("BowCharge1",1,"ShotLeftFast")
+		A35T MN 2 A_Weaponoffset(-8,1,WOF_ADD|WOF_INTERPOLATE)
+		A35T O 2 {if(CountInv("AestusMutate") == 1 || CountInv("AestusMutate") == 4 || CountInv("AestusMutate") == 6 || CountInv("AestusMutate") == 9)
+					{
+					A_FireProjectile ("AestusMutateShots", 0, 0, 8, 0, FPF_NOAUTOAIM,0); 
+					A_TakeInventory ("Mana1W", 1,TIF_NOTAKEINFINITE);
+					A_Playsound("AestusMutFire",2,0.55,false,ATTN_STATIC,false,frandom(1.2,1.3));
+					}
+					else
+					{
+					A_FireProjectile ("AestusShots", 0, 0, 8, 0, FPF_NOAUTOAIM,0); 
+					A_TakeInventory ("Mana1W", 1,TIF_NOTAKEINFINITE);
+					A_Playsound("AestusDakka",2,0.4,false,ATTN_STATIC,false,frandom(1.2,1.3));}
+					}				
+		A35T P 2 A_Weaponoffset(8,-1,WOF_ADD|WOF_INTERPOLATE)
+		A35T Q 2 {A_GiveInventory ("ComboCounter",1); A_Weaponoffset(8,-1,WOF_ADD|WOF_INTERPOLATE);}
+		A35T Q 0 A_ReFire ("Fire")	
+		Goto Ready
+	ShotRight:
+		A35T R 0 {A_AlertMonsters; 
+				if(random(0,5) >= 4 && (GetCVar("walp_silentprotagonists")==0) && (CountInv("PowerShutItWilson")) == 0)
+				{A_StartSound("MagiExertsLight",CHAN_AUTO,CHANF_OVERLAP,0.9,ATTN_NONE,frandom(0.97,1.04));}}
+		A35T M 0 A_JumpIfInventory("BowCharge1",1,"ShotRightFast")
+		A35T RS 2 A_Weaponoffset(8,1,WOF_ADD|WOF_INTERPOLATE)
+		A35T T 2 {if(CountInv("AestusMutate") == 1 || CountInv("AestusMutate") == 4 || CountInv("AestusMutate") == 6 || CountInv("AestusMutate") == 9)
+					{
+					A_FireProjectile ("AestusMutateShots", 0, 0, -8, 0, FPF_NOAUTOAIM,0); 
+					A_TakeInventory ("Mana1W", 1,TIF_NOTAKEINFINITE);
+					A_Playsound("AestusMutFire",2,0.55,false,ATTN_STATIC,false,frandom(1.2,1.3));
+					}
+					else
+					{
+					A_FireProjectile ("AestusShots", 0, 0, -8, 0, FPF_NOAUTOAIM,0); 
+					A_TakeInventory ("Mana1W", 1,TIF_NOTAKEINFINITE);
+					A_Playsound("AestusDakka",2,0.4,false,ATTN_STATIC,false,frandom(1.2,1.3));}
+					}	
+		A35T U 2 A_Weaponoffset(-8,-1,WOF_ADD|WOF_INTERPOLATE)
+		A35T V 2 {A_TakeInventory ("ComboCounter"); A_Weaponoffset(-8,-1,WOF_ADD|WOF_INTERPOLATE);}
+		A35T V 0 A_ReFire ("Fire")	
+		Goto Ready	
+	ShotLeftFast:
+		A35T M 0 {if(random(0,7) == 7 && (GetCVar("walp_silentprotagonists")==0) && (CountInv("PowerShutItWilson")) == 0)
+				{A_StartSound("MagiExertsLight",CHAN_AUTO,CHANF_OVERLAP,0.9,ATTN_NONE,frandom(0.97,1.04));}}
+		A35T MN 1 A_Weaponoffset(-8,1,WOF_ADD|WOF_INTERPOLATE)
+		A35T O 2 {A_FireProjectile ("AestusShotsFast", 0, 0, 8, 0, FPF_NOAUTOAIM,0); A_TakeInventory ("Mana1W", 1,TIF_NOTAKEINFINITE); A_Playsound("AestusDakka",2,0.4,false,ATTN_STATIC,false,frandom(1.2,1.3));}
+		A35T P 2 A_Weaponoffset(8,-1,WOF_ADD|WOF_INTERPOLATE)
+		A35T Q 1 {A_GiveInventory ("ComboCounter",1); A_Weaponoffset(8,-1,WOF_ADD|WOF_INTERPOLATE);}
+		A35T Q 0 A_TakeInventory ("BowCharge1")
+		A35T Q 0 A_ReFire ("Fire")	
+		Goto Ready
+	ShotRightFast:
+		A35T M 0 {if(random(0,7) == 7 && (GetCVar("walp_silentprotagonists")==0) && (CountInv("PowerShutItWilson")) == 0)
+				{A_StartSound("MagiExertsLight",CHAN_AUTO,CHANF_OVERLAP,0.9,ATTN_NONE,frandom(0.97,1.04));}}
+		A35T RS 1 A_Weaponoffset(8,1,WOF_ADD|WOF_INTERPOLATE)
+		A35T T 2 {A_FireProjectile ("AestusShotsFast", 0, 0, -8, 0, FPF_NOAUTOAIM,0); A_TakeInventory ("Mana1W", 1,TIF_NOTAKEINFINITE); A_Playsound("AestusDakka",2,0.4,false,ATTN_STATIC,false,frandom(1.2,1.3));}
+		A35T U 2 A_Weaponoffset(-8,-1,WOF_ADD|WOF_INTERPOLATE)
+		A35T V 1 {A_TakeInventory ("ComboCounter"); A_Weaponoffset(-8,-1,WOF_ADD|WOF_INTERPOLATE);}
+		A35T V 0 A_TakeInventory ("BowCharge1")
+		A35T V 0 A_ReFire ("Fire")	
+		Goto Ready	
+	AltFire:
+		TNT1 A 0 A_JumpIfInventory("PowerAmbitManaEx", 1, "SpinUp")
+		TNT1 A 0 A_JumpIfInventory("Mana1W", 10, "MeteorCreate")	//Costs 10
+		TNT1 A 0 A_JumpIfInventory("Mana1W", 1, "Fire")
+		TNT1 A 0 A_SelectWeapon("DeliberatelyNothingMagi",SWF_SELECTPRIORITY) 
+		Goto Ready
+	MeteorCreate:
+		A35T I 0 {A_Playsound("MeteorSpawn",5,1.1,false,ATTN_STATIC); A_SpawnItemEx("FireMagicCircle",20,0,46,0,0,0,0,SXF_SETMASTER|SXF_TRANSFERPITCH|SXF_NOCHECKPOSITION);} 
+		A35U ABCDE 3 A_TakeInventory ("Mana1W", 2,TIF_NOTAKEINFINITE)
+		A35U F 3
+		A35U E 0 {if(random(1,4) >= 2 && (GetCVar("walp_silentprotagonists")==0) && (CountInv("PowerShutItWilson")) == 0)
+				{A_StartSound("MagiExertsHeavy",CHAN_AUTO,CHANF_OVERLAP,0.9,ATTN_NONE,frandom(0.97,1.04));}}
+		A35U E 1 {A_SetBlend("Red",0.4,20); A_Playsound("FStormBurst",2,2); A_QuakeEx(0,0,5,20,0,1,"-",QF_SCALEDOWN);}
+		A35U E 1 {
+				A_GiveToChildren("ComboCounter",1);
+				if(CountInv("AestusUpgrade") == 3 || CountInv("AestusUpgrade") == 4 || CountInv("AestusUpgrade") == 8 || CountInv("AestusUpgrade") == 9)
+				{
+				A_FireProjectile ("BowlingStone", 0, 0, 0, 0, FPF_NOAUTOAIM,0);
+				}
+				else if(CountInv("AestusMutate") == 3 || CountInv("AestusMutate") == 4 || CountInv("AestusMutate") == 8 || CountInv("AestusMutate") == 9)
+				{
+				A_FireProjectile ("MeteorDistantDrop", 0, 0, 0, 0, FPF_NOAUTOAIM,0);
+				}
+				else
+				{
+				A_SpawnItemEx("RollingStone",60,0,-10,15,0,0,0);
+				}
+				}	
+		A35U E 2
+		A35U F 2 
+		A35U CBA 2
+		A35U AA	2
+		Goto Ready
+	Reload:
+		A35T A 0 
+		A35T A 0 A_JumpIfInventory("PowerAmbitManaEx", 1, "WhipSummon")
+		A35T A 0 A_JumpIfInventory ("Mana1W", 12, "WhipSummon")
+		TNT1 A 0 A_JumpIfInventory("Mana1W", 1, "Fire")
+		TNT1 A 0 A_SelectWeapon("DeliberatelyNothingMagi",SWF_SELECTPRIORITY) 
+		Goto Fire
+	WhipSummon:
+		A35U A 0 {A_Playsound("FireWhipping",5,1.1,false,ATTN_STATIC);}
+		A35U AGHIJKLMNO 2 A_TakeInventory ("Mana1W", 1,TIF_NOTAKEINFINITE) //P deliberately missing to remind me of the gap. (Old value: 3)
+		TNT1 A 2 {if(random(1,4) >= 2 && (GetCVar("walp_silentprotagonists")==0) && (CountInv("PowerShutItWilson")) == 0) // (Old value: 5)
+				{A_StartSound("MagiExertsHeavy",CHAN_AUTO,CHANF_OVERLAP,0.9,ATTN_NONE,frandom(0.97,1.04));}}
+		TNT1 A 1 A_StartSound("SwingItNow",1,CHANF_OVERLAP|CHANF_LOCAL,0.9,ATTN_STATIC,1)
+		A35U QRST 1 // (Old value: 2)
+		A35U U 1 {if(CountInv("AestusUpgrade") == 5 || CountInv("AestusUpgrade") == 6 || CountInv("AestusUpgrade") == 8 || CountInv("AestusUpgrade") == 9)
+				{
+				A_FireProjectile("AestusWhippersEX",2,false,0,4,FPF_NOAUTOAIM,3);	
+				A_FireProjectile("AestusWhippersEX",0,false,0,0,FPF_NOAUTOAIM,3);	
+				A_FireProjectile("AestusWhippersEX",-2,false,0,-4,FPF_NOAUTOAIM,3);
+				A_StartSound("FStormBurst",1,CHANF_OVERLAP|CHANF_LOCAL,1,ATTN_STATIC,1);
+				A_Blast(BF_AFFECTBOSSES|BF_NOIMPACTDAMAGE,220,250,13,HammerBlastSpark,"None");
+				}
+				else if(CountInv("AestusMutate") == 5 || CountInv("AestusMutate") == 6 || CountInv("AestusMutate") == 8 || CountInv("AestusMutate") == 9)
+				{
+				A_FireProjectile("AestusWhippersMutate",2,false,0,5,FPF_NOAUTOAIM,3);	
+				A_FireProjectile("AestusWhippersMutate",-2,false,0,-5,FPF_NOAUTOAIM,3);
+				A_StartSound("FStormBurst",1,CHANF_OVERLAP|CHANF_LOCAL,1,ATTN_STATIC,1);
+				A_Blast(BF_AFFECTBOSSES|BF_NOIMPACTDAMAGE,220,250,13,HammerBlastSpark,"None");
+				}
+				else
+				{
+				A_FireProjectile("AestusWhippers",2,false,0,4,FPF_NOAUTOAIM,3);	
+				A_FireProjectile("AestusWhippers",0,false,0,0,FPF_NOAUTOAIM,3);	
+				A_FireProjectile("AestusWhippers",-2,false,0,-4,FPF_NOAUTOAIM,3);
+				A_StartSound("FStormBurst",1,CHANF_OVERLAP|CHANF_LOCAL,1,ATTN_STATIC,1);
+				A_Blast(BF_AFFECTBOSSES|BF_NOIMPACTDAMAGE,200,220,13,HammerBlastSpark,"None");
+				}
+				}	
+		A35U UVW 1 
+		TNT1 A 3
+		A35U U 0 A_GiveInventory("ChainHook",1)
+		Goto Ready
+	}
+}
+
+ACTOR AestusShots
+{
+	Scale 1
+	Speed 55
+	Radius 8
+	Height 8
+	Damage ((33*frandom(1.6,2.2))+random(1,6))
+	Renderstyle Translucent
+	Alpha 0.85
+	Damagetype "Blast"
+	//SeeSound "GoodnessGracious"
+	DeathSound "BallExplod"
+	Projectile
+	+ROLLSPRITE
+	+ROLLCENTER
+	+BLOODLESSIMPACT
+	States
+	{
+	Spawn:
+		FRBA AB 1 Bright {A_SpawnItemEx("ImpBallXTrail",-3,0,1,2,0,random(1,4)); A_Setscale(scalex+0.1,scaley+0.1); A_Setroll(roll+15);}
+		FRBA ABAB 1 Bright {A_SpawnItemEx("ImpBallXTrail",-3,0,1,2,0,random(1,4)); A_Setscale(scalex-0.1,scaley-0.1); A_Setroll(roll+15);}
+		FRBA AB 1 Bright {A_SpawnItemEx("ImpBallXTrail",-3,0,1,2,0,random(1,4)); A_Setscale(scalex+0.1,scaley+0.1); A_Setroll(roll+15); A_SpawnItemEx ("SmokyAlabaster",0,0,6,0,0,1);}
+		Loop
+	Death:
+		FRBA KLMNOPQRSTUVWX 1 Bright {	//A quarter the time spawns sparks
+				if(random(1,4) == 1)
+				{
+					A_SpawnItemEx("HammerBlastSpark",random(-4,4),random(-4,4),1,-2,random(-1,3),random(3,7));
+					A_SpawnItemEx("HammerBlastSpark",random(-4,4),random(-4,4),1,-2,random(-1,3),random(3,7));//Embers for cool explosion
+				}
+			}
+		Stop
+	}
+}
+
+ACTOR AestusShotsFast : AestusShots
+{
+	Speed 85
+	Damage ((35*frandom(1.6,2.3))+random(1,5))
+}
+
+ACTOR AestusMutateShots //Magma Ballz
+{
+  Radius 8
+  Height 16
+  Speed 48
+  Scale 1.2
+  Damage (random(1,6))
+  ExplosionDamage 42
+  ExplosionRadius 64
+  //SeeSound "FireEnd"
+  DeathSound "FlameBursts"
+  +NOBLOCKMAP
+  +MISSILE
+  +NOTELEPORT
+  +NOGRAVITY
+  +ROLLSPRITE
+  +ROLLCENTER
+  States
+  {
+  Spawn:
+    COMT ABC 2 Bright {A_SpawnItemEx("ImpBallXTrail",-3,0,1,2,0,random(1,4)); A_Setroll(roll+7);}
+    Loop
+  Death:
+    FRBA K 0 Bright A_Setscale(1.4,1.4)
+	FRBA K 1 Bright A_Explode
+	FRBA LMNOPQ 1 Bright A_Setroll(roll+random(6,9))
+	FRBA R 0 A_SpawnItemEx("PostBurstMeteorEffect",0,0,0,0,0,0)
+    FRBA R 0 Bright A_Burst("NapalmBallzA") 
+    Stop
+  }
+}
+
+ACTOR AestusMutateShotsDeathWyvern : AestusMutateShots
+{
+	Scale 0.95
+	Speed 36
+	Height 12
+	ExplosionDamage 38
+	ExplosionRadius 68
+	SeeSound "FireBreathingShot"
+	DeathSound "AestusMutFire"
+	States
+	{
+	Spawn:
+		COMT ABC 2 Bright {A_SpawnItemEx("ImpBallXTrail",-3,0,1,2,0,random(1,4)); A_Setroll(roll+10);}
+		Loop
+	Death:
+		FRBA K 0 Bright A_Setscale(1.1,1.1)
+		FRBA K 1 Bright A_Explode
+		FRBA LMNOPQ 1 Bright A_Setroll(roll+random(6,9))
+		FRBA R 0 A_SpawnItemEx("PostBurstMeteorEffectD",0,0,0,0,0,0)
+		FRBA R 0 Bright A_Burst("NapalmBallzAD") 
+		Stop
+	}
+}
+
+Actor PostBurstMeteorEffect //This exists because A_Burst destroys the parent prematurely, and I can't finish the animation.
+{
+ +NOGRAVITY
+ +NOCLIP
+ +NOINTERACTION
+ +FORCEXYBILLBOARD
+ +ROLLSPRITE
+ +ROLLCENTER
+ -SOLID
+ Radius 0
+ Height 0
+ RenderStyle Add
+ Alpha 1.0
+ Scale 1.4
+ States
+ {
+  Spawn:
+   TNT1 A 0 Bright 
+   FRBA RSTUVWX 2 Bright A_Setroll(roll+random(6,9))
+   Stop
+ }
+}
+
+Actor PostBurstMeteorEffectD : PostBurstMeteorEffect
+{
+	Scale 1.1
+}
+
+ACTOR RollingStone
+{
+	Scale 0.9
+	Speed 15
+	Radius 36
+	Height 36
+	Damage (10)
+	Renderstyle Translucent
+	Alpha 0.9
+	Health 20
+	Mass 3000
+	Gravity 1.5
+	Friction 0.9
+	Damagetype "Blast"
+	DeathSound "MeteorStrike"
+	BounceFactor 0.2
+	BounceType Classic
+	BounceCount 255
+	+MISSILE
+	-NOGRAVITY
+	+SHOOTABLE
+	-DROPOFF
+	-NOBLOCKMAP
+	+NOEXPLODEFLOOR
+	+STEPMISSILE
+	-FRIENDLY
+	+EXTREMEDEATH
+	+FORCEPAIN
+	+EXPLODEONWATER
+	+FORCERADIUSDMG
+	+BOUNCEONFLOORS
+	+BLOODLESSIMPACT
+	States
+	{
+	Spawn:
+		MET3 ABCDEFGH 2 Nodelay Bright {
+			A_SpawnItemEx("ImpBallXTrail",random(0,-5),random(-5,5),1,2,0,random(1,4)); 
+			A_SpawnItemEx("ImpBallXTrail",random(0,-5),random(-5,5),1,2,0,random(1,4)); 
+			A_SpawnItemEx("ImpBallXTrail",random(0,-5),random(-5,5),1,2,0,random(1,4));
+			A_SpawnItemEx("FireActive", random(-3,-5), random(-5,5));
+			A_SpawnItemEx("NapalmTrail", -8, random(-5,5));
+			if((sqrt((sqrt((velx * velx)+(vely * vely)) * sqrt((velx * velx)+(vely * vely)))+(velz * velz))) <= 12)
+				{	//While the speed is below 12, this speeds it up
+					A_ScaleVelocity(1.4);
+				}
+			}
+		Loop
+	Death:
+		MET3 I 0 Bright {
+					A_Explode(150, 64, 0, 1, 32, 0, 0, "None", "Smash"); //Findus: Added High Power Small Radius Impact
+					A_SpawnItemEx("MeteorBlasterX",0,0,0,0,0,0); 
+					A_PlaySound ("MeteorStrike",CHAN_7,6,0,0.1,false,0.9); 
+					A_QuakeEx(0,8,8,75,200,1000,"world/quake");
+					While (CountInv("Walpurgisnacht")<8)
+					{
+						A_SpawnItemEx ("ShockWave",0,0,4,1,0,0,(CountInv("DAMCOUNTER")),SXF_MULTIPLYSPEED);
+						A_SpawnItemEx ("ShockWave",0,0,4,1,0,0,(CountInv("DAMCOUNTER")+16),SXF_MULTIPLYSPEED);
+						A_GiveInventory("Walpurgisnacht",1);
+						A_GiveInventory("DAMCOUNTER",32);
+					}
+					A_Explode(36,120,0,1,200);
+					}
+		MET3 I 3 Bright 	{	
+					A_Setscale(2);
+					A_Explode(66,200,0,1,200,0,0,"None","Blast");
+					A_SpawnItemEx("FlamePillarAestus", 14, 0, 0, 0, 0, 0, 0);
+					A_SpawnItemEx("FlamePillarAestus", 14, 14, 0, 0, 0, 0, 45);
+					A_SpawnItemEx("FlamePillarAestus", 0, 14, 0, 0, 0, 0, 90);
+					A_SpawnItemEx("FlamePillarAestus", -14, 14, 0, 0, 0, 0, 135);
+					A_SpawnItemEx("FlamePillarAestus", -14, 0, 0, 0, 0, 0, 180);
+					A_SpawnItemEx("FlamePillarAestus", -14, -14, 0, 0, 0, 0, 225);
+					A_SpawnItemEx("FlamePillarAestus", 0, -14, 0, 0, 0, 0, 270);
+					A_SpawnItemEx("FlamePillarAestus", 14, -14, 0, 0, 0, 0, 315);
+					A_SpawnItemEx("SmokyOily",0,2,6,0,0,1);
+					A_SpawnItemEx("SmokyOily",0,-2,6,0,0,1);
+					A_SpawnItemEx("DecorativeEmberH",random(-4,4),random(-4,4),1,-2,random(-3,1),random(3,7));
+					A_SpawnItemEx("HammerBlastSpark",random(-4,4),random(-4,4),1,-2,random(-1,3),random(3,7));
+					A_SpawnItemEx("HammerBlastSpark",random(-4,4),random(-4,4),1,-2,random(-1,3),random(3,7));
+							}
+		MET3 JKL 3 Bright 	{	
+					A_SpawnItemEx("DecorativeEmberH",random(-4,4),random(-4,4),1,-2,random(-3,1),random(3,7));
+					A_SpawnItemEx("HammerBlastSpark",random(-4,4),random(-4,4),1,-2,random(-1,3),random(3,7));
+					A_SpawnItemEx("HammerBlastSpark",random(-4,4),random(-4,4),1,-2,random(-1,3),random(3,7));
+					}
+		Stop	
+	}
+}
+
+ACTOR BowlingStone : RollingStone
+{
+	+NOGRAVITY
+	Mass 1500
+	Scale 0.7
+	Speed 35
+	States
+	{
+	Spawn:
+		TNT1 A 0
+		TNT1 A 2
+	Spawn2:
+		MET3 ABCDEFGH 2 Bright {
+			A_SpawnItemEx("ImpBallXTrail",random(0,-5),random(-5,5),16,2,0,random(1,4)); 
+			A_SpawnItemEx("ImpBallXTrail",random(0,-5),random(-5,5),16,2,0,random(1,4)); 
+			A_SpawnItemEx("ImpBallXTrail",random(0,-5),random(-5,5),16,2,0,random(1,4));
+			A_SpawnItemEx("FireActive", random(-3,-5), random(-5,5));
+			A_SpawnItemEx("NapalmTrail", -8, random(-5,5));
+			if((sqrt((sqrt((velx * velx)+(vely * vely)) * sqrt((velx * velx)+(vely * vely)))+(velz * velz))) <= 12)
+				{	//While the speed is below 12, this speeds it up
+					A_ScaleVelocity(1.4);
+				}
+			}
+		Loop
+	}
+}
+
+ACTOR FallingStone : RollingStone 
+{
+	-NOEXPLODEFLOOR
+	+THRUACTORS
+	+NOBLOCKMAP
+	-SHOOTABLE
+	-BOUNCEONFLOORS
+	Scale 0.6
+	Speed 5
+	Radius 20
+	Height 20
+	BounceCount 2
+	Gravity 0.7
+	BounceFactor 0.5
+	Friction 1.2
+	States
+	{
+	Spawn:
+		MET3 ABCDEFGH 2 Nodelay Bright {
+			A_SpawnItemEx("CoronaTailNSSmol",0,0,0,0,1,velz+1);
+			A_SpawnItemEx("CoronaTailNSSmol",0,0,0,0,-1,velz+1);
+			A_SpawnItemEx("CoronaTailNSSmol",0,0,0,1,0,velz+1);
+			A_SpawnItemEx("CoronaTailNSSmol",0,0,0,-1,0,velz+1);
+			A_SpawnItemEx("CoronaTailNSSmol",0,0,0,0,0,velz+1);
+			if((sqrt((sqrt((velx * velx)+(vely * vely)) * sqrt((velx * velx)+(vely * vely)))+(velz * velz))) <= 12)
+				{	//While the speed is below 12, this speeds it up
+					A_ScaleVelocity(1.4);
+				}
+			}
+		Loop
+	}
+}
+
+ACTOR DamoclesLaserComet : RollingStone //Nothing to do with a bloke from Sicily, but there was an old Atari ST game named
+{						  //Damocles about stopping a Comet. I wasn't very good at it, being 6 and all, lol. :D
+	Scale 0.1
+	Speed 12
+	Radius 16
+	Height 16
+	Gravity 0.9
+	Friction 1
+	Damage (10)
+	Renderstyle Add
+	Alpha 0.9
+	Mass 4000
+	Obituary "%o was sent flying on a star." 
+	Damagetype "Holy"
+	Deathsound "None"
+	BounceFactor 0
+	BounceType "None"
+	BounceCount 0
+	+MISSILE
+	-BOUNCEONFLOORS
+	-NOEXPLODEFLOOR
+	-STEPMISSILE
+	States
+	{
+	Spawn:
+		ST8H X 2 Nodelay Bright {
+			A_Setroll(roll+random(-10,-30));
+			A_Setscale(frandom(0.08,0.12),frandom(0.08,0.12));
+			A_SpawnItemEx("CoronaTailCometBlue",0,0,0,0,1,velz+1);
+			A_SpawnItemEx("CoronaTailCometBlue",0,0,0,0,-1,velz+1);
+			A_SpawnItemEx("CoronaTailCometBlue",0,0,0,1,0,velz+1);
+			A_SpawnItemEx("CoronaTailCometBlue",0,0,0,-1,0,velz+1);
+			A_SpawnItemEx("CoronaTailCometBlue",0,0,0,0,0,velz+1);
+			if((sqrt((sqrt((velx * velx)+(vely * vely)) * sqrt((velx * velx)+(vely * vely)))+(velz * velz))) <= 12)
+				{	//While the speed is below 12, this speeds it up
+					A_ScaleVelocity(1.4);
+				}
+			}
+		Loop
+	Death:
+		CFFX I 0 Bright {
+					A_StartSound("ForceExplosion",256,CHANF_OVERLAP,1,false,ATTN_NONE);
+					A_QuakeEx(0,2,2,75,200,1000,"world/quake");
+					A_Explode(56,120,0,1,120);
+					A_Setscale(0.6,0.6);
+					A_SetRenderStyle(0.6,STYLE_Add);
+					}
+		Z499 A 2 Bright 	{	
+					A_Explode(66,140,0,1,140,0,0,"None","Blast");
+					//A_SpawnItemEx("FlamePillarWallBlue", 0, 0, 0, 0, 0, 0, 45);
+					A_SpawnItemEx("HammerBlastSparkBlue",random(-4,4),random(-4,4),1,-2,random(-3,1),random(3,7));
+					A_SpawnItemEx("HammerBlastSparkBlue",random(-4,4),random(-4,4),1,-2,random(-1,3),random(3,7));
+					A_SpawnItemEx("HammerBlastSparkBlue",random(-4,4),random(-4,4),1,-2,random(-1,3),random(3,7));
+							}
+		Z499 BC 2 Bright 	{	
+					A_SpawnItemEx("HammerBlastSparkBlue",random(-4,4),random(-4,4),1,-2,random(-3,1),random(3,7));
+					A_SpawnItemEx("HammerBlastSparkBlue",random(-4,4),random(-4,4),1,-2,random(-1,3),random(3,7));
+					A_SpawnItemEx("HammerBlastSparkBlue",random(-4,4),random(-4,4),1,-2,random(-1,3),random(3,7));
+					}
+		//CFFX EFGHIJKL 2
+		Z499 DEFG 2 Bright 
+		//TNT1 A 1 A_Remove(AAPTR_DEFAULT,RMVF_EVERYTHING) //Had one instance where this failed to kill itself on Stop.
+		Stop	
+	Crash:
+		TNT1 A 0
+		Goto Death
+	}
+}
+
+ACTOR FallingStoneCreator
+{
+	Radius 1
+	Height 1
+	Projectile
+	Speed 4000
+	+THRUACTORS
+	+EXPLODEONWATER
+	+SKYEXPLODE
+	States
+	{
+	Spawn:
+		TNT1 A 1 
+		Loop
+	Death:
+		TNT1 A 1 A_SpawnProjectile("FallingStone",-36,0,0,CMF_AIMDIRECTION|CMF_TRACKOWNER,random(89,91)) //A_SpawnItemEx("FallingStone",0,0,-38,0,0,-3) 
+		Stop
+	}
+}
+
+ACTOR MeteorDistantDrop : Fastprojectile //Mutated Secondary Fire
+{
+  Radius 7
+  Height 7
+  Speed 3000
+  Damage (1)
+  Projectile
+  Alpha 0
+  RenderStyle Add
+  DamageType "None"
+  +FORCEPAIN
+  +HITTRACER
+  -NOEXPLODEFLOOR
+  States
+  {
+  Spawn:
+		TNT1 A 1 
+		Loop
+  XDeath:
+	    TNT1 A 2  {	
+				A_SpawnItemEx("FallingStoneCreator",-10,0,0,0,0,4000);
+				A_SpawnItemEx("GeyserFissures");
+				A_ChangeVelocity (-1,-0,12,CVF_RELATIVE,AAPTR_TRACER);} //halts enemy velocity so they get hit by meteor
+		Stop
+  Death:
+		TNT1 A 2  {	
+				A_SpawnItemEx("FallingStoneCreator",-36,0,0,-2,0,4000); //if it hits a wall, moves away slightly to reduce clipping
+				A_SpawnItemEx("GeyserFissures");
+				A_ChangeVelocity (-1,-0,12,CVF_RELATIVE,AAPTR_TRACER);}
+		Stop
+  }
+}
+
+ACTOR MeteorBlasterX
+{
+	+NOINTERACTION
+	+NOGRAVITY
+	+NOCLIP
+	Radius 1
+	Height 1
+	Renderstyle Translucent
+	Alpha 0.5
+	Scale 2
+	States
+	{
+	Spawn:
+		MTRX A 0
+			{
+				While (CountInv("Walpurgisnacht")<8)
+					{
+						A_SpawnItemEx ("ShockWave",0,0,4,1,0,0,(CountInv("DAMCOUNTER")),SXF_MULTIPLYSPEED);
+						A_SpawnItemEx ("ShockWave",0,0,4,1,0,0,(CountInv("DAMCOUNTER")+16),SXF_MULTIPLYSPEED);
+						A_GiveInventory("Walpurgisnacht",1);
+						A_GiveInventory("DAMCOUNTER",32);
+					}
+				A_Explode(50,600,0,1,600);
+				A_PlaySound ("FStormBurst");
+			}
+		MTRX ABCD 4
+		MTRX EEEFFFGGGHHH 1 Bright {A_Fadeout(0.05); A_Setscale(scalex+0.05,scaley+0.05);}
+	Death:
+		TNT1 A 1
+		Stop
+	}
+}
+
+ACTOR ShockWave	//Self explanatory
+{
+	Speed 35
+	Scale 3
+	Projectile
+	Renderstyle Translucent
+	Alpha 0.3
+	+THRUACTORS
+	+NOINTERACTION
+	+ROLLSPRITE
+	+ROLLCENTER
+	States
+	{
+		Spawn:
+			MSSW DEFGHIJKL 1 Bright A_Setroll(roll+10)
+			MSSW M 1 Bright A_Die
+			Goto Death
+		Death:
+			MSSW M 1 Bright
+			Stop
+	}
+}
+
+ACTOR FlamePillarAestus : FlamePillar //noclip and slightly less damaging than firestorm
+{
+	+NOCLIP
+	States
+	{
+			Spawn1: 
+			CFFX DDEEFFGGHHII 1  Bright
+			{
+				if(GetCVar("walp_wheresthefire")==1)	
+				{	A_SpawnItemEx("CoronaTailNS",0,0,0,0,2,random(-2,2)); }
+				else
+				{	A_SpawnItemEx("CoronaTailAlt",0,0,0,0,2,random(-2,2));}	
+				A_Explode (random(0,1), 100, 0,0,0,0,0,"None", "Blast");
+				A_Warp (AAPTR_TRACER, 0 + CountInv("Mana1"), 0, 0, 15,WARPF_USECALLERANGLE | WARPF_NOCHECKPOSITION);
+				A_SetRoll(Roll - Random(35,45), SPF_INTERPOLATE);
+				A_GiveInventory("Mana1", 3);
+			}
+			CFFX I 0 A_JumpIfInventory("Mana1", 180, "Death")
+			Loop
+	}
+}
+
+ACTOR AestusWhippers //Used in tertiary fire
+{
+  Radius 5
+  Height 6
+  Speed 20
+  Damage (random(1,3))
+  Projectile
+  Alpha 0.15
+  XScale 3
+  YScale 4
+  RenderStyle Add
+  DamageType "Blast"
+  Decal "MinotaurScorch"
+  +FLOORHUGGER
+  +FORCEPAIN
+  +FRIENDLY
+  +RIPPER
+  +BOUNCEONUNRIPPABLES
+  DeathSound "MaulatorMissileHit"
+  States
+  {
+  Spawn:
+    FX13 ABC 2 Bright 
+	{	
+		A_SpawnItemEx("HammerBlastSpark",random(-4,4),random(-4,4),1,-2,random(-1,3),random(3,7));
+		A_SpawnItemEx("HammerBlastSpark",random(-4,4),random(-4,4),1,-2,random(-3,1),random(3,7));
+		A_SpawnItemEx("SmokyAlabaster",random(-4,4),random(-4,4),3,0,0,frandom(.1,2.3));
+		A_SpawnItemEx("HammerNapalm",-5,-6,0,0,0,0);
+		A_SpawnItemEx("HammerNapalm",-5,6,0,0,0,0);
+		A_SpawnItemEx("HammerNapalm",-2,0,0,0,0,0);
+	}
+  Death:
+    FX13 I 4 Bright A_SpawnProjectile("WhipGlow", 0, 0, 0, 0, FPF_NOAUTOAIM,0)
+    FX13 JKLM 4 Bright
+    Stop
+  }
+}
+
+ACTOR AestusWhippersEX //Used in tertiary fire
+{
+  Radius 5
+  Height 6
+  Speed 20
+  Damage (random(1,3))
+  Projectile
+  Alpha 0.15
+  XScale 3
+  YScale 4
+  RenderStyle Add
+  DamageType "Blast"
+  Decal "MinotaurScorch"
+  +FLOORHUGGER
+  +FORCEPAIN
+  +FRIENDLY
+  +RIPPER
+  +BOUNCEONUNRIPPABLES
+  DeathSound "MaulatorMissileHit"
+  States
+  {
+  Spawn:
+    FX13 ABC 2 Bright 
+	{	
+		A_SpawnItemEx("HammerBlastSpark",random(-4,4),random(-4,4),1,-2,random(-1,3),random(3,7));
+		A_SpawnItemEx("HammerBlastSpark",random(-4,4),random(-4,4),1,-2,random(-3,1),random(3,7));
+		A_SpawnItemEx("SmokyAlabaster",random(-4,4),random(-4,4),3,0,0,frandom(.1,2.3));
+		A_SpawnItemEx("HammerNapalm",-5,-6,0,0,0,0);
+		A_SpawnItemEx("HammerNapalm",-5,6,0,0,0,0);
+		A_SpawnItemEx("HammerNapalm",-2,0,0,0,0,0);
+	}
+  Death:
+    FX13 I 4 Bright A_SpawnProjectile("WhipGlowPlus", 0, 0, 0, 0, FPF_NOAUTOAIM,0)
+    FX13 JKLM 4 Bright
+    Stop
+  }
+}
+
+ACTOR AestusWhippersMutate //Used in tertiary fire
+{
+  Radius 5
+  Height 6
+  Speed 30
+  Damage (random(1,3))
+  Projectile
+  Alpha 0.45
+  XScale 2
+  YScale 2.5
+  RenderStyle Add
+  DamageType "Blast"
+  Decal "MinotaurScorch"
+  +FLOORHUGGER
+  +FORCEPAIN
+  +FRIENDLY
+  +RIPPER
+  +BOUNCEONUNRIPPABLES
+  DeathSound "MaulatorMissileHit"
+  States
+  {
+  Spawn:
+    FFX5 CDE 2 Bright //FX15 FFX5 FX13 death
+	{	
+		A_SpawnItemEx("HammerBlastSpark",random(-4,4),random(-4,4),1,-2,random(-1,3),random(3,7));
+		A_SpawnItemEx("HammerBlastSpark",random(-4,4),random(-4,4),1,-2,random(-3,1),random(3,7));
+		A_SpawnItemEx("SmokyAlabaster",random(-4,4),random(-4,4),3,0,0,frandom(.1,2.3));
+		A_SpawnItemEx("HammerNapalm",-5,-6,0,0,0,0);
+		A_SpawnItemEx("HammerNapalm",-5,6,0,0,0,0);
+		A_SpawnItemEx("HammerNapalm",-2,0,0,0,0,0);
+	}
+  Death:
+    FFX5 F 2 Bright {	A_SpawnProjectile("WhipGlowMutate", 0, 0, 0, 0, FPF_NOAUTOAIM,0);
+						A_SpawnItemEx ("CarpetBombBase3",0,0,0,5,2,11,0);
+						A_SpawnItemEx ("CarpetBombBase3",0,0,0,5,-2,11,0);}
+    FFX5 GHIJKLMNOPQR 2 Bright
+    Stop
+  }
+}
+
+ACTOR WhipGlow : HammerPuffGlowLesser //
+{
+	Speed 5
+	States
+	{
+	Spawn:
+		FHFX I 0 Bright A_Explode (15, 333)	
+		FHFX J 2 Bright 
+		{
+			A_PlaySound ("HammerBoom",5,2.5,false,ATTN_NONE);
+			A_Quake (15, 25, 0, 185, "-");	
+			A_SpawnItemEx ("MirvBombsAestus",0,0,0,Random(-5,5),Random(-5,5),Random(10,18),0);
+			A_SpawnItemEx ("MirvBombsAestus",0,0,0,Random(-5,5),Random(-5,5),Random(10,18),0);
+			A_SpawnItemEx ("MirvBombsAestus",0,0,0,Random(-5,5),Random(-5,5),Random(10,18),0);
+			While(CountInv("Mana1") < 24) 
+			{
+				A_SpawnItemEx ("HammerFlames", 0, 0, 0, 3, 0, 0, (CountInv("Mana1")*15), 0, 0);
+				A_GiveInventory("Mana1",1);
+			}
+			A_TakeInventory("Mana1");
+		}
+		FHFX K 2 Bright A_Explode (random(29,58), 300, 0, FALSE, 150)
+		FHFX L 2 Bright A_Explode (random(6,12), 228, 0, FALSE, 350)
+		FHFX M 2 Bright A_Explode (random(6,12), 208, 0, FALSE)
+		FHFX N 2 Bright A_Explode (random(6,12), 188, 0, FALSE)
+		FHFX O 2 Bright A_Explode (random(6,12), 158, 0, FALSE) 
+		TNT1 A 0 A_ChangeFlag("INVISIBLE", TRUE)
+		FHFX O 10
+		FHFX OMJKI 1
+		FHFX I 0 A_StopSound(5)
+		Stop
+	}
+}
+
+ACTOR WhipGlowPlus : HammerPuffGlowLesser
+{
+	Speed 5
+	States
+	{
+	Spawn:
+		FHFX I 0 Bright A_Explode (15, 333)	
+		FHFX J 2 Bright 
+		{
+			A_PlaySound ("HammerBoom",5,2.5,false,ATTN_NONE);
+			A_Quake (15, 25, 0, 185, "-");	
+			A_SpawnItemEx ("WhipKaboom",0,0,0,Random(-5,5),Random(-5,5),Random(10,18),0);
+			While(CountInv("Mana1") < 24) 
+			{
+				A_SpawnItemEx ("HammerFlames", 0, 0, 0, 3, 0, 0, (CountInv("Mana1")*15), 0, 0);
+				A_GiveInventory("Mana1",1);	
+				A_SpawnItemEx("DecorativeEmberH",random(-4,4),random(-4,4),1,-2,random(-3,1),random(3,7));
+			}
+			A_TakeInventory("Mana1");
+		}
+		FHFX K 2 Bright A_Explode (random(39,58), 300, 0, FALSE, 150)
+		FHFX L 2 Bright A_Explode (random(6,12), 228, 0, FALSE, 350)
+		FHFX M 2 Bright A_Explode (random(6,12), 208, 0, FALSE)
+		FHFX N 2 Bright A_Explode (random(6,12), 188, 0, FALSE)
+		FHFX O 2 Bright A_Explode (random(6,12), 158, 0, FALSE) 
+		TNT1 A 0 A_ChangeFlag("INVISIBLE", TRUE)
+		FHFX O 10
+		FHFX OMJKI 1
+		FHFX I 0 A_StopSound(5)
+		Stop
+	}
+}
+
+ACTOR WhipGlowMutate : HammerPuffGlowLesser //mutated version
+{
+	Speed 25
+	States
+	{
+	Spawn:
+		FHFX I 0 Bright A_Explode (10, 333)	
+		FHFX J 2 Bright 
+		FHFX K 2 Bright A_Explode (random(9,25), 300, 0, FALSE, 150)
+		FHFX L 2 Bright {A_Explode (random(1,5), 228, 0, FALSE, 350);
+						While(CountInv("Mana1") < 24) 
+						{
+						A_SpawnItemEx ("HammerFlames", 0, 0, 0, 3, 0, 0, (CountInv("Mana1")*15), 0, 0);
+						A_GiveInventory("Mana1",1);
+						}
+						A_TakeInventory("Mana1");
+						A_PlaySound ("HammerBoom",5,2.5,false,ATTN_NONE);
+						A_Quake (15, 25, 0, 185, "-");	}
+		FHFX M 2 Bright A_Explode (random(1,5), 208, 0, FALSE)
+		FHFX N 2 Bright A_Explode (random(1,5), 188, 0, FALSE)
+		FHFX O 2 Bright A_Explode (random(1,5), 158, 0, FALSE) 
+		TNT1 A 0 A_ChangeFlag("INVISIBLE", TRUE)
+		FHFX O 10
+		FHFX OMJKI 1
+		FHFX I 0 A_StopSound(5)
+		Stop
+	}
+}
+
+ACTOR MirvBombsAestus	//Tiny bomblets, retrieved from old bloodscourge.
+{
+	Damage (0)
+	Speed 10
+	Radius 1
+	Scale .3
+	Projectile
+	DamageType "Blast"
+	-NOGRAVITY
+	//+FOILINVUL
+	+RIPPER
+	+BOUNCEONUNRIPPABLES
+	+FORCERADIUSDMG
+	+BLOODLESSIMPACT
+	+NOTIMEFREEZE
+	//+Noclip
+	DeathSound "MageStaffExplode"
+	States
+	{
+		Spawn:
+			FRBA AB 2 Bright 
+			Loop
+		Death:
+			FRBA A 0 A_SetScale (1)	//just flies up then down then explodes
+			MSP2 E 4 Bright A_SetTranslucent(1, 1)
+			MSP2 F 5 Bright A_Explode(random(6,15), 192, 0, 0, 70)
+			MSP2 GHI 4 Bright A_SpawnItemEx("DecorativeEmberH",random(-4,4),random(-4,4),1,-2,random(-3,1),random(3,7))
+			Stop
+	}
+}
+
+ACTOR WhipKaboom 
+{
+	Scale 0.3
+	Radius 4
+	Height 4
+	Projectile
+	Speed 25
+	Damage 0
+	Gravity 0.7
+	Projectile
+	+MISSILE
+	-NOGRAVITY
+	-BLOODSPLATTER
+	-EXTREMEDEATH
+	+EXPLODEONWATER
+	+FORCERADIUSDMG
+	+NOTIMEFREEZE
+	+SKYEXPLODE
+	+DOOMBOUNCE
+	+THRUACTORS
+	+ROLLSPRITE
+	+ROLLCENTER
+	BounceFactor 0.3
+	WallBounceFactor 0.25
+	Health 5
+	DamageType "Blast"
+	SeeSound "DemonMissileFire"
+	DeathSound "DemonMissileExplode"
+	States
+	{
+	Spawn:
+		TNT1 A 0
+		FRBA A 1
+		Goto Death
+	Death:
+		XBLU A 1 A_SpawnItemEx ("MirvBombsAestus",0,0,0,Random(-5,5),Random(-5,5),Random(3,7),0)
+		XBLU B 1 A_SpawnItemEx ("MirvBombsAestus",0,0,0,Random(-5,5),Random(-5,5),Random(3,7),0)
+		XBLU C 1 A_SpawnItemEx ("MirvBombsAestus",0,0,0,Random(-5,5),Random(-5,5),Random(3,7),0)
+		XBLU D 1 A_SpawnItemEx ("MirvBombsAestus",0,0,0,Random(-5,5),Random(-5,5),Random(3,7),0)
+		Goto ExplodeNow
+	ExplodeNow:
+		XBLU A 2 				
+			{
+				A_SpawnItemEx ("MirvBombsAestus",0,0,0,Random(-5,5),Random(-5,5),Random(10,18),0);
+				A_SpawnItemEx ("MirvBombsAestus",0,0,0,Random(-5,5),Random(-5,5),Random(10,18),0);
+				A_SpawnItemEx ("NapalmBallz",0,0,0,Random(-5,5),Random(-5,5),Random(3,6),0);
+				A_SpawnItemEx ("MirvBombsAestus",0,0,0,Random(-5,5),Random(-5,5),Random(10,18),0);
+				A_SpawnItemEx ("NapalmBallz",0,0,0,Random(-5,5),Random(-5,5),Random(3,6),0);
+				A_SpawnItemEx ("NapalmBallz",0,0,0,Random(-5,5),Random(-5,5),Random(10,18),0);
+				A_SpawnItemEx ("MirvBombsAestus",0,0,0,Random(-5,5),Random(-5,5),Random(10,18),0);
+				A_SpawnItemEx ("MirvBombsAestus",0,0,0,Random(-5,5),Random(-5,5),Random(3,6),0);
+				A_Setscale(scalex*2,scaley*2);
+				A_Explode(5,256);
+			}
+		XBLU BCDEF 2
+		Stop
+	}
+}
+
+Actor FireMagicCircle
+{
+	Height 1
+	Radius 1
+	Speed 0
+	Alpha 0.05
+	Scale 0.375
+	+ROLLSPRITE
+	+ROLLCENTER
+	+FORCEXYBILLBOARD
+	+NOINTERACTION
+	+NOCLIP
+	//+SPRITEANGLE
+	//SpriteAngle 90
+	//Spriterotation 90
+	RenderStyle Add
+	States
+	{
+	Spawn:
+		TNT1 A 0 Nodelay A_Setroll(random(0,80)) 
+		CIRC VVV 1 {A_Fadein(0.1); A_Warp(AAPTR_TARGET,50 * cos(pitch),0,46- (40 * sin(pitch)),0,WARPF_NOCHECKPOSITION|WARPF_COPYPITCH); A_Setroll(roll+5);}
+		Goto Circlewait
+	Circlewait:
+		CIRC V 1 A_JumpIfInventory("ComboCounter",1,"Used")
+		CIRC V 0 {
+			A_Setroll(roll+5); 
+			A_Warp(AAPTR_TARGET,50 * cos(pitch),0,46- (40 * sin(pitch)),0,WARPF_NOCHECKPOSITION|WARPF_COPYPITCH);
+			A_SpawnItemEx("PurpleSparklies2",random(-24,24),random(-24,24),10,frandom(-0.6,0.6),frandom(-0.6,0.6),frandom(0,0.7));
+			A_SpawnItemEx("PurpleSparklies2",random(-24,24),random(-24,24),10,frandom(-0.6,0.6),frandom(-0.6,0.6),frandom(0,0.7));
+			}
+		Loop
+	Used:
+		CIRC X 1 A_Fadeout(0.15)
+		Loop
+	}
+}
+
+ACTOR CarpetBombBase
+{
+	Radius 4
+	Height 4
+	Projectile
+	Speed 25
+	Damage 0
+	Gravity 0.7
+	Scale 0.9
+	Projectile
+	+MISSILE
+	-NOGRAVITY
+	-BLOODSPLATTER
+	-EXTREMEDEATH
+	+EXPLODEONWATER
+	+FORCERADIUSDMG
+	+NOTIMEFREEZE
+	+SKYEXPLODE
+	+DOOMBOUNCE
+	+THRUACTORS
+	+ROLLSPRITE
+	+ROLLCENTER
+	BounceFactor 0.3
+	WallBounceFactor 0.25
+	Health 5
+	DamageType "Blast"
+	SeeSound "DemonMissileFire"
+	DeathSound "DemonMissileExplode"
+	States
+	{
+	Spawn:
+		FRBA AAAAA 2 A_SetRoll(roll-20)
+		TNT1 A 0 A_GiveInventory("TKCounter",1)
+		TNT1 A 0 A_JumpIfInventory("TKCounter",3,"Death")
+		Loop
+	Death:
+		TNT1 A 0 A_Jump(256,"Death1","Death2")
+	Death1:
+		XBLU A 1 A_SpawnItemEx ("CarpetBombBase2",0,0,0,Random(-5,5),Random(-5,5),Random(10,18),0)
+		XBLU B 1 A_SpawnItemEx ("MirvBombsAestus",0,0,0,Random(-5,5),Random(-5,5),Random(10,18),0)
+		TNT1 C 1 A_GiveInventory("TKCounter",1)
+		TNT1 D 1 A_JumpIfInventory("TKCounter",3,"Explode")
+		Loop
+	Death2:
+		XBLU A 1 A_SpawnItemEx ("CarpetBombBase2",0,0,0,Random(-5,5),Random(-5,5),Random(10,18),0)
+		XBLU B 1 A_SpawnItemEx ("MirvBombsAestus",0,0,0,Random(-5,5),Random(-5,5),Random(10,18),0)
+		XBLU C 1 A_GiveInventory("TKCounter",1)
+		XBLU D 1 A_JumpIfInventory("TKCounter",3,"Explode")
+		Loop
+	Explode:
+		TNT1 A 0 A_NoBlocking
+		TNT1 A 0 A_JumpIfInTargetInventory("Mana1W",1,"ExplodeCheck1",AAPTR_PLAYER1)
+		XBLU BCDEF 2
+		Stop
+	ExplodeCheck1:
+		TNT1 A 0 A_JumpIfInTargetInventory("Mana2W",1,"ExplodeNow",AAPTR_PLAYER1)
+		XBLU BCDEF 2
+		Stop
+	ExplodeNow:
+		XBLU A 2 				
+			{
+				A_TakeInventory("Mana1W",1,TIF_NOTAKEINFINITE,AAPTR_PLAYER1);
+				A_TakeInventory("Mana2W",1,TIF_NOTAKEINFINITE,AAPTR_PLAYER1);
+				A_SpawnItemEx ("MirvBombsAestus",0,0,0,Random(-5,5),Random(-5,5),Random(10,18),0);
+				A_SpawnItemEx ("MirvBombsAestus",0,0,0,Random(-5,5),Random(-5,5),Random(10,18),0);
+				A_SpawnItemEx ("NapalmBallz",0,0,0,Random(-5,5),Random(-5,5),Random(3,6),0);
+				A_SpawnItemEx ("MirvBombsAestus",0,0,0,Random(-5,5),Random(-5,5),Random(10,18),0);
+				A_SpawnItemEx ("NapalmBallz",0,0,0,Random(-5,5),Random(-5,5),Random(3,6),0);
+				A_SpawnItemEx ("NapalmBallz",0,0,0,Random(-5,5),Random(-5,5),Random(10,18),0);
+				A_SpawnItemEx ("MirvBombsAestus",0,0,0,Random(-5,5),Random(-5,5),Random(10,18),0);
+				A_SpawnItemEx ("MirvBombsAestus",0,0,0,Random(-5,5),Random(-5,5),Random(3,6),0);
+				A_Setscale(scalex*2,scaley*2);
+				A_Explode(5,256);
+			}
+		XBLU BCDEF 2
+		Stop
+	}
+}
+
+ACTOR CarpetBombBase2 : CarpetBombBase //In theory this can endlessly recur, which is scary...
+{
+	Scale 0.7
+	States
+	{
+	Death1:
+		XBLU A 1 A_SpawnItemEx ("CarpetBombBase3",0,0,0,Random(-5,5),Random(-5,5),Random(8,16),0)
+		XBLU B 1 A_SpawnItemEx ("MirvBombsAestus",0,0,0,Random(-5,5),Random(-5,5),Random(8,16),0)
+		XBLU C 0 A_GiveInventory("TKCounter",1)
+		XBLU C 0 A_JumpIfInventory("TKCounter",3,"Explode")
+		Loop
+	Death2:
+		XBLU A 1 A_SpawnItemEx ("CarpetBombBase2",0,0,0,Random(-5,5),Random(-5,5),Random(8,16),0)
+		XBLU B 1 A_SpawnItemEx ("MirvBombsAestus",0,0,0,Random(-5,5),Random(-5,5),Random(8,16),0)
+		XBLU C 0 A_GiveInventory("TKCounter",1)
+		XBLU C 0 A_JumpIfInventory("TKCounter",3,"Explode")
+		Loop
+	}
+}
+
+ACTOR CarpetBombBase3 : CarpetBombBase //Always starts to end the chain
+{
+	Scale 0.7
+	States
+	{
+	Death1:
+		XBLU A 1 A_SpawnItemEx ("CarpetBombBase4",0,0,0,Random(5,9),Random(-3,3),Random(6,12),0)
+		XBLU B 1 A_SpawnItemEx ("MirvBombsAestus",0,0,0,Random(-5,5),Random(-5,5),Random(10,18),0)
+		XBLU C 1 A_GiveInventory("TKCounter",1)
+		XBLU D 1 A_JumpIfInventory("TKCounter",2,"Explode")
+		Loop
+	Death2:
+		XBLU A 1 A_SpawnItemEx ("CarpetBombBase4",0,0,0,Random(5,9),Random(-3,3),Random(6,12),0)
+		XBLU B 1 A_SpawnItemEx ("MirvBombsAestus",0,0,0,Random(-5,5),Random(-5,5),Random(10,18),0)
+		XBLU C 1 A_GiveInventory("TKCounter",1)
+		XBLU D 1 A_JumpIfInventory("TKCounter",2,"Explode")
+		Loop
+	Explode:
+		TNT1 A 0 A_NoBlocking
+		XBLU BCDEF 2 A_Explode(1,256)
+		Stop
+	ExplodeNow:
+		XBLU A 2 				
+			{
+				A_SpawnItemEx ("NapalmBallz",0,0,0,Random(-5,5),Random(-5,5),Random(3,6),0);
+				A_SpawnItemEx ("MirvBombsAestus",0,0,0,Random(-5,5),Random(-5,5),Random(10,18),0);
+				A_SpawnItemEx ("NapalmBallz",0,0,0,Random(-5,5),Random(-5,5),Random(3,6),0);
+				A_SpawnItemEx ("NapalmBallz",0,0,0,Random(-5,5),Random(-5,5),Random(10,18),0);
+				A_SpawnItemEx ("MirvBombsAestus",0,0,0,Random(-5,5),Random(-5,5),Random(10,18),0);
+				A_SpawnItemEx ("MirvBombsAestus",0,0,0,Random(-5,5),Random(-5,5),Random(3,6),0);
+				A_Setscale(scalex*2,scaley*2);
+				A_Explode(5,256);
+			}
+		XBLU BCDEF 2
+		Stop
+	}
+}
+
+ACTOR CarpetBombBase4 : CarpetBombBase //Always ends the chain, thank god!
+{
+	Scale 0.7
+	States
+	{
+	Death1:
+		XBLU A 1 
+		XBLU B 1 A_SpawnItemEx ("MirvBombsAestus",0,0,0,Random(-3,3),Random(-5,5),Random(3,7),0)
+		XBLU C 1 A_GiveInventory("TKCounter",1)
+		XBLU D 1 A_JumpIfInventory("TKCounter",2,"ExplodeNow")
+		Loop
+	Death2:
+		XBLU A 1
+		XBLU B 1 A_SpawnItemEx ("MirvBombsAestus",0,0,0,Random(-3,3),Random(-5,5),Random(3,7),0)
+		XBLU C 1 A_GiveInventory("TKCounter",1)
+		XBLU D 1 A_JumpIfInventory("TKCounter",2,"ExplodeNow")
+		Loop
+	ExplodeNow:
+		XBLU A 2 				
+			{
+				A_SpawnItemEx ("NapalmBallz",0,0,0,Random(-5,5),Random(-5,5),Random(3,6),0);
+				A_SpawnItemEx ("MirvBombsAestus",0,0,0,Random(-5,5),Random(-5,5),Random(10,18),0);
+				A_SpawnItemEx ("NapalmBallz",0,0,0,Random(-5,5),Random(-5,5),Random(3,6),0);
+				A_SpawnItemEx ("NapalmBallz",0,0,0,Random(-5,5),Random(-5,5),Random(10,18),0);
+				A_SpawnItemEx ("MirvBombsAestus",0,0,0,Random(-5,5),Random(-5,5),Random(10,18),0);
+				A_SpawnItemEx ("MirvBombsAestus",0,0,0,Random(-5,5),Random(-5,5),Random(3,6),0);
+				A_Setscale(scalex*2,scaley*2);
+				A_Explode(5,256);
+			}
+		XBLU BCDEF 2
+		Stop
+	}
+}

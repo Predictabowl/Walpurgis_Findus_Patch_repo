@@ -1,0 +1,1712 @@
+ACTOR LapisFlos : MagisterWeapon 23824
+{
+	//Lapis is 'Stone' in Latin (Incidently, Lapis Lazuli is 'Blue Stone')
+	//Flos is 'blooming'. This magic makes stone bloom from nothingness, so 
+	//it felt like a good fit, and flows off the tongue as "laapeezflozz".
+	//
+	//Lapis is also the name of the female protagonist from my short romance
+	//story in a modern magical setting: "Swipe me right off my feet", in 
+	//case you're wondering what the deal is with the directory names, lol.
+	Inventory.RestrictedTo MagisterPlayer
+	Weapon.SelectionOrder 2
+	Weapon.SlotNumber 5
+	Weapon.SlotPriority 0
+	Weapon.AmmoUse1 3
+	Weapon.AmmoGive1 25
+	Weapon.KickBack 0
+	Weapon.YAdjust 12
+	Weapon.AmmoType1 "Mana2W"
+	Inventory.PickupMessage "\c[white]Obtained \c[green]'Lapis Flos'\c[white]: the \c[green]Secrets of Stone\c[white]!! [\c[green]3\c[white]]"
+	Inventory.PickupSound "Pickup/WeaponMageLightning"
+	Tag "Lapis Flos"
+	Obituary "%o was turned into nourishment for the earth."
+	+BLOODSPLATTER
+	+UNDROPPABLE
+	States
+	{
+	Spawn:
+		L48K ABCDEFGHIJKL 4 {				
+				if(random(1,5) == 1)
+				{	A_SpawnItemEx("QuietSparklies",-3,0,20,frandom(-0.6,0.6),frandom(-0.6,0.6),frandom(0,0.8));
+				}}
+		Loop
+	Select:
+		TNT1 A 1
+		TNT1 A 0 A_GiveInventory("LapisInHand",1)
+		TNT1 A 0 A_GiveInventory("Chainhook",1) //triggers initial charge animation
+		Goto Select2
+	Deselect:
+		TNT1 A 0 A_TakeInventory("LapisInHand")
+		TNT1 A 0 
+		{
+			A_TakeInventory("ComboCounter"); 
+			A_TakeInventory("CoptersSound"); 
+		}
+		Goto Deselect2
+	Select2:
+		L4P1 S 1 A_Raise
+		Loop
+	Deselect2:
+		L4P1 S 1 A_Lower
+		Loop
+	Ready:
+		L4P1 S 0 A_JumpIfInventory("ChainHook",1,"ReadyClick")
+		L4P1 X 2 {	
+				A_CheckReload;
+				A_Overlay(23,"Ambient");
+				A_OverlayFlags(23,PSPF_ADDBOB|PSPF_ADDWEAPON,true);
+				A_WeaponReady(WRF_ALLOWRELOAD);}
+		L4P1 YZ 2 {	
+				A_WeaponReady(WRF_ALLOWRELOAD);
+				if (random(1,6) == 1) // Spews decorative sparklies because why not?
+			{	A_SpawnItemEx("QuietSparklies",random(45,50),random(-40,40),16,random(-1,1),random(-1,1),random(1,2));}
+					}
+		L4P2 ABCDEFGHI 2 {	A_WeaponReady(WRF_ALLOWRELOAD);
+			if (random(1,6) == 1) // Spews decorative sparklies because why not?
+			{	A_SpawnItemEx("QuietSparklies",random(45,50),random(-40,40),16,random(-1,1),random(-1,1),random(1,2));}
+					}
+		Loop
+	ReadyClick:
+		L4P1 S 0 A_Playsound("LapisCharge",2,1,false,ATTN_STATIC)
+		L4P1 TUVW 3
+		L4P1 X 0 A_TakeInventory("ChainHook",1)
+		Goto Ready
+	ReadyReturn:
+		L4P1 S 0 A_WeaponOffset(0,60)
+		"####" "#" 1 A_WeaponOffset(0,60)
+		"####" "#" 2 A_WeaponOffset(0,48)
+		"####" "#" 2 A_WeaponOffset(0,30)
+		Goto Ready
+////////////////////////////////////////////////////////////////////////////	
+	Ambient: //This is an overlay that generates sparklies on the hands when idle.
+		TNT1 A 1 A_TakeInventory("LightningCheck") //Just in case
+		TNT1 A 1 A_GiveInventory("LightningCheck",random(1,12))
+		TNT1 A 0 A_JumpIfInventory ("LightningCheck", 7, "Ambient2") 
+		TNT1 A 0 A_JumpIfInventory ("LightningCheck", 1, "Ambient1") 
+		Stop
+	Ambient1: 
+		G0VR AAA 1 A_JumpIfInventory ("MaceChargeCheck1", 1, "KillAmbient") //All these checks
+		G0VR BBB 1 A_JumpIfInventory ("MaceChargeCheck1", 1, "KillAmbient") //ensure the ambience
+		G0VR CCC 1 A_JumpIfInventory ("MaceChargeCheck1", 1, "KillAmbient") //dies if the player
+		G0VR DDD 1 A_JumpIfInventory ("MaceChargeCheck1", 1, "KillAmbient") //fires.
+		G0VR EEE 1 A_JumpIfInventory ("MaceChargeCheck1", 1, "KillAmbient") 
+		G0VR FFF 1 A_JumpIfInventory ("MaceChargeCheck1", 1, "KillAmbient") 
+		Goto KillAmbient
+	Ambient2: 
+		G0VR GGG 1 A_JumpIfInventory ("MaceChargeCheck1", 1, "KillAmbient") //All these checks
+		G0VR HHH 1 A_JumpIfInventory ("MaceChargeCheck1", 1, "KillAmbient") //ensure the ambience
+		G0VR III 1 A_JumpIfInventory ("MaceChargeCheck1", 1, "KillAmbient") //dies if the player
+		G0VR JJJ 1 A_JumpIfInventory ("MaceChargeCheck1", 1, "KillAmbient") //fires.
+		G0VR KKK 1 A_JumpIfInventory ("MaceChargeCheck1", 1, "KillAmbient") 
+		G0VR LLL 1 A_JumpIfInventory ("MaceChargeCheck1", 1, "KillAmbient") 
+		Goto KillAmbient
+	KillAmbient:
+		TNT1 A 0 A_TakeInventory("LightningCheck")
+		TNT1 A 0 A_TakeInventory("MaceChargeCheck1")
+		Stop
+	LeftHandPrimaryFire:
+		LAP1 NOPQRST 3
+		Stop
+////////////////////////////////////////////////////////////////////////////	
+	Fire:
+		L4P1 S 0 A_CheckReload
+		"####" "#" 0 A_WeaponOffset(0,32)
+		"####" "#" 2 A_WeaponOffset(0,48)
+		"####" "#" 2 A_WeaponOffset(0,60)
+		Goto StartRocking
+	StartRocking: //150 frames roughly for the sound. Assuming 1 stone per 8 frames, 19 stones total.
+		TNT1 A 0 {
+				if(CountInv("LapisMutate") == 1 || CountInv("LapisMutate") == 4 || CountInv("LapisMutate") == 6 || CountInv("LapisMutate") == 9)
+				{A_StartSound("LightSh",33,CHANF_OVERLAP,0.9,ATTN_NORM,1);} 
+				else
+				{A_StartSound("LapisRiser",33,CHANF_OVERLAP,0.9,ATTN_NORM,1);}}
+		TNT1 A 0 A_WeaponOffset(0,14)
+		LAP1 M 1 {A_Overlay(12,"LeftHandPrimaryFire");
+				A_OverlayFlags(12,PSPF_ADDBOB|PSPF_ADDWEAPON,true);}
+		LAP1 A 2 A_GiveInventory("QUFLMCounter",2)
+		LAP1 F 0 {
+				if(CountInv("LapisUpgrade") == 1 || CountInv("LapisUpgrade") == 4 || CountInv("LapisUpgrade") == 6 || CountInv("LapisUpgrade") == 9)
+				{
+				A_SpawnItemEx("SociallyAdeptBocchi",velx+40,15,50+random(-5,5),0,0,0,0,SXF_SETMASTER|SXF_TRANSFERPITCH,0);
+				A_SpawnItemEx("SociallyAdeptBocchi",velx+40,-15,50+random(-5,5),0,0,0,0,SXF_SETMASTER|SXF_TRANSFERPITCH,0);}		
+				else if(CountInv("LapisMutate") == 1 || CountInv("LapisMutate") == 4 || CountInv("LapisMutate") == 6 || CountInv("LapisMutate") == 9)
+				{
+					if(CountInv("MaceChargeCheck2") == 0) 
+					{A_SpawnItemEx("ICastFist",velx+36,vely+50,40,0,0,0,0,SXF_SETMASTER|SXF_TRANSFERPITCH,0);}
+					else
+					{A_SpawnItemEx("ICastFistRight",velx+36,-50-vely,40,0,0,0,0,SXF_SETMASTER|SXF_TRANSFERPITCH,0);}
+				A_GiveInventory("Spearcheck1",1);
+				}
+				else
+				{
+				A_SpawnItemEx("Bocchi",velx+40,15,50+random(-5,5),0,0,0,0,SXF_SETMASTER|SXF_TRANSFERPITCH,0);
+				A_SpawnItemEx("Bocchi",velx+40,-15,50+random(-5,5),0,0,0,0,SXF_SETMASTER|SXF_TRANSFERPITCH,0);}
+				}
+		LAP1 F 2 {if(CountInv("MaceChargeCheck2") == 0) 
+						{A_GiveInventory("MaceChargeCheck2",1);
+						 A_TakeInventory("Mana2W",3,TIF_NOTAKEINFINITE);}
+						else {A_TakeInventory("MaceChargeCheck2");}}
+		LAP1 F 0 A_JumpIfInventory("Spearcheck1",1,"RockingLoopMutate")
+		LAP1 GHIJ 3
+		LAP1 F 0 A_JumpIf((GetPlayerInput (INPUT_BUTTONS) & BT_ATTACK),"RockingLoop")
+		Goto RockingFire
+	RockingLoop:
+		LAP1 KL 1
+		LAP1 M 1 {A_Overlay(12,"LeftHandPrimaryFire");
+				A_OverlayFlags(12,PSPF_ADDBOB|PSPF_ADDWEAPON,true);}
+		LAP1 A 2 A_GiveInventory("QUFLMCounter",1)
+		LAP1 F 0 {
+				if(CountInv("LapisUpgrade") == 1 || CountInv("LapisUpgrade") == 4 || CountInv("LapisUpgrade") == 6 || CountInv("LapisUpgrade") == 9)
+				{
+				A_SpawnItemEx("SociallyAdeptBocchi",velx+40+(CountInv("QUFLMCounter")*4)+random(-7,7),10+(CountInv("QUFLMCounter")*4)+random(-7,7),50+random(-5,5),0,0,0,0,SXF_SETMASTER|SXF_TRANSFERPITCH,0);
+			    A_GiveInventory("QUFLMCounter",1);
+				A_SpawnItemEx("SociallyAdeptBocchi",velx+60-(CountInv("QUFLMCounter")*4)+random(-7,7),-10-(CountInv("QUFLMCounter")*4)+random(-7,7),50+random(-5,5),0,0,0,0,SXF_SETMASTER|SXF_TRANSFERPITCH,0);				
+				}	
+				else
+				{
+				A_SpawnItemEx("Bocchi",velx+40+(CountInv("QUFLMCounter")*4)+random(-7,7),10+(CountInv("QUFLMCounter")*4)+random(-7,7),50+random(-5,5),0,0,0,0,SXF_SETMASTER|SXF_TRANSFERPITCH,0);
+			    A_GiveInventory("QUFLMCounter",1);
+				A_SpawnItemEx("Bocchi",velx+60-(CountInv("QUFLMCounter")*4)+random(-7,7),-10-(CountInv("QUFLMCounter")*4)+random(-7,7),50+random(-5,5),0,0,0,0,SXF_SETMASTER|SXF_TRANSFERPITCH,0);
+				}			}
+		LAP1 F 2 {if(CountInv("MaceChargeCheck2") == 0) 
+						{A_GiveInventory("MaceChargeCheck2",1);
+						 A_TakeInventory("Mana2W",3,TIF_NOTAKEINFINITE);}
+						else {A_TakeInventory("MaceChargeCheck2");}}
+		LAP1 GHIJ 3
+		GE0M A 0 A_JumpIf(CountInv("QUFLMCounter")>=10,"RockingFire")
+		LAP1 F 0 A_JumpIf((GetPlayerInput (INPUT_BUTTONS) & BT_ATTACK),"RockingLoop")		
+		Goto RockingFire
+	RockingLoopMutate:
+		LAP1 K 0 A_TakeInventory("SpearCheck1")
+		LAP1 K 0 
+		LAP1 GH 3
+		LAP1 I 2 {
+			//A_FireProjectile("WindTunnelWBALapis",0,false,0,10);
+			A_Stopsound(33);
+			if(random(1,5) >= 4 && (GetCVar("walp_silentprotagonists")==0) && (CountInv("PowerShutItWilson")) == 0)
+				{A_StartSound("MagiExerts",CHAN_AUTO,CHANF_OVERLAP,0.9,ATTN_NONE,frandom(0.97,1.04));}
+				}
+		LAP1 I 1
+		LAP1 J 3 
+		LE36 CDE 3
+		LE36 F 3 A_JumpIf((GetPlayerInput (INPUT_BUTTONS) & BT_ATTACK),"StartRocking")
+		TNT1 A 3
+		Goto ReadyReturn
+	RockingFire:
+		LE36 C 2
+		LE36 D 2 {if(random(1,4) >= 2 && (GetCVar("walp_silentprotagonists")==0) && (CountInv("PowerShutItWilson")) == 0)
+				{A_StartSound("MagiExerts",CHAN_AUTO,CHANF_OVERLAP,0.9,ATTN_NONE,frandom(0.97,1.04));}}
+		LE36 D 1 
+		{
+			A_FireProjectile("WindTunnelWBALapis",0,false,0,10);
+			A_Stopsound(33);
+			A_GiveToChildren("ComboCounter",1);
+			A_AlertMonsters;
+			A_TakeInventory("QUFLMCounter");
+		}
+		LE36 EF 4
+		TNT1 A 2
+		Goto ReadyReturn
+	OldRockingFire:
+		GE0M I 2 {if(random(1,4) >= 2 && (GetCVar("walp_silentprotagonists")==0) && (CountInv("PowerShutItWilson")) == 0)
+				{A_StartSound("MagiExerts",CHAN_AUTO,CHANF_OVERLAP,0.9,ATTN_NONE,frandom(0.97,1.04));}}
+		GE0M J 2 
+		{
+			A_FireProjectile("WindTunnelWBALapis",0,false,0,10);
+			A_Stopsound(7);
+			A_GiveToChildren("ComboCounter",1);
+			A_AlertMonsters;
+			//A_StartSound("AStonesThrow",CHAN_7,CHANF_OVERLAP,1,ATTN_NORM,1);
+			A_TakeInventory("QUFLMCounter");
+		}
+		GE0M J 2 
+		GE0M K 2 A_WeaponOffset(0,10,WOF_ADD)
+		GE0M K 2 A_WeaponOffset(0,20,WOF_ADD)
+		GE0M K 2 A_WeaponOffset(0,20,WOF_ADD) 
+		GE0M L 2 A_WeaponOffset(0,20,WOF_ADD) 
+		GE0M L 2 A_WeaponOffset(0,20,WOF_ADD)
+		Goto ReadyReturn		
+	AltFire:
+		L4P1 S 0 A_JumpIfInventory("PowerAmbitMana", 1, "AltFire2")
+		L4P1 S 0 A_JumpIfInventory("Mana2W", 6, "AltFire2")
+		L4P1 S 0 A_JumpIfInventory("Mana2W", 3, "Fire")
+		L4P1 S 0 A_SelectWeapon("DeliberatelyNothing",SWF_SELECTPRIORITY) //For some stupid reason A_CheckReload fails here.
+		Goto Ready
+	AltFire2:
+		"####" "#" 0 A_JumpIfInventory("SpearCheck2",1,"MutateAltFire")
+		"####" "#" 0 A_WeaponOffset(0,32)
+		"####" "#" 2 A_WeaponOffset(0,48)
+		"####" "#" 2 A_WeaponOffset(0,60)
+		TNT1 A 1 A_WeaponOffset(0,15)
+		TNT1 A 0 {if(CountInv("LapisMutate") == 3 || CountInv("LapisMutate") == 4 || CountInv("LapisMutate") == 8 || CountInv("LapisMutate") == 9)
+				{
+				A_GiveInventory("SpearCheck2",1);
+				}}
+		TNT1 A 0 A_JumpIfInventory("SpearCheck2",1,"MutateAltFire") //yes we need to check this twice
+		LE34 Z 0 A_StartSound("LBRecharge",CHAN_5,CHANF_OVERLAP,0.9,ATTN_NORM,1)
+		LE34 XZ 2 A_TakeInventory("Mana2W",1,TIF_NOTAKEINFINITE)
+		LE35 AB 4 A_TakeInventory("Mana2W",2,TIF_NOTAKEINFINITE)
+		LE35 C 3
+		LE35 D 3 {	A_Overlay(29,"AltOverlay");
+				A_OverlayFlags(29,PSPF_ADDBOB|PSPF_ADDWEAPON,true);}
+		LE35 E 3
+		LE35 F 2 {  A_SpawnItemEx("HandMarkerLapis",cos(pitch)*18,-12,34-(sin(pitch)*28),cos(pitch)*1,cos(pitch)*velx,0,-sin(pitch)*velz,SXF_NOCHECKPOSITION|SXF_SETMASTER|SXF_TRANSFERPITCH);
+					if(CountInv("LapisUpgrade") == 3 || CountInv("LapisUpgrade") == 4 || CountInv("LapisUpgrade") == 8 || CountInv("LapisUpgrade") == 9)
+					{A_FireProjectile("FakeLapisShotPlus", 0, 0, 0, 2, FPF_NOAUTOAIM,0);	}
+					else
+					{ A_FireProjectile("FakeLapisShot", 0, 0, 0, 2, FPF_NOAUTOAIM,0);	}
+					A_StartSound("HeavyLaserFire",CHAN_5,CHANF_OVERLAP,0.5,ATTN_NORM,1);			
+				 }
+		LE35 GHIJ 2
+		TNT1 A 6
+		Goto Ready
+	MutateAltFire: //8 mana
+		TNT1 A 2 A_WeaponOffset(0,66)
+		GE0M A 2 {A_WeaponOffset(3,-2,WOF_ADD); A_TakeInventory("Mana2W",2,TIF_NOTAKEINFINITE);}
+		GE0M A 2 {A_WeaponOffset(-6,-2,WOF_ADD); A_TakeInventory("Mana2W",1,TIF_NOTAKEINFINITE);}
+		GE0M A 2 {A_WeaponOffset(6,-2,WOF_ADD); A_TakeInventory("Mana2W",1,TIF_NOTAKEINFINITE);}
+		GE0M A 2 {A_WeaponOffset(-6,-2,WOF_ADD); A_TakeInventory("Mana2W",1,TIF_NOTAKEINFINITE);}
+		GE0M B 0 A_FireProjectile("UpheavalDasher",0,false,0,0,FPF_NOAUTOAIM)
+		GE0M BBB 1 {A_WeaponOffset(3,-2,WOF_ADD); A_TakeInventory("Mana2W",1,TIF_NOTAKEINFINITE);}
+		GE0M BBB 1 A_WeaponOffset(-3,-2,WOF_ADD) //48
+		GE0M CCC 1 A_WeaponOffset(3,-2,WOF_ADD)
+		GE0M CCC 1 A_WeaponOffset(-3,-2,WOF_ADD) //40
+		GE0M DDD 1 A_WeaponOffset(3,-2,WOF_ADD) 
+		GE0M DDD 1 A_WeaponOffset(-3,-2,WOF_ADD) //32
+		GE0M CCC 1 A_WeaponOffset(3,-2,WOF_ADD)
+		GE0M CCC 1 A_WeaponOffset(-3,-2,WOF_ADD) //26
+		GE0M DD 1 A_WeaponOffset(3,-2,WOF_ADD) //22
+		GE0M AA 1 A_WeaponOffset(-1,-1,WOF_ADD) //20
+		GE0M A 0 A_Refire("AltFire")
+		TNT1 A 0 A_TakeInventory("SpearCheck2")
+		"####" "#" 0 A_WeaponOffset(0,32)
+		"####" "#" 2 A_WeaponOffset(0,48)
+		"####" "#" 2 A_WeaponOffset(0,60)
+		Goto Ready
+	AltOverlay:
+		LE36 ABC 3
+		LE36 D 4
+		LE36 EF 3
+		Stop
+	Reload:	 
+		L4P1 S 0 A_JumpIfInventory("PowerAmbitMana", 1, "Reload22")
+		L4P1 S 0 A_JumpIfInventory("Mana2W", 12, "Reload22")
+		L4P1 S 0 A_JumpIfInventory("Mana2W", 3, "Fire")
+		L4P1 S 0 A_SelectWeapon("DeliberatelyNothing",SWF_SELECTPRIORITY) //For some stupid reason A_CheckReload fails here.
+		Goto Ready
+	Reload22:
+		"####" "#" 0 A_WeaponOffset(0,32)
+		"####" "#" 2 A_WeaponOffset(0,48)
+		"####" "#" 2 A_WeaponOffset(0,60)
+	DucksGoQuake: //takes 36 frames for Obelisk to rise, you have 44 leeway between 64 and 20
+		TNT1 A 2 A_WeaponOffset(0,66)
+		GE0M A 2 A_WeaponOffset(3,-2,WOF_ADD)
+		GE0M A 2 {A_WeaponOffset(-6,-2,WOF_ADD); A_TakeInventory("Mana2W",1,TIF_NOTAKEINFINITE);}
+		GE0M A 2 {A_WeaponOffset(6,-2,WOF_ADD); A_TakeInventory("Mana2W",1,TIF_NOTAKEINFINITE);}
+		GE0M A 2 {A_WeaponOffset(-6,-2,WOF_ADD); A_TakeInventory("Mana2W",1,TIF_NOTAKEINFINITE);}
+		GE0M B 0 {	
+			A_GiveToChildren("QUFLMCounter",20); //destroys previous obelisks
+			if(CountInv("LapisUpgrade") == 5 || CountInv("LapisUpgrade") == 6 || CountInv("LapisUpgrade") == 8 || CountInv("LapisUpgrade") == 9)
+				{
+				A_SpawnItemEx("ObeliskyPlus",110,0,0,0,0,0,0,SXF_SETMASTER);
+				}
+			else if(CountInv("LapisMutate") == 5 || CountInv("LapisMutate") == 6 || CountInv("LapisMutate") == 8 || CountInv("LapisMutate") == 9)
+				{
+				A_SpawnItemEx("HealingTotem",110,0,0,0,0,0,0,SXF_SETMASTER);
+				}
+			else
+				{
+				A_SpawnItemEx("Obelisky",110,0,0,0,0,0,0,SXF_SETMASTER);
+				}
+					} 
+		GE0M BBB 1 {A_WeaponOffset(3,-2,WOF_ADD); A_TakeInventory("Mana2W",1,TIF_NOTAKEINFINITE);}
+		GE0M BBB 1 {A_WeaponOffset(-3,-2,WOF_ADD); A_TakeInventory("Mana2W",1,TIF_NOTAKEINFINITE);}
+		GE0M CCC 1 {A_WeaponOffset(3,-2,WOF_ADD); A_TakeInventory("Mana2W",1,TIF_NOTAKEINFINITE);}
+		GE0M CCC 1 A_WeaponOffset(-3,-2,WOF_ADD) //40
+		GE0M DDD 1 A_WeaponOffset(3,-2,WOF_ADD) 
+		GE0M DDD 1 A_WeaponOffset(-3,-2,WOF_ADD) //32
+		GE0M CCC 1 A_WeaponOffset(3,-2,WOF_ADD)
+		GE0M CCC 1 A_WeaponOffset(-3,-2,WOF_ADD) //26
+		GE0M DD 1 A_WeaponOffset(3,-2,WOF_ADD) //22
+		GE0M AA 1 A_WeaponOffset(-1,-1,WOF_ADD) //20
+		"####" "#" 0 A_WeaponOffset(0,32)
+		"####" "#" 2 A_WeaponOffset(0,48)
+		"####" "#" 2 A_WeaponOffset(0,60)
+		Goto Ready
+	}
+}
+
+Actor Bocchi //The Rock
+{
+	Height 12
+	Radius 12
+	Mass 60
+	Damage 3
+	RenderStyle Translucent
+	Speed 30
+	Alpha 1
+	XScale 0.3
+	YScale 0.3
+	DamageType "Smash"
+	BounceType Grenade
+	BounceCount 4
+	BounceFactor 0.8
+	WallBounceFactor 0.4
+	Deathsound "RockSmasher"
+	Gravity 1.4
+	PROJECTILE
+	-CANBOUNCEWATER
+	+USEBOUNCESTATE
+	+ALLOWBOUNCEONACTORS
+	+BOUNCEONACTORS
+	+BOUNCEONFLOORS
+	+NOEXPLODEFLOOR
+	+STEPMISSILE
+	+FORCEXYBILLBOARD
+	+HITTRACER
+	+ROLLSPRITE
+	+ROLLCENTER
+	+NOCLIP
+	+THRUACTORS
+	+NOGRAVITY
+	+FORCERADIUSDMG
+	+ICESHATTER
+	+SKYEXPLODE
+	+NONSHOOTABLE
+	+THRUSPECIES
+	+MTHRUSPECIES
+	+BLOODSPLATTER
+	+EXTREMEDEATH
+	+FLOATBOB
+	-SOLID
+	States
+	{
+	Spawn:
+		TNT1 A 0 
+		TNT1 A 0 A_JumpIfInventory("CoptersSound",3,"Flight")
+		TNT1 A 0 A_JumpIfInventory("CoptersSound",2,"FlightNow")
+		TNT1 A 0 A_JumpIfInventory("CoptersSound",1,"FlightAgain")
+		TNT1 A 0 A_SetRoll((roll+random(0,180)))
+		Goto Formation
+	Formation:
+		RCK2 A 3 A_GiveInventory("CoptersSound",random(1,3))
+		RCK2 BCDE 3
+		RCK2 E 0 A_JumpIfInventory("CoptersSound",3,"AType")
+		RCK2 E 0 A_JumpIfInventory("CoptersSound",2,"BType")
+		RCK2 E 0 A_JumpIfInventory("CoptersSound",1,"CType")
+		Goto BType
+	AType:
+		RCK4 A 0 A_Setscale(0.45,0.45)
+	ATypeLoop:
+		RCK4 ABCDEFGH 3 A_JumpIfInventory("ComboCounter", 1, "YeetBocchi")
+		Goto ATypeLoop
+	BType:
+		RCK7 A 0 A_Setscale(0.38,0.38)
+	BTypeLoop:
+		RCK7 ABCDEFGHIJKLM 3 A_JumpIfInventory("ComboCounter", 1, "YeetBocchiNow")
+		Goto BTypeLoop
+	CType:
+		RCK9 A 0 A_Setscale(0.41,0.41)
+	CTypeLoop:
+		RCK9 ABCDEFGHIJ 3 A_JumpIfInventory("ComboCounter", 1, "YeetBocchiAgain")
+		Goto CTypeLoop
+	YeetBocchi:
+		RCK4 A 0
+		{
+		A_ChangeFlag("NOCLIP",false);
+		A_ChangeFlag("THRUACTORS",false);
+		A_ChangeFlag("SOLID",true);
+		A_ChangeFlag("NOGRAVITY",false);
+		A_ChangeFlag("FLOATBOB",false);
+		A_PlaySound("AStonesThrow", 0, 1, false);
+		A_ChangeVelocity(cos(pitch)*27,0,-sin(pitch)*27,CVF_RELATIVE|CVF_REPLACE); 
+		}
+		Goto Flight
+	Flight:
+		RCK4 A 0 A_JumpIfInventory("Walpurgisnacht",40,"XDeath")
+		RCK4 A 0 A_CheckFloor("CancelMovement")
+		RCK4 ABCDEFGH 3 
+		{
+		A_SetRoll(roll+10);
+		if((sqrt((sqrt((velx * velx)+(vely * vely)) * sqrt((velx * velx)+(vely * vely)))+(velz * velz))) >= 40)
+				{	//While the speed is above 40, slows it down since the bounce goes a bit wild sometimes!
+					A_ScaleVelocity(0.8);
+				}}
+		Loop
+	YeetBocchiNow:
+		RCK7 A 0
+		{
+		A_ChangeFlag("NOCLIP",false);
+		A_ChangeFlag("THRUACTORS",false);
+		A_ChangeFlag("SOLID",true);
+		A_ChangeFlag("NOGRAVITY",false);
+		A_ChangeFlag("FLOATBOB",false);
+		A_PlaySound("AStonesThrow", 0, 1, false);
+		A_ChangeVelocity(cos(pitch)*27,0,-sin(pitch)*27,CVF_RELATIVE|CVF_REPLACE); 
+		}
+		Goto FlightNow
+	FlightNow:
+		RCK7 A 0 A_JumpIfInventory("Walpurgisnacht",40,"XDeath")
+		RCK7 ABCDEFGHIJKLM 3  
+		{
+		A_SetRoll(roll+10);
+		if((sqrt((sqrt((velx * velx)+(vely * vely)) * sqrt((velx * velx)+(vely * vely)))+(velz * velz))) >= 40)
+				{	//While the speed is above 40, slows it down since the bounce goes a bit wild sometimes!
+					A_ScaleVelocity(0.8);
+				}}
+		Loop
+	YeetBocchiAgain:
+		RCK9 A 0
+		{
+		A_ChangeFlag("NOCLIP",false);
+		A_ChangeFlag("THRUACTORS",false);
+		A_ChangeFlag("SOLID",true);
+		A_ChangeFlag("NOGRAVITY",false);
+		A_ChangeFlag("FLOATBOB",false);
+		A_PlaySound("AStonesThrow", 0, 1, false);
+		A_ChangeVelocity(cos(pitch)*27,0,-sin(pitch)*27,CVF_RELATIVE|CVF_REPLACE); 
+		}
+		Goto FlightAgain
+	FlightAgain:
+		RCK9 A 0 A_JumpIfInventory("Walpurgisnacht",40,"XDeath")
+		RCK9 ABCDEFGHIJ 3  
+		{
+		if((sqrt((sqrt((velx * velx)+(vely * vely)) * sqrt((velx * velx)+(vely * vely)))+(velz * velz))) >= 39)
+				{	//While the speed is above 38, slows it down since the bounce goes a bit wild sometimes!
+					A_ScaleVelocity(0.8);
+				}}
+		Loop
+	Bounce:
+		RCK4 A 0 A_JumpIfInventory("Walpurgisnacht",40,"XDeath")
+		RCK4 A 0 
+		{
+			A_GiveInventory("Walpurgisnacht",10); 
+			A_Explode ((random(40,50)-(CountInv("Walpurgisnacht"))), 90, 0, 0, 90,0,0,"None","Smash");
+			While(CountInv("Mana1") < 6)
+			{	
+				A_SpawnItemEx("DirtWalp",random(15,30),0,Frandom(1,30),Frandom(1,5),0,Frandom(1,6),60*CountInv("Mana1"));
+				A_GiveInventory("Mana1",1);
+			}
+			A_TakeInventory("Mana1");
+			A_StartSound("RockImpactor",CHAN_AUTO,CHANF_OVERLAP,1,ATTN_NORM,1);
+		}
+		Goto Spawn
+	Bounce.Floor:
+		RCK4 A 0 A_JumpIfInventory("Walpurgisnacht",40,"XDeath")
+		RCK4 A 0
+		{
+			A_GiveInventory("Walpurgisnacht",10); 
+			A_Explode ((random(40,50)-(CountInv("Walpurgisnacht"))), 90, 0, 0, 90,0,0,"None","Smash");
+			While(CountInv("Mana1") < 6)
+			{	
+				A_SpawnItemEx("DirtWalp",random(15,30),0,Frandom(1,30),Frandom(1,5),0,Frandom(1,6),60*CountInv("Mana1"));
+				A_GiveInventory("Mana1",1);
+			}
+			A_SpawnItemEx("SprayingDirt");
+			A_TakeInventory("Mana1");
+			ThrustThingZ(0,20,0,1);
+			ThrustThing((angle*256/360) + randompick(-10,10,4,-4),6,0,0);
+			A_StartSound("RockImpactor",CHAN_AUTO,CHANF_OVERLAP,1,ATTN_NORM,1);
+		}
+		Goto Spawn
+	Bounce.Wall:
+		RCK4 A 0 A_JumpIfInventory("Walpurgisnacht",40,"XDeath")
+		RCK4 A 0
+		{
+			A_GiveInventory("Walpurgisnacht",10); 
+			A_Explode ((random(40,50)-(CountInv("Walpurgisnacht"))), 90, 0, 0, 90,0,0,"None","Smash");
+			While(CountInv("Mana1") < 6)
+			{	
+				A_SpawnItemEx("DirtWalp",random(15,30),0,Frandom(1,30),Frandom(1,5),0,Frandom(1,6),60*CountInv("Mana1"));
+				A_GiveInventory("Mana1",1);
+			}
+			A_TakeInventory("Mana1");
+			ThrustThing((angle*256/360 + 128) + randompick(-10,10,4,-4),4,0,0);
+			A_StartSound("RockImpactor",CHAN_AUTO,CHANF_OVERLAP,1,ATTN_NORM,1);
+		}
+		Goto Spawn
+	Bounce.Actor:
+		RCK4 A 0 A_JumpIfInventory("Walpurgisnacht",40,"XDeath")
+		RCK4 A 0
+		{
+			A_Stop;
+			A_GiveInventory("Walpurgisnacht",10); 
+			A_Explode ((random(40,50)-(CountInv("Walpurgisnacht"))), 90, 0, 0, 90,0,0,"None","Smash");
+			While(CountInv("Mana1") < 6)
+			{	
+				A_SpawnItemEx("DirtWalp",random(15,30),0,Frandom(1,30),Frandom(1,5),0,Frandom(1,6),60*CountInv("Mana1"));
+				A_GiveInventory("Mana1",1);
+			}
+			A_TakeInventory("Mana1");
+			A_SpawnItemEx("SprayingDirt");
+			if(A_CheckFlag("ISMONSTER", "Null", AAPTR_TRACER)) { A_ChangeVelocity (-11,random(-2,2),5,CVF_RELATIVE,AAPTR_TRACER); } // FIX_LAPIS_DECOR_KNOCKBACK_20260426
+			ThrustThingZ(0,26,0,1);
+			ThrustThing((angle*256/360)+randompick(128,128,128,128,64,192),7,1,0);
+			A_StartSound("RockImpactor",CHAN_AUTO,CHANF_OVERLAP,1,ATTN_NORM,1);
+		}
+		Goto Spawn
+	Crash:
+		"####" "#" 0 A_Stop
+		Goto Kaboom
+	XDeath:
+		"####" "#" 0 A_Stop
+		Goto Kaboom
+	Death:
+		"####" "#" 0 A_Stop
+		Goto Kaboom
+	Kaboom: 
+		R0CK S 2 
+		{
+			A_RadiusThrust(275, 25, RTF_THRUSTZ, 15);
+			if(A_CheckFlag("ISMONSTER", "Null", AAPTR_TRACER)) { A_ChangeVelocity (-9,0,5,CVF_RELATIVE,AAPTR_TRACER); } // FIX_LAPIS_DECOR_KNOCKBACK_20260426
+			A_Explode(random(14,30),88);
+		}
+		R0CK TUVWX 2  
+		Stop
+	}
+}
+
+ACTOR WallBocchi : Bocchi //A rare species, it lives in walls and plays insidious music all day.
+{
+	Mass 80
+	Damage 2
+	BounceCount 2
+	BounceFactor 0.5
+	WallBounceFactor 0.3
+	Gravity 1.5
+	Deathsound "RockSmasher"
+	-NOCLIP
+	-THRUACTORS
+	+SOLID
+	-NOGRAVITY
+	-FLOATBOB
+	States
+	{
+	Spawn:
+		TNT1 A 0 
+		TNT1 A 0 A_JumpIfInventory("CoptersSound",3,"Flight")
+		TNT1 A 0 A_JumpIfInventory("CoptersSound",2,"FlightNow")
+		TNT1 A 0 A_JumpIfInventory("CoptersSound",1,"FlightAgain")
+		TNT1 A 0 A_SetRoll((roll+random(0,180)))
+		Goto Formation
+	Formation:
+		RCK2 E 0 A_GiveInventory("CoptersSound",random(1,3)) //skips formation stage
+		RCK2 E 0 A_JumpIfInventory("CoptersSound",3,"AType")
+		RCK2 E 0 A_JumpIfInventory("CoptersSound",2,"BType")
+		RCK2 E 0 A_JumpIfInventory("CoptersSound",1,"CType")
+		Goto BType
+	AType:
+		RCK4 A 0 A_Setscale(0.35,0.35)
+	ATypeLoop:
+		RCK4 ABCDEFGH 3 A_JumpIfInventory("ComboCounter", 1, "YeetBocchi")
+		Goto ATypeLoop
+	BType:
+		RCK7 A 0 A_Setscale(0.28,0.28)
+	BTypeLoop:
+		RCK7 ABCDEFGHIJKLM 3 A_JumpIfInventory("ComboCounter", 1, "YeetBocchiNow")
+		Goto BTypeLoop
+	CType:
+		RCK9 A 0 A_Setscale(0.31,0.31)
+	CTypeLoop:
+		RCK9 ABCDEFGHIJ 3 A_JumpIfInventory("ComboCounter", 1, "YeetBocchiAgain")
+		Goto CTypeLoop
+	YeetBocchi:
+		RCK4 A 0
+		{
+		A_ChangeVelocity(cos(pitch)*7,0,-sin(pitch)*7,CVF_RELATIVE|CVF_REPLACE); 
+		}
+		Goto Flight
+	YeetBocchiNow:
+		RCK7 A 0
+		{
+		A_ChangeVelocity(cos(pitch)*7,0,-sin(pitch)*7,CVF_RELATIVE|CVF_REPLACE); 
+		}
+		Goto FlightNow
+	YeetBocchiAgain:
+		RCK9 A 0
+		{
+		A_ChangeVelocity(cos(pitch)*7,0,-sin(pitch)*7,CVF_RELATIVE|CVF_REPLACE); 
+		}
+		Goto FlightAgain
+	Bounce.Floor:
+		RCK4 A 0 A_JumpIfInventory("Walpurgisnacht",40,"XDeath")
+		RCK4 A 0
+		{
+			A_GiveInventory("Walpurgisnacht",10); 
+			A_Explode ((random(40,50)-(CountInv("Walpurgisnacht"))), 90, 0, 0, 90,0,0,"None","Smash");
+			While(CountInv("Mana1") < 6)
+			{	
+				A_SpawnItemEx("DirtWalp",random(15,30),0,Frandom(1,30),Frandom(1,5),0,Frandom(1,6),60*CountInv("Mana1"));
+				A_GiveInventory("Mana1",1);
+			}
+			A_TakeInventory("Mana1");
+			A_SpawnItemEx("SprayingDirt");
+			ThrustThingZ(0,7,0,1);
+			ThrustThing((angle*256/360) + randompick(-5,5,2,-2),6,0,0);
+			A_StartSound("RockImpactor",CHAN_AUTO,CHANF_OVERLAP,1,ATTN_NORM,1);
+		}
+		Goto Spawn
+	Bounce.Wall:
+		RCK4 A 0 A_JumpIfInventory("Walpurgisnacht",40,"XDeath")
+		RCK4 A 0
+		{
+			A_GiveInventory("Walpurgisnacht",10); 
+			A_Explode ((random(40,50)-(CountInv("Walpurgisnacht"))), 90, 0, 0, 90,0,0,"None","Smash");
+			While(CountInv("Mana1") < 6)
+			{	
+				A_SpawnItemEx("DirtWalp",random(15,30),0,Frandom(1,30),Frandom(1,5),0,Frandom(1,6),60*CountInv("Mana1"));
+				A_GiveInventory("Mana1",1);
+			}
+			A_TakeInventory("Mana1");
+			ThrustThing((angle*256/360 + 128) + randompick(-5,5,2,-2),4,0,0);
+			A_StartSound("RockImpactor",CHAN_AUTO,CHANF_OVERLAP,1,ATTN_NORM,1);
+		}
+		Goto Spawn
+	Bounce.Actor:
+		RCK4 A 0 A_JumpIfInventory("Walpurgisnacht",40,"XDeath")
+		RCK4 A 0
+		{
+			A_Stop;
+			A_GiveInventory("Walpurgisnacht",10); 
+			A_Explode ((random(40,50)-(CountInv("Walpurgisnacht"))), 90, 0, 0, 90,0,0,"None","Smash");
+			While(CountInv("Mana1") < 6)
+			{	
+				A_SpawnItemEx("DirtWalp",random(15,30),0,Frandom(1,30),Frandom(1,5),0,Frandom(1,6),60*CountInv("Mana1"));
+				A_GiveInventory("Mana1",1);
+			}
+			A_TakeInventory("Mana1");
+			if(A_CheckFlag("ISMONSTER", "Null", AAPTR_TRACER)) { A_ChangeVelocity (-11,random(-2,2),5,CVF_RELATIVE,AAPTR_TRACER); } // FIX_LAPIS_DECOR_KNOCKBACK_20260426
+			ThrustThingZ(0,11,0,1);
+			ThrustThing((angle*256/360)+randompick(128,128,128,128,64,192),5,1,0);
+			A_StartSound("RockImpactor",CHAN_AUTO,CHANF_OVERLAP,1,ATTN_NORM,1);
+		}
+		Goto Spawn
+	}
+}
+
+Actor SociallyAdeptBocchi : Bocchi //On it's way to becoming a Gitah Hero. Upgrade version.
+{
+	Mass 55
+	Damage 4
+	States
+	{
+		Bounce.Floor:
+		RCK4 A 0 A_JumpIfInventory("Walpurgisnacht",40,"XDeath")
+		RCK4 A 0
+		{
+			A_GiveInventory("Walpurgisnacht",5); 
+			A_Explode ((random(60,70)-(CountInv("Walpurgisnacht"))), 90, 0, 0, 90,0,0,"None","Smash");
+			While(CountInv("Mana1") < 6)
+			{	
+				A_SpawnItemEx("DirtWalp",random(15,30),0,Frandom(1,30),Frandom(1,5),0,Frandom(1,6),60*CountInv("Mana1"));
+				A_SpawnProjectile("SmolRocksZ",random(15,40),0,60*CountInv("Mana1"),CMF_AIMDIRECTION,random(-5,-50));
+				A_GiveInventory("Mana1",1);
+			}
+			A_TakeInventory("Mana1");
+			A_SpawnItemEx("SprayingDirt");
+			ThrustThingZ(0,7,0,1);
+			ThrustThing((angle*256/360) + randompick(-5,5,2,-2),6,0,0);
+			A_StartSound("RockImpactor",CHAN_AUTO,CHANF_OVERLAP,1,ATTN_NORM,1);
+		}
+		Goto Spawn
+	Bounce.Wall:
+		RCK4 A 0 A_JumpIfInventory("Walpurgisnacht",40,"XDeath")
+		RCK4 A 0
+		{
+			A_GiveInventory("Walpurgisnacht",5); 
+			A_Explode ((random(60,70)-(CountInv("Walpurgisnacht"))), 90, 0, 0, 90,0,0,"None","Smash");
+			While(CountInv("Mana1") < 6)
+			{	
+				A_SpawnItemEx("DirtWalp",random(15,30),0,Frandom(1,30),Frandom(1,5),0,Frandom(1,6),60*CountInv("Mana1"));
+				A_SpawnProjectile("SmolRocksZ",random(15,40),0,60*CountInv("Mana1"),CMF_AIMDIRECTION,random(-5,-50));
+				A_GiveInventory("Mana1",1);
+			}
+			A_TakeInventory("Mana1");
+			ThrustThing((angle*256/360 + 128) + randompick(-5,5,2,-2),4,0,0);
+			A_StartSound("RockImpactor",CHAN_AUTO,CHANF_OVERLAP,1,ATTN_NORM,1);
+		}
+		Goto Spawn
+	Bounce.Actor:
+		RCK4 A 0 A_JumpIfInventory("Walpurgisnacht",40,"XDeath")
+		RCK4 A 0
+		{
+			A_Stop;
+			A_GiveInventory("Walpurgisnacht",5); 
+			A_Explode ((random(60,70)-(CountInv("Walpurgisnacht"))), 90, 0, 0, 90,0,0,"None","Smash");
+			While(CountInv("Mana1") < 6)
+			{	
+				A_SpawnItemEx("DirtWalp",random(15,30),0,Frandom(1,30),Frandom(1,5),0,Frandom(1,6),60*CountInv("Mana1"));
+				A_SpawnProjectile("SmolRocksZ",random(15,40),0,60*CountInv("Mana1"),CMF_AIMDIRECTION,random(-5,-50));
+				A_GiveInventory("Mana1",1);
+			}
+			A_TakeInventory("Mana1");
+			if(A_CheckFlag("ISMONSTER", "Null", AAPTR_TRACER)) { A_ChangeVelocity (-11,random(-2,2),5,CVF_RELATIVE,AAPTR_TRACER); } // FIX_LAPIS_DECOR_KNOCKBACK_20260426
+			ThrustThingZ(0,11,0,1);
+			ThrustThing((angle*256/360)+randompick(128,128,128,128,64,192),5,1,0);
+			A_StartSound("RockImpactor",CHAN_AUTO,CHANF_OVERLAP,1,ATTN_NORM,1);
+		}
+		Goto Spawn
+	}
+}
+
+Actor ICastFist 
+{
+	Height 13
+	Radius 13
+	Mass 80
+	Damage 3
+	Speed 40
+	Alpha 1
+	XScale 0.45
+	YScale 0.45
+	DamageType "Smash"
+	Deathsound "RockSmasher"
+	Gravity 1.4
+	PROJECTILE
+	-CANBOUNCEWATER
+	+USEBOUNCESTATE
+	+STEPMISSILE
+	+FORCEXYBILLBOARD
+	+HITTRACER
+	+NOGRAVITY
+	+FORCERADIUSDMG
+	+ICESHATTER
+	+SKYEXPLODE
+	+NONSHOOTABLE
+	+THRUSPECIES
+	+MTHRUSPECIES
+	+BLOODSPLATTER
+	+EXTREMEDEATH
+	+NOCLIP
+	+THRUACTORS
+	-SOLID
+	States
+	{
+	Spawn:
+		TNT1 A 0 
+		Goto Formation
+	Formation:
+		RCK2 AA 1 A_Warp(AAPTR_MASTER,34* cos(pitch),50,50- (40 * sin(pitch)),0,WARPF_INTERPOLATE|WARPF_NOCHECKPOSITION|WARPF_COPYPITCH)
+		RCK2 BBCCDDEE 1 A_Warp(AAPTR_MASTER,34* cos(pitch),50,50- (40 * sin(pitch)),0,WARPF_INTERPOLATE|WARPF_NOCHECKPOSITION|WARPF_COPYPITCH)
+		Goto CastFist
+	CastFist:
+		F15T XX 1 A_Warp(AAPTR_MASTER,34* cos(pitch),50,50- (40 * sin(pitch)),0,WARPF_INTERPOLATE|WARPF_NOCHECKPOSITION|WARPF_COPYPITCH)
+		F15T X 2 A_ChangeVelocity(6,11,0,CVF_RELATIVE|CVF_REPLACE)
+		F15T X 2
+		F15T X 0
+		{
+		A_ChangeFlag("NOCLIP",false);
+		A_ChangeFlag("THRUACTORS",false);
+		A_ChangeFlag("SOLID",true);
+		A_PlaySound("AStonesThrow", 0, 1, false);
+		A_SpawnProjectile("WindTunnelWBALapis",0,0,180);
+		A_ChangeVelocity(cos(pitch)*40,0,-sin(pitch)*40,CVF_RELATIVE|CVF_REPLACE); 
+		}
+		Goto Flight
+	Flight:
+		F15T X 0 A_CheckFloor("CancelMovement")
+		F15T X 2 {		
+				A_SpawnItemEx("QuietSparklies2",0,0,0,-8,random(3,-3),-1);
+				A_SpawnItemEx("QuietSparklies2",0,0,0,-4,random(3,-3),random(3,-3));}
+		Loop
+	Crash:
+		"####" "#" 0 { if(A_CheckFlag("ISMONSTER", "Null", AAPTR_TRACER)) { A_ChangeVelocity(-10* cos(pitch),vely,10- (5 * sin(pitch)),CVF_RELATIVE|CVF_REPLACE,AAPTR_TRACER); } } // FIX_LAPIS_DECOR_KNOCKBACK_20260426
+		"####" "#" 0 {A_ChangeFlag("SOLID",false); A_ChangeFlag("THRUACTORS",true);}
+		"####" "#" 1 A_Explode(random(94,120),66)
+		TNT1 A 1 A_SpawnItemEx("FistContinue",cos(pitch)*15,0,0-(sin(pitch)*15),0,0,0,0,SXF_SETMASTER|SXF_TRANSFERPITCH|SXF_ORIGINATOR,0)
+		Stop
+	XDeath:
+		"####" "#" 0 { if(A_CheckFlag("ISMONSTER", "Null", AAPTR_TRACER)) { A_ChangeVelocity(-10* cos(pitch),vely,10- (5 * sin(pitch)),CVF_RELATIVE|CVF_REPLACE,AAPTR_TRACER); } } // FIX_LAPIS_DECOR_KNOCKBACK_20260426
+		"####" "#" 0 {A_ChangeFlag("SOLID",false); A_ChangeFlag("THRUACTORS",true);}
+		"####" "#" 1 A_Explode(random(94,120),66)
+		TNT1 A 1 A_SpawnItemEx("FistContinue",cos(pitch)*15,0,0-(sin(pitch)*15),0,0,0,0,SXF_SETMASTER|SXF_TRANSFERPITCH|SXF_ORIGINATOR,0)
+		Stop
+	Death:
+		"####" "#" 0 A_Stop
+		Goto Kaboom
+	Kaboom: 
+		R0CK S 2 
+		{
+			A_RadiusThrust(475, 25, RTF_THRUSTZ, 15);
+			if(A_CheckFlag("ISMONSTER", "Null", AAPTR_TRACER)) { A_ChangeVelocity (-9,0,5,CVF_RELATIVE,AAPTR_TRACER); } // FIX_LAPIS_DECOR_KNOCKBACK_20260426
+			A_Explode(random(14,30),88);
+		}
+		R0CK TUVWX 2  
+		Stop
+	}
+}
+
+Actor ICastFistRight : ICastFist
+{
+	States
+	{
+	Spawn:
+		TNT1 A 0 
+		Goto Formation
+	Formation: 
+		RCK2 AA 1 A_Warp(AAPTR_MASTER,34* cos(pitch),-50,50- (40 * sin(pitch)),0,WARPF_INTERPOLATE|WARPF_NOCHECKPOSITION|WARPF_COPYPITCH)
+		RCK2 BBCCDDEE 1 A_Warp(AAPTR_MASTER,34* cos(pitch),-50,50- (40 * sin(pitch)),0,WARPF_INTERPOLATE|WARPF_NOCHECKPOSITION|WARPF_COPYPITCH)
+		Goto CastFist2
+	CastFist2:
+		F15T XX 1 A_Warp(AAPTR_MASTER,34* cos(pitch),-50,50- (40 * sin(pitch)),0,WARPF_INTERPOLATE|WARPF_NOCHECKPOSITION|WARPF_COPYPITCH)
+		F15T X 2 A_ChangeVelocity(6,-11,0,CVF_RELATIVE|CVF_REPLACE)
+		F15T X 2
+		F15T X 0
+		{
+		A_ChangeFlag("NOCLIP",false);
+		A_ChangeFlag("THRUACTORS",false);
+		A_ChangeFlag("SOLID",true);
+		A_PlaySound("AStonesThrow", 0, 1, false);
+		A_SpawnProjectile("WindTunnelWBALapis",0,0,180);
+		A_ChangeVelocity(cos(pitch)*40,0,-sin(pitch)*40,CVF_RELATIVE|CVF_REPLACE); 
+		}
+		Goto Flight
+	}
+
+}
+
+Actor FistContinue : ICastFist
+{
+	States
+	{
+	Spawn:
+		TNT1 A 0
+		F15T X 3 
+		Goto CastFist
+	Crash:
+		"####" "#" 0 { if(A_CheckFlag("ISMONSTER", "Null", AAPTR_TRACER)) { A_ChangeVelocity(-10* cos(pitch),vely,10- (5 * sin(pitch)),CVF_RELATIVE|CVF_REPLACE,AAPTR_TRACER); } } // FIX_LAPIS_DECOR_KNOCKBACK_20260426
+		"####" "#" 0 {A_ChangeFlag("SOLID",false); A_ChangeFlag("THRUACTORS",true);}
+		"####" "#" 1 A_Explode(random(94,120),66)
+		TNT1 A 1 A_SpawnItemEx("FistFinal",cos(pitch)*15,0,0-(sin(pitch)*15),0,0,0,0,SXF_SETMASTER|SXF_TRANSFERPITCH|SXF_ORIGINATOR,0)
+		Stop
+	XDeath:
+		"####" "#" 0 { if(A_CheckFlag("ISMONSTER", "Null", AAPTR_TRACER)) { A_ChangeVelocity(-10* cos(pitch),vely,10- (5 * sin(pitch)),CVF_RELATIVE|CVF_REPLACE,AAPTR_TRACER); } } // FIX_LAPIS_DECOR_KNOCKBACK_20260426
+		"####" "#" 0 {A_ChangeFlag("SOLID",false); A_ChangeFlag("THRUACTORS",true);}
+		"####" "#" 1 A_Explode(random(94,120),66)
+		TNT1 A 1 A_SpawnItemEx("FistFinal",cos(pitch)*15,0,0-(sin(pitch)*15),0,0,0,0,SXF_SETMASTER|SXF_TRANSFERPITCH|SXF_ORIGINATOR,0)
+		Stop
+	Death:
+		"####" "#" 0 A_Stop
+		Goto Kaboom
+	}
+
+}
+
+Actor FistFinal : FistContinue
+{
+	States
+	{
+	Spawn:
+		TNT1 A 0
+		F15T X 3 
+		Goto CastFist
+	Crash:
+		"####" "#" 0 { if(A_CheckFlag("ISMONSTER", "Null", AAPTR_TRACER)) { A_ChangeVelocity(-10* cos(pitch),vely,10- (5 * sin(pitch)),CVF_RELATIVE|CVF_REPLACE,AAPTR_TRACER); } } // FIX_LAPIS_DECOR_KNOCKBACK_20260426
+		Goto Kaboom
+	XDeath:
+		"####" "#" 0 { if(A_CheckFlag("ISMONSTER", "Null", AAPTR_TRACER)) { A_ChangeVelocity(-10* cos(pitch),vely,10- (5 * sin(pitch)),CVF_RELATIVE|CVF_REPLACE,AAPTR_TRACER); } } // FIX_LAPIS_DECOR_KNOCKBACK_20260426
+		Goto Kaboom
+	Death:
+		"####" "#" 0 A_Stop
+		Goto Kaboom
+	}
+}	
+	
+ACTOR SmolRocksZ : BardicheShrapnelBig //Used in Primary Upgrade
+{
+	Damage (Random(5, 8))
+	Radius 8
+	Speed 16
+	Scale 0.06
+	Bouncetype Grenade
+	BounceCount 2
+	WallBounceFactor 0.5
+	Damagetype "Quake"
+	States
+	{
+	Spawn:
+		TNT1 A 0
+		TNT1 A 0 A_SetScale(scalex+(frandom(-0.03,0.06)),scaley+(frandom(-0.03,0.06)))
+	Formation:
+		RCK2 E 0 A_GiveInventory("CoptersSound",random(1,3))
+		RCK2 E 0 A_JumpIfInventory("CoptersSound",3,"AType")
+		RCK2 E 0 A_JumpIfInventory("CoptersSound",2,"BType")
+		RCK2 E 0 A_JumpIfInventory("CoptersSound",1,"CType")
+		Goto BType
+	AType:
+		RCK4 ABCDEFGH 3 A_SetRoll(roll+random(5,45),SPF_INTERPOLATE)
+		Loop
+	BType:
+		RCK7 ABCDEFGHIJKLM 3 A_SetRoll(roll+random(5,45),SPF_INTERPOLATE)
+		Loop
+	CType:
+		RCK9 ABCDEFGHIJ 3 A_SetRoll(roll+random(5,45),SPF_INTERPOLATE)
+	Death:
+		TNT1 A 0
+		Stop
+	}
+}
+
+Actor HandMarkerLapis : HandMarker 
+{
+	+NOTAUTOAIMED
+	+NOTARGETSWITCH
+	-FRIENDLY
+	States
+	{
+	Spawn:
+		TNT1 A 0 Nodelay A_JumpIfInventory("ComboCounter",1,"Death")
+		TNT1 A 0 { 	A_SetUserVarFloat(user_howfar,GetDistance(true,AAPTR_MASTER));
+					A_Warp(AAPTR_MASTER,cos(-pitch)*user_howfar,-7,34+sin(-pitch)*user_howfar,0,WARPF_NOCHECKPOSITION|WARPF_COPYPITCH|WARPF_COPYVELOCITY);}
+		TNT1 A 0 {
+		A_Cleartarget;
+		A_CustomRailgun(random(1,2),2,"23 A1 2C","00 82 2D",RGF_SILENT|RGF_EXPLICITANGLE|RGF_NORANDOMPUFFZ,0,20,"QuietSparkliesLapis",0,0,2550,5,2,1,"QuietSparkliesLapis"); 
+		//A_CustomRailgun(random(60,80),1,"23 A1 2C","00 82 2D",RGF_SILENT|RGF_EXPLICITANGLE|RGF_NORANDOMPUFFZ,0,0,"DecorativeZaps",0,0,3550,8,1,0,"LaserBall2");
+		}
+		Stop
+	}
+}
+
+Actor FakeLapisShot : FastProjectile
+{
+	+NOTIMEFREEZE
+	+THRUACTORS
+	Speed 2000
+	Radius 1
+	Scale 0.3
+	Projectile
+	Height 8
+	Damage (0)
+	Decal "GeomancyCrack"
+	States
+	{
+	Spawn:
+		TNT1 A 1 Bright
+		Loop
+	Death:
+		TNT1 A 0 A_Stop
+		TNT1 A 0 A_Cleartarget
+		TNT1 A 0 A_QuakeEx(2,2,5,20,0,2,"-",QF_SCALEDOWN)
+		TNT1 A 0 A_CheckFloor("ActuallyFloor")
+		TNT1 A 0 A_CheckCeiling("ActuallyCeiling")
+		TNT1 A 0 A_SetAngle(angle-180)
+		TNT1 AAAAAAAAAA 0 A_SpawnItemEx("DirtWalp",-25,random(-7,7),random(-7,7),frandom(-1,-6),frandom(-1.2,1.2),frandom(1,6.7),180)
+		TNT1 A 1 A_SpawnItemEx("RapidDeconstructionPuff",3,0,0,0,0,0,0,SXF_NOCHECKPOSITION|SXF_SETMASTER )
+		TNT1 AAA 0 A_SpawnItemEx("WallBocchi",-25,random(-9,9),random(-9,9),frandom(-3,-8),frandom(-3,3),frandom(1,8),180)
+		Stop
+	ActuallyFloor:
+		TNT1 AAAAAAAAAAAAA 0 A_SpawnItemEx("DirtWalp",random(10,-10),random(-7,7),random(-7,7),frandom(6,-6),frandom(-1.2,1.2),frandom(1,6.7),180)
+		TNT1 A 1 A_SpawnItemEx("RapidDeconstructionFloor",0,0,0,0,0,0,0,SXF_SETMASTER,0)
+		Stop
+	ActuallyCeiling:
+		TNT1 A 0 A_SetAngle(angle-180)
+		TNT1 AAAAAAAAAA 0 A_SpawnItemEx("DirtWalp",-25,random(-7,7),random(-7,7),frandom(-1,-6),frandom(-1.2,1.2),frandom(1,6.7),180)
+		TNT1 A 1 A_SpawnItemEx("RapidDeconstructionPuff",3,0,0,0,0,0,0,SXF_NOCHECKPOSITION|SXF_SETMASTER )
+		TNT1 AAA 0 A_SpawnItemEx("WallBocchi",0,random(-9,9),random(-9,9),frandom(8,-8),frandom(-3,3),0,180)
+	}
+}
+
+Actor FakeLapisShotPlus : FakeLapisShot
+{
+	States
+	{
+	Spawn:
+		TNT1 A 1 Bright
+		Loop
+	Death:
+		TNT1 A 0 A_Stop
+		TNT1 A 0 A_Cleartarget
+		TNT1 A 0 A_QuakeEx(2,2,5,20,0,2,"-",QF_SCALEDOWN)
+		TNT1 A 0 A_CheckFloor("ActuallyFloor")
+		TNT1 A 0 A_CheckCeiling("ActuallyCeiling")
+		TNT1 A 0 A_SetAngle(angle-180)
+		TNT1 AAAAAAAAAA 0 A_SpawnItemEx("DirtWalp",-25,random(-7,7),random(-7,7),frandom(-1,-6),frandom(-1.2,1.2),frandom(1,6.7),180)
+		TNT1 A 1 A_SpawnItemEx("RapidDeconstructionPuff",3,0,0,0,0,0,0,SXF_NOCHECKPOSITION|SXF_SETMASTER )
+		TNT1 AAAAA 0 A_SpawnItemEx("WallBocchi",-25,random(-9,9),random(-9,9),frandom(-3,-8),frandom(-3,3),frandom(1,8),180)
+		Stop
+	ActuallyFloor:
+		TNT1 AAAAAAAAAAAAA 0 A_SpawnItemEx("DirtWalp",random(10,-10),random(-7,7),random(-7,7),frandom(6,-6),frandom(-1.2,1.2),frandom(1,6.7),180)
+		TNT1 A 1 A_SpawnItemEx("RapidDeconstructionFloorPlus",0,0,0,0,0,0,0,SXF_SETMASTER,0)
+		Stop
+	ActuallyCeiling:
+		TNT1 A 0 A_SetAngle(angle-180)
+		TNT1 AAAAAAAAAA 0 A_SpawnItemEx("DirtWalp",-25,random(-7,7),random(-7,7),frandom(-1,-6),frandom(-1.2,1.2),frandom(1,6.7),180)
+		TNT1 A 1 A_SpawnItemEx("RapidDeconstructionPuff",3,0,0,0,0,0,0,SXF_NOCHECKPOSITION|SXF_SETMASTER )
+		TNT1 AAAAA 0 A_SpawnItemEx("WallBocchi",0,random(-9,9),random(-9,9),frandom(8,-8),frandom(-3,3),0,180)
+	}
+}
+
+Actor RapidDeconstructionPuff : WallBulletPuff //create the wall explosion
+{
+	-FORCEXYBILLBOARD
+	-RANDOMIZE
+	+NOBLOCKMAP
+	+DONTSPLASH
+	+FRIENDLY
+	+NODAMAGETHRUST
+	+WALLSPRITE
+	+SPRITEANGLE
+	+PAINLESS
+	+NOGRAVITY
+	+ALWAYSPUFF
+	-PUFFONACTORS
+	+ALLOWTHRUFLAGS //We only want it to work on walls and floors.
+	+THRUACTORS
+	+NOGRAVITY
+	RenderStyle Add
+	Species "PlayerAlly"
+	Scale 1.4
+	Speed 5
+	States
+	{
+	Spawn:
+		TNT1 A 0 Bright 
+		TNT1 A 0 A_CheckFloor("FloorSpawn")
+		Goto WallSpawn
+	WallSpawn:
+		TNT1 A 0
+		Goto Death
+	FloorSpawn:
+		TNT1 A 0 //A_SpawnItemEx("FloorExplodesInstead",0,0,0,0,0,0,0,SXF_SETMASTER,0)
+		Stop
+	Death:
+		RUM8 A 0 A_PlaySound("QuakingInYerBoots",0,1,false,ATTN_NORM)
+		RUM8 ABCDEFGH 2 Bright A_SpawnItemEx("DirtWalp",random(-25,-30),random(-20,20),Frandom(-10,10),Frandom(-1,-5),Frandom(-7,7),Frandom(2,7),180)
+		Stop
+	FloorDeath:
+		TNT1 A 1
+		Stop
+	}
+}
+
+Actor RapidDeconstructionFloor //create the floor explosions
+{
+	-FORCEXYBILLBOARD
+	-RANDOMIZE
+	+NOBLOCKMAP
+	+DONTSPLASH
+	+FRIENDLY
+	+NODAMAGETHRUST
+	+PAINLESS
+	+NOGRAVITY
+	+ALWAYSPUFF
+	-PUFFONACTORS
+	+FLATSPRITE
+	+ALLOWTHRUFLAGS //We only want it to work on walls and floors.
+	+THRUACTORS
+	+NOGRAVITY
+	+RELATIVETOFLOOR
+	+INTERPOLATEANGLES
+	+SPRITEANGLE
+	-SOLID
+	RenderStyle Add
+	Species "PlayerAlly"
+	Scale 1.4
+	Speed 5
+	States
+	{
+	Spawn:
+		TNT1 A 1 Nodelay A_Stop
+	Death:
+		RUM8 A 0 A_SpawnItemEx("Fissures")
+		RUM8 A 0 A_SpawnItemEx("StalagmiteLapis",random(-85,0),random(-80,0),0,0,0,0,0)
+		RUM8 A 0 A_SpawnItemEx("StalagmiteLapis",random(0,85),random(0,80),0,0,0,0,0)
+		RUM8 A 0 A_SpawnItemEx("StalagmiteLapis",random(-85,0),random(80,0),0,0,0,0,0)
+		RUM8 A 0 A_SpawnItemEx("StalagmiteLapis",random(0,85),random(0,-80),0,0,0,0,0)
+		RUM8 ABCDEFGH 2 Bright A_SpawnItemEx("DirtWalp",random(10,-10),random(-20,20),Frandom(10,20),Frandom(7,-7),Frandom(-7,7),Frandom(9,13),180)
+		Stop
+	FloorDeath:
+		TNT1 A 1
+		Stop
+	}
+}
+
+ACTOR RapidDeconstructionFloorPlus : RapidDeconstructionFloor
+{
+	States
+	{	
+	Spawn:
+		TNT1 A 1 Nodelay A_Stop
+	Death:
+		RUM8 A 0 A_SpawnItemEx("Fissures")
+		RUM8 A 0 A_SpawnProjectile("SmolRocksZ",random(15,40),0,0,CMF_AIMDIRECTION,random(-5,-50))
+		RUM8 A 0 A_SpawnProjectile("SmolRocksZ",random(15,40),0,60,CMF_AIMDIRECTION,random(-5,-50))
+		RUM8 A 0 A_SpawnProjectile("SmolRocksZ",random(15,40),0,120,CMF_AIMDIRECTION,random(-5,-50))
+		//None at 180 as that would usually hit the player
+		RUM8 A 0 A_SpawnProjectile("SmolRocksZ",random(15,40),0,240,CMF_AIMDIRECTION,random(-5,-50))
+		RUM8 A 0 A_SpawnProjectile("SmolRocksZ",random(15,40),0,300,CMF_AIMDIRECTION,random(-5,-50))
+		RUM8 A 0 A_SpawnItemEx("StalagmiteLapis",random(-85,5),random(-80,5),0,0,0,0,0)
+		RUM8 A 0 A_SpawnItemEx("StalagmiteLapis",random(5,85),random(5,80),0,0,0,0,0)
+		RUM8 A 0 A_SpawnItemEx("StalagmiteLapis",0,0,0,0,0,0,0)
+		RUM8 A 0 A_SpawnItemEx("StalagmiteLapis",random(-85,5),random(80,5),0,0,0,0,0)
+		RUM8 A 0 A_SpawnItemEx("StalagmiteLapis",random(5,85),random(5,-80),0,0,0,0,0)
+		RUM8 ABCDEFGH 2 Bright A_SpawnItemEx("DirtWalp",random(10,-10),random(-20,20),Frandom(10,20),Frandom(7,-7),Frandom(-7,7),Frandom(9,13),180)
+		Stop
+	}
+}
+
+Actor FissuresGeomancy
+{
+	Height 1
+	Radius 1
+	Alpha 0.75
+	Scale 0.2
+	RenderStyle Translucent
+	+FLATSPRITE
+	+FLOORHUGGER
+	+ROLLSPRITE
+	+ROLLCENTER
+	+NOINTERACTION
+	States
+	{
+	Spawn:
+		TNT1 A 0 A_Setroll(random(0,180))
+		TNT1 A 0 A_SpawnItemEx("DirtWalp",random(10,-10),random(-20,20),Frandom(10,20),Frandom(7,-7),Frandom(-7,7),Frandom(9,13),180)
+		TNT1 A 0 A_Jump(88,"Type1")
+		TNT1 A 0 A_Jump(99,"Type2")
+		TNT1 A 0 A_Jump(99,"Type3")
+	Type1:
+		F155 T 288
+		Goto Death
+	Type2:
+		F155 S 288
+		Goto Death
+	Type3:
+		F155 R 288
+		Goto Death
+	Death:
+		"####" "#" 10 A_FadeOut(0.06)
+		Stop
+	}
+}
+
+Actor FissuresGeomancySmol
+{
+	Height 1
+	Radius 1
+	Alpha 0.95
+	Scale 0.2
+	RenderStyle Translucent
+	Radius 1
+	Height 1
+	RenderStyle Translucent
+	Damagetype "Blast"
+	SpriteRotation 270
+	+SPRITEANGLE
+	+FLATSPRITE
+	+FLOORHUGGER
+	+ROLLSPRITE
+	+ROLLCENTER
+	+NOINTERACTION
+	+RELATIVETOFLOOR
+	+INTERPOLATEANGLES
+	+DONTBLAST
+	+FRIENDLY
+	+STANDSTILL
+	-SOLID
+	States
+	{
+	Spawn:
+		TNT1 A 0 Nodelay A_Stop
+		TNT1 A 0 A_Setroll(roll+random(0,180))
+		TNT1 A 0 A_SetAngle(angle+random(20,165))
+		TNT1 A 0 A_SpawnItemEx("DirtWalp",random(10,-10),random(-20,20),Frandom(1,6),Frandom(7,-7),Frandom(-7,7),Frandom(9,13),180)
+		TNT1 A 0 A_Jump(256,"Type1","Type2","Type3","Type4","Type5","Type6","Type7")
+	Type1:
+		F155 V 288
+		Goto Death
+	Type2:
+		F155 W 288
+		Goto Death
+	Type3:
+		F155 X 288
+		Goto Death
+	Type4:
+		F155 Y 288
+		Goto Death
+	Type5:
+		TNT1 A 0 A_Setscale(0.06,0.06)
+		F155 R 288
+		Goto Death
+	Type6:
+		TNT1 A 0 A_Setscale(0.06,0.06)
+		F155 S 288
+		Goto Death
+	Type7:
+		TNT1 A 0 A_Setscale(0.06,0.06)
+		F155 T 288
+		Goto Death
+	Death:
+		"####" "#" 10 A_FadeOut(0.06)
+		Stop
+	}
+}
+
+ACTOR UpheavalDasher //Mutated Secondary Fire
+{
+	Radius 8
+	Height 6
+	Speed 36
+	Damage 1
+	Projectile
+	Alpha 0.15
+	XScale 3
+	YScale 4
+	RenderStyle Add
+	DamageType "Blast"
+	Decal "MinotaurScorch"
+	+FLOORHUGGER
+	+FORCEPAIN
+	+FRIENDLY
+	+SCREENSEEKER
+	+SEEKERMISSILE
+	+THRUACTORS
+    WeaveIndexXY 32
+	DeathSound "MaulatorMissileHit"
+	States
+	{
+	Spawn:
+		TNT1 A 0 
+		TNT1 A 1  
+		{	
+			A_SpawnItemEx("DirtWalp",random(10,-10),random(-20,20),Frandom(10,20),Frandom(7,-7),Frandom(-7,7),Frandom(9,13),180);
+			A_Weave(12,0,10.5,0);
+			A_GiveInventory("MaceCharge2",1);
+		}
+		TNT1 A 0 A_Jump((CountInv("MaceCharge2")*80),"SpikySurprise")
+		Loop
+	SpikySurprise:
+		TNT1 A 0 
+		{	
+			A_SpawnItemEx("Fissures");
+			A_SpawnItemEx("StalagmiteLapis",0,0,0,0,0,0,0);
+			A_TakeInventory("MaceCharge2");
+			A_SpawnItemEx("SprayingDirt");
+		}
+		Goto Spawn
+	Death:
+		TNT1 A 0 
+		Stop
+	}
+}
+
+ACTOR StalagmiteLapis //She has a way of piercing your defences...
+{
+	Speed 0
+	Damage 0
+	Projectile
+	Radius 3
+	Height 12
+	Scale 0.75
+	+DONTBLAST
+	+NOCLIP
+	+NOINTERACTION
+	+FLOORHUGGER
+	+ROLLSPRITE
+	+ROLLCENTER
+	+FORCEPAIN
+	States
+	{
+	Spawn:
+		TNT1 A 0
+		TNT1 A 0 A_Setroll(roll+randompick(10,8,6,6,4,2,0,-2,-4,-6,-6,-8,-10))
+		TNT1 A 0 A_QuakeEx(4,4,5,20,0,60,"-",QF_SCALEDOWN)
+		TNT1 A 0 A_StartSound("ThrustSpikeRaise",0,CHANF_OVERLAP,1,ATTN_NORM,1)
+		TNT1 A 1 {A_SpawnItemEx("FissuresGeomancy"); A_RadiusThrust(-70,100,RTF_NOTMISSILE|RTF_THRUSTZ|RTF_NOIMPACTDAMAGE,100);}
+		TNT1 A 7 
+		//L4PP A 4 
+		L4PP A 1 A_RadiusGive("SpikedPunch",70,RGF_MONSTERS|RGF_PLAYERS,1)
+		L4PP A 1 A_RadiusGive("SpikedPunch2",70,RGF_MONSTERS,1)
+		L4PP A 2
+		L4PP BCDE 4 {		
+				A_SpawnItemEx("DirtWalp",random(10,-10),random(-20,20),Frandom(10,20),Frandom(7,-7),Frandom(-7,7),Frandom(9,13),180);
+				A_SpawnItemEx("DirtWalp",random(10,-10),random(-20,20),Frandom(10,20),Frandom(7,-7),Frandom(-7,7),Frandom(9,13),180);
+				A_SpawnItemEx("DirtWalp",random(10,-10),random(-20,20),Frandom(10,20),Frandom(7,-7),Frandom(-7,7),Frandom(9,13),180);
+				A_QuakeEx(2,2,5,20,70,70,"-",QF_SCALEDOWN);
+				A_RadiusGive("SpikedPunch2",50,RGF_MONSTERS,1);
+						 }
+		L4PP EEEEEEEE 5 
+		R0CK T 0 {A_Setscale(0.7,1.2); A_Playsound("StalagBoom",7,1.2,false,ATTN_NORM,false,1); A_Explode(random(20,30)+random(2,8),110,XF_THRUSTZ,true,110,0,0,"None","Smash"); A_Changeflag("SOLID",0);} 
+		R0CK TUVWX 2 A_SpawnItemEx("DirtWalp",random(10,-10),random(-20,20),Frandom(10,20),Frandom(7,-7),Frandom(-7,7),Frandom(9,13),180)
+		Stop
+	Death:
+		TNT1 A 1
+		Stop 
+	} 
+}
+
+Actor SpikedPunch : CustomInventory
+{
+	+INVENTORY.ALWAYSPICKUP
+	Inventory.MaxAmount 0
+	States
+	{
+	Pickup:
+		TNT1 A 0 A_ClearTarget //(If any)
+		TNT1 A 0 A_DamageSelf(random(140,195),"Pierce",DMSS_AFFECTARMOR)
+		TNT1 A 0 ThrustThingZ(0,50,0,1)
+		TNT1 A 0 A_Setangle(random(0,255))
+		Stop
+	}
+}
+
+Actor SpikedPunch2 : CustomInventory
+{
+	+INVENTORY.ALWAYSPICKUP
+	Inventory.MaxAmount 0
+	//+NOINTERACTION
+	States
+	{
+	Pickup:
+		TNT1 A 0 A_ClearTarget //(If any)
+		TNT1 A 0 A_DamageSelf(random(10,15),"Pierce",DMSS_AFFECTARMOR)
+		TNT1 A 0 ThrustThingZ(0,5,0,1)
+		TNT1 A 0 A_Setangle(random(0,255))
+		Stop
+	}
+}
+
+Actor SpikedPunch3 : CustomInventory
+{
+	+INVENTORY.ALWAYSPICKUP
+	Inventory.MaxAmount 0
+	//+NOINTERACTION
+	States
+	{
+	Pickup:
+		TNT1 A 0 A_ClearTarget //(If any)
+		TNT1 A 0 A_DamageSelf(random(3,7),"Pierce",DMSS_AFFECTARMOR)
+		TNT1 A 0 ThrustThingZ(0,5,0,1)
+		TNT1 A 0 A_Setangle(random(0,255))
+		Stop
+	}
+}
+
+Actor QuakeDasher
+{
+	Radius 30
+	Height 56
+	Monster
+	//+DONTTHRUST
+	-SOLID
+	+NEVERTARGET
+	-COUNTKILL
+	+CANTSEEK
+	+FLOORHUGGER
+	+NORADIUSDMG
+	+THRUACTORS
+	+NOBLOOD
+	-TELESTOMP
+	+FORCEPAIN
+	+LOOKALLAROUND
+	+NOTARGETSWITCH
+	+NONSHOOTABLE
+	-SHOOTABLE
+	-CANUSEWALLS
+	-CANPUSHWALLS
+	-ACTIVATEMCROSS
+	+SLIDESONWALLS
+	+NOBLOCKMONST
+	+NOTRIGGER
+	+NOBLOCKMAP
+	+NOTELESTOMP
+	+PAINLESS
+	//+FRIGHTENED
+	//+DONTFOLLOWPLAYERS
+	+FRIENDLY
+	+DROPOFF
+	Speed 6
+	RenderStyle None
+	var int user_angle;
+	States
+	{
+	Spawn:
+		TNT1 A 0 Nodelay A_SetUserVar("user_angle",5)
+		TNT1 A 0 A_StartSound("QuakingInYerBoots",CHAN_6,CHANF_OVERLAP|CHANF_LOOP,1,ATTN_NORM,1)
+	SpawnGo:
+		TNT1 A 0 A_JumpIfInventory("ChainBolt",50,"Death")
+		TNT1 A 0 A_QuakeEx(2,2,5,20,0,400,"-",QF_SCALEDOWN)	
+	Spawn2:
+		TNT1 AAA 2 Bright 
+			{
+				A_Warp(AAPTR_MASTER,60+(CountInv("Walpurgisnacht")),0,0,user_angle,WARPF_USECALLERANGLE|WARPF_COPYVELOCITY|WARPF_INTERPOLATE|WARPF_NOCHECKPOSITION|WARPF_TOFLOOR,"-",1,4);
+				A_GiveInventory("Walpurgisnacht",2);
+				A_SetUserVar("user_angle", user_angle + random(1,2));
+			}
+		TNT1 A 0 {	
+					A_SpawnItemEx("FissuresGeomancySmol");
+					A_SpawnItemEx("SprayingDirt");
+					A_SpawnProjectile("SmolRocksZ",5,0,random(0,355),CMF_AIMDIRECTION,random(-5,-50));
+				 }
+	Waitforit:
+		TNT1 A 0 
+		TNT1 A 0 A_GiveInventory("ChainBolt",5)
+		Goto SpawnGo
+	Death:
+		TNT1 A 1
+		Stop
+	}
+}
+
+ACTOR QuakeDasherReverse : QuakeDasher
+{
+	States
+	{
+		
+	Spawn:
+		TNT1 A 0 Nodelay A_SetUserVar("user_angle",-5)
+		TNT1 A 0 A_StartSound("QuakingInYerBoots",CHAN_6,CHANF_OVERLAP|CHANF_LOOP,1,ATTN_NORM,1)
+	SpawnGo:
+		TNT1 A 0 A_JumpIfInventory("ChainBolt",50,"Death")
+		TNT1 A 0 A_QuakeEx(2,2,5,20,0,400,"-",QF_SCALEDOWN)	
+	Spawn2:
+		TNT1 AAA 2 Bright 
+			{
+				A_Warp(AAPTR_MASTER,60+(CountInv("Walpurgisnacht")),0,4,user_angle,WARPF_USECALLERANGLE|WARPF_COPYVELOCITY|WARPF_INTERPOLATE|WARPF_NOCHECKPOSITION|WARPF_TOFLOOR,"-",1,4);
+				A_GiveInventory("Walpurgisnacht",2);
+				A_SetUserVar("user_angle", user_angle - random(1,2));
+			}
+		TNT1 A 0 {	
+					A_SpawnItemEx("FissuresGeomancySmol");
+					A_SpawnItemEx("SprayingDirt");
+					A_SpawnProjectile("SmolRocksZ",5,0,random(0,355),CMF_AIMDIRECTION,random(-5,-50));
+				 }
+	Waitforit:
+		TNT1 A 0 
+		TNT1 A 0 A_GiveInventory("ChainBolt",5)
+		Goto SpawnGo
+	Death:
+		TNT1 A 1
+		Stop
+	}
+}
+
+ACTOR SprayingDirt
+{
+	Radius 10
+	Height 10
+	Scale 0.4
+	Renderstyle Translucent
+	Alpha 0.9
+	+NOINTERACTION
+	+NOCLIP
+	States
+	{
+	Spawn:
+		TNT1 A 0 
+		TNT1 A 0 {if (random(1,2) == 1) // randomly flips
+			{ A_Changeflag("SPRITEFLIP",TRUE);}}
+		TNT1 A 0 {if (random(1,2) == 1) // randomly flips 
+			{ A_Changeflag("YFLIP",TRUE);}}
+	Sprayed:
+		DC9D ABCDEFG 2 A_Fadeout(frandom(0,0.08))
+		Stop
+  }
+}
+
+ACTOR ShockWaveDirt : SprayingDirt //Self explanatory
+{
+	Speed 30
+	Scale 1
+	Projectile
+	Renderstyle Translucent
+	DamageType "Quake"
+	Alpha 0.9
+	Damage (random(1,5))
+	+RIPPER
+	+BLOODLESSIMPACT
+	+FLOORHUGGER
+	-NOINTERACTION
+	+ROLLSPRITE
+	+ROLLCENTER
+	States
+	{
+		Spawn:
+			DC8D ABCDEFG 3 Nodelay {A_Fadeout(frandom(0.05,0.1)); 
+						A_SetRoll(randompick(7,4,2,0,-2,-4,-7)); 
+						A_QuakeEx(7,7,4,3,40,200,"None");
+						A_SpawnItemEx("FissuresGeomancySmol");
+						A_SpawnItemEx("SprayingDirt");
+						A_Explode(random(2,5)+random(2,5),100,XF_THRUSTZ,true,100,0,0,"None","Force");
+						}
+			DC8D G 1 Bright A_Die
+			Goto Death
+		Death: 
+			DC8D G 1 A_Fadeout(0.1)
+			Loop
+	}
+}
+
+ACTOR Obelisky 
+{
+	Species "PlayerObelisk"
+	Radius 35
+	Height 1
+	Scale 0.7
+	Mass 30000
+	DamageType "Quake"
+	+SHOOTABLE
+	+NOTELEPORT
+	+NOTARGET
+	+NEVERTARGET
+	+DONTHARMSPECIES
+	+NOBLOOD
+	+DONTBLAST
+	+CANTSEEK
+	+FRIENDLY
+	+STANDSTILL
+	//+SOLID
+	+INVULNERABLE
+	+DONTTHRUST
+	States
+	{
+	Spawn: 
+		TNT1 A 0
+		TNT1 A 3
+		TNT1 A 0 A_QuakeEx(4,4,5,20,0,60,"-",QF_SCALEDOWN)
+		TNT1 A 0 A_StartSound("ThrustSpikeRaise",45,CHANF_OVERLAP,1,ATTN_NORM,0.6)
+		TNT1 A 0 {A_SpawnItemEx("FissuresGeomancy"); A_RadiusThrust(-70,100,RTF_NOTMISSILE|RTF_THRUSTZ|RTF_NOIMPACTDAMAGE,100);}
+		L15K V 6 A_SetSize(35,15,true)
+		L15K W 6 {A_SetSize(35,25,true); A_Changeflag("SOLID",1);}
+		L15K X 6 A_SetSize(35,35,true)
+		L15K Y 6 A_SetSize(35,45,true)
+		L15K Z 6 A_SetSize(35,55,true)
+		L15K ABC 6
+	Idling:
+		L15K C 0 A_JumpIfInventory("QUFLMCounter",11,"Depleted")
+		L15K C 11 A_JumpIfInventory("QUFLMCounter",11,"Depleted")
+		L15K C 11 A_LookEx(LOF_NOSOUNDCHECK,20,1200,1,360,"DucksGoQuake")
+		L15K B 22 A_JumpIfInventory("QUFLMCounter",11,"Depleted")
+		L15K C 11 A_GiveInventory("QUFLMCounter",2)
+		L15K C 11 A_LookEx(LOF_NOSOUNDCHECK,20,1200,1,360,"DucksGoQuake")
+		L15K B 22 A_JumpIfInventory("QUFLMCounter",11,"Depleted")
+		Loop
+	DucksGoQuake:
+		L15K C 0 A_StartSound("ObeliskCh",45,CHANF_OVERLAP,1,ATTN_NORM,1)
+		L15K C 5 A_SetAngle(angle+45)
+		L15K DD 6 A_SetAngle(angle+45)
+		L15K E 2 	{  
+				While (CountInv("Walpurgisnacht")<8)
+					{
+						A_SpawnItemEx ("ShockWaveDirt",0,0,4,1,0,0,(CountInv("DAMCOUNTER")),SXF_MULTIPLYSPEED);
+						A_SpawnItemEx ("ShockWaveDirt",0,0,4,1,0,0,(CountInv("DAMCOUNTER")+16),SXF_MULTIPLYSPEED);
+						A_GiveInventory("Walpurgisnacht",1);
+						A_GiveInventory("DAMCOUNTER",32);
+					}
+				A_TakeInventory("Walpurgisnacht");
+				A_QuakeEx(7,7,7,25,0,500,"None",QF_WAVE);
+				A_Explode(random(45,65),120,0,1,120);
+				A_Startsound("ObeliskThumper",0,CHANF_OVERLAP,1,0.6,frandom(0.9,1.05));
+					}
+		L15K E 2 {A_Startsound("QuakingInYerBoots",0,CHANF_OVERLAP,1,0.8,frandom(0.9,1.05)); A_Explode(random(30,60),240,0,1,200);}
+		L15K E 2 {A_Explode(random(20,40),360,0,1,200); A_SetAngle(angle+45);}
+		L15K D 6 A_Cleartarget
+		L15K C 6 A_GiveInventory("QUFLMCounter",4)
+		Goto Idling
+	Depleted:
+		TNT1 A 0
+	Death:	
+		R0CK T 0 {A_Setscale(1,1.6); A_Playsound("StalagBoom",7,1.2,false,ATTN_NORM,false,1); A_Explode(random(20,30)+random(2,8),110,XF_THRUSTZ,true,110,0,0,"None","Smash"); A_Changeflag("SOLID",0);} 
+		R0CK TUVWX 2 A_SpawnItemEx("DirtWalp",random(10,-10),random(-20,20),Frandom(10,20),Frandom(7,-7),Frandom(-7,7),Frandom(9,13),180)
+		Stop
+	}
+}
+
+ACTOR ObeliskyPlus : Obelisky //upgraded tertiary also throws extra stones around lol
+{
+	States
+	{
+	DucksGoQuake:
+		L15K C 0 A_StartSound("ObeliskCh",45,CHANF_OVERLAP,1,ATTN_NORM,1)
+		L15K C 5 A_SetAngle(angle+45)
+		L15K DD 6 A_SetAngle(angle+45)
+		L15K E 2 	{  
+				While (CountInv("Walpurgisnacht")<8)
+					{
+						A_SpawnItemEx ("ShockWaveDirt",0,0,4,1,0,0,(CountInv("DAMCOUNTER")),SXF_MULTIPLYSPEED);
+						A_SpawnItemEx ("ShockWaveDirt",0,0,4,1,0,0,(CountInv("DAMCOUNTER")+16),SXF_MULTIPLYSPEED);
+						A_GiveInventory("Walpurgisnacht",1);
+						A_GiveInventory("DAMCOUNTER",32);
+					}
+				A_SpawnItemEx ("QuakeDasher",60,0,0,1,0,0,(CountInv("DAMCOUNTER")),SXF_SETMASTER);
+				A_SpawnItemEx ("QuakeDasherReverse",-60,0,0,1,0,0,(CountInv("DAMCOUNTER")+16),SXF_SETMASTER);
+				A_TakeInventory("Walpurgisnacht");
+				A_QuakeEx(7,7,7,25,0,500,"None",QF_WAVE);
+				A_Explode(random(45,65),120,0,1,120);
+				A_Startsound("ObeliskThumper",0,CHANF_OVERLAP,1,0.6,frandom(0.9,1.05));
+					}
+		L15K E 2 {A_Startsound("QuakingInYerBoots",0,CHANF_OVERLAP,1,0.8,frandom(0.9,1.05)); A_Explode(random(30,60),240,0,1,200);}
+		L15K E 2 {A_Explode(random(20,40),360,0,1,200); A_SetAngle(angle+45);}
+		L15K D 6 A_Cleartarget
+		L15K C 6 A_GiveInventory("QUFLMCounter",4)
+		Goto Idling
+	}
+}
+
+ACTOR HealingTotem : Obelisky //Changes the Obelisk into a supply station
+{
+	-FRIENDLY //so it activates for the player
+	States
+	{
+	DucksGoQuake:
+		L15K C 0 A_StartSound("ObeliskCh",45,CHANF_OVERLAP,1,ATTN_NORM,1)
+		L15K C 5 A_SetAngle(angle+45)
+		L15K DD 6 A_SetAngle(angle+45)
+		L15K E 2 	{  
+				While (CountInv("Walpurgisnacht")<10)
+					{
+						A_SpawnItemEx ("HealingWaverO",0,0,0,1,0,0,(CountInv("DAMCOUNTER")),SXF_MULTIPLYSPEED);
+						A_SpawnItemEx ("HealingWaverO",0,0,0,1,0,0,(CountInv("DAMCOUNTER")+16),SXF_MULTIPLYSPEED);
+						A_GiveInventory("Walpurgisnacht",1);
+						A_GiveInventory("DAMCOUNTER",32);
+					}
+				A_TakeInventory("Walpurgisnacht");
+				A_RadiusGive("ObeliskPower1",420,RGF_PLAYERS,1);
+				A_RadiusGive("ObeliskPower2",420,RGF_PLAYERS,1);
+				A_Startsound("ObeliskThumper",0,CHANF_OVERLAP,1,0.6,frandom(0.9,1.05));
+					}
+		L15K E 2 {A_Startsound("QuakingInYerBoots",0,CHANF_OVERLAP,1,0.8,frandom(0.9,1.05));}
+		L15K E 2 {A_SetAngle(angle+45);}
+		L15K D 6 A_Cleartarget
+		L15K C 6 A_GiveInventory("QUFLMCounter",4)
+		Goto Idling
+	Depleted:
+		TNT1 A 0
+	Death:	
+		R0CK T 0 {A_Setscale(1,1.6); A_Playsound("StalagBoom",7,1.2,false,ATTN_NORM,false,1); A_Changeflag("SOLID",0);} 
+		R0CK TUVWX 2 A_SpawnItemEx("DirtWalp",random(10,-10),random(-20,20),Frandom(10,20),Frandom(7,-7),Frandom(-7,7),Frandom(9,13),180)
+		Stop
+	}
+}
+
+ACTOR HealingWaverO 
+{
+	Speed 9
+	Damage 0
+	Projectile
+	Radius 3
+	Height 1
+	YScale 0.9
+	XScale 0.65
+	Alpha 0.3
+	+DONTBLAST
+	+NOCLIP
+	+NOINTERACTION
+	Renderstyle Add
+	States
+	{
+	Spawn:
+		TNT1 A 0
+		QAUR K 2 
+		QAUR KKK 2 {A_Fadein(0.125);}
+		QAUR LMN 4 
+		QAUR OOO 2 {A_Setscale(scalex,scaley+0.1);}
+		QAUR OOO 2 {A_Setscale(scalex,scaley-0.1);}
+		QAUR NM 3 
+		QAUR LKKKKKKK 3 {A_Fadeout(0.1); A_Setscale(scalex,scaley-0.1);}
+		Stop
+	Death:
+		TNT1 A 1
+		Stop 
+	} 
+}
