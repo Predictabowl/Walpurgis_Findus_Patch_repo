@@ -19,6 +19,12 @@ _______________________________________________________________________________
                                                \/          \/     \/ 
 _______________________________________________________________________________
 
+ [ RELATED PROJECTS ]
+-------------------------------------------------------------------------------
+ - Findus Patch: https://github.com/Predictabowl/Walpurgis_Findus_Patch_repo
+ - No Shield Frag: https://github.com/Predictabowl/Walpurgis_Findus_NoShieldFrag_repo
+ - Faithless Trilogy Compatibility: https://github.com/Predictabowl/Walpurgis_Findus_Faith_Tri_repo
+
  [ SETUP & COMPATIBILITY ]
 -------------------------------------------------------------------------------
  This patch is designed SPECIFICALLY for use with:
