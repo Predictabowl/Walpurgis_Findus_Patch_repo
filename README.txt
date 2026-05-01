@@ -130,6 +130,15 @@ _______________________________________________________________________________
     explosions for free area-of-effect damage. The 1G mana cost prevents 
     this exploit while still providing a discount for missed direct hits.
 
+# HAMMER
+
+  * Bugfix (Map Decoration Pushing)
+    Fixed an issue where the rocks spawned by the Mutated Tertiary Attack
+    (Ground Slam) would unconditionally apply a velocity kick to whatever
+    they impacted upon death, causing immovable map decorations to shift
+    and potentially break maps. The knockback is now restricted to actual
+    monsters only via an ISMONSTER check on the impact target.
+
 # BARDICHE
 
   * Primary Attack (Triple Projectiles)
