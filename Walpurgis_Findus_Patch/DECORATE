@@ -3,3 +3,4 @@
 #include "actors/MyrmHammerOfR_FI.txt"
 #include "actors/MyrmBardiche_FI.txt"
 #include "actors/CrusaderStarHammer_FI.txt"
+#include "actors/MagisterAestus_FI.txt"
