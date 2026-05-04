@@ -1,7 +1,8 @@
-ACTOR StarHammer_FI : StarHammer replaces StarHammer
+ACTOR StarHammer_Findus : StarHammer replaces StarHammer
 {
 	Weapon.AmmoUse1 3
 	Weapon.AmmoUse2 3
+    Weapon.SlotNumber 6
 	States
 	{
 	Fire:
