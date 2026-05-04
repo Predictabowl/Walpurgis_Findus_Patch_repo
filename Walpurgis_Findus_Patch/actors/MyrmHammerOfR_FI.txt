@@ -1,0 +1,72 @@
+ACTOR HammerOfR_FI : HammerOfR replaces HammerOfR
+{
+	// Change: removed A_TakeInventory("Mana2W", 2,TIF_NOTAKEINFINITE) from FireHit: mutate overlay frame
+	// Fire: is overridden (unchanged) so its fallthrough reaches _FI's FireHit: instead of the parent's
+	States
+	{
+	Fire:
+		HMMR T 0 {
+				if(CountInv("HammerUpgrade") == 1 || CountInv("HammerUpgrade") == 4 || CountInv("HammerUpgrade") == 6 || CountInv("HammerUpgrade") == 9)
+				{	A_GiveInventory("CoptersSound",1);	}
+				else
+				{	}
+				}
+		HMMR T 0 A_JumpIfInventory("CoptersSound",1,"FasterFire") 
+	FireHit:
+		HMMR B 4 Offset (20, 66) {if(random(1,2) == 1 && (GetCVar("walp_silentprotagonists")==0) && (CountInv("PowerShutItWilson")) == 0)
+				{A_StartSound("MyrmExertsLight",CHAN_AUTO,CHANF_OVERLAP,0.9,ATTN_NONE,frandom(0.97,1.04));}}
+		HMMR B 2 Offset (40, 33)
+		HMMR A 7 Offset (5, 0) A_StartSound("SwingItNow",1,CHANF_OVERLAP|CHANF_LOCAL,0.9,ATTN_STATIC,frandom(0.78,0.88))
+		HMMR A 0 Offset (5, 0) {
+				if(CountInv("HammerMutate") == 1 && CountInv("Mana2W") > 0 || CountInv("HammerMutate") == 4 && CountInv("Mana2W") > 0 || CountInv("HammerMutate") == 6 && CountInv("Mana2W") > 0 || CountInv("HammerMutate") == 9 && CountInv("Mana2W") > 0 )
+				{ A_Overlay(73,"FlamingOverlayHammer",true); A_OverlayPivotAlign(73,PSPA_LEFT,PSPA_BOTTOM); A_OverlayScale(73,1.4,1.4);}}
+		HMMR B 3 Offset (5, 0) 
+		HMMR C 3 Offset (5, 0) {
+				if(CountInv("HammerMutate") == 1 && CountInv("Mana2W") > 0 || CountInv("HammerMutate") == 4 && CountInv("Mana2W") > 0 || CountInv("HammerMutate") == 6 && CountInv("Mana2W") > 0 || CountInv("HammerMutate") == 9 && CountInv("Mana2W") > 0 )
+				{ A_CustomPunch (random(70,145), 1, CPF_NOTURN, "NewHammerPuffBoom", 124, 0);}
+				else{A_CustomPunch (random(130,225), 1, CPF_NOTURN, "NewHammerPuffSmol", 124, 0); }}
+		HMMR D 3 Offset (5, 0) 
+		HMMR D 2 Offset (5, 150)
+		HMMR D 2 Offset (0, 60)
+		HMMR B 2 Offset (10, 77) 
+		HMMR B 2 Offset (1, 88) A_ReFire("FireHit")
+		HMMR T 2 Offset (0, 45)
+		HMMR T 1 Offset (0, 40)
+		HMMR T 1 Offset (0, 35)
+		HMMR T 1 A_WeaponOffset(0,32)
+		Goto Ready2
+	}
+}
+
+ACTOR NewHammerPuffBoom_FI : NewHammerPuffBoom replaces NewHammerPuffBoom
+{
+	+PUFFGETSOWNER
+	// Crash: A_GiveInventory("Mana2W",2,AAPTR_TARGET) replaced with A_TakeInventory (1 mana cost)
+	// Melee: A_TakeInventory("Mana2W", 2,...) added (mana cost on melee hit)
+	States
+	{
+	Crash:
+		TNT1 A 0 {A_AlertMonsters; A_StartSound("HammerBangs",CHAN_AUTO,CHANF_OVERLAP,0.7,ATTN_NORM,0.9);}
+		TNT1 A 0 {While(CountInv("Mana1") < 24) 
+			{
+				A_SpawnItemEx ("HammerFlames", 0, 0, 0, 3, 0, 0, (CountInv("Mana1")*15), 0, 0);
+				A_SpawnItemEx ("NapalmBallzA", 0, 0, 0, 3, 0, 3, (CountInv("Mana1")*15), 0, 0);
+				A_GiveInventory("Mana1",1);
+			}
+			A_TakeInventory("Mana2W", 1, TIF_NOTAKEINFINITE, AAPTR_TARGET);}
+		FHFX IJKLMNOPQR 4 {A_Quake (4, 25, 0, 85, "-"); A_Explode(random(2,3),64,0,true,64);}
+		Stop
+	Melee:
+		TNT1 A 0 {A_AlertMonsters; A_StartSound("HammerBangs",CHAN_AUTO,CHANF_OVERLAP,0.7,ATTN_NORM,0.9);}
+		TNT1 A 0 {While(CountInv("Mana1") < 24) 
+			{
+				A_SpawnItemEx ("HammerFlames", 0, 0, 0, 3, 0, 0, (CountInv("Mana1")*15), 0, 0);
+				A_SpawnItemEx ("NapalmBallzA", 0, 0, 0, 3, 0, 3, (CountInv("Mana1")*15), 0, 0);
+				A_GiveInventory("Mana1",1);
+			}
+			A_TakeInventory("Mana2W", 2, TIF_NOTAKEINFINITE, AAPTR_TARGET);
+			}
+		FHFX IJKLMNOPQR 4 {A_Quake (4, 25, 0, 85, "-"); A_Explode(2,64,0,true,64);}
+		Stop
+	}
+}

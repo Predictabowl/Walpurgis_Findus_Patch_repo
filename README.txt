@@ -35,6 +35,9 @@ _______________________________________________________________________________
  For simplicity, this patch replaces entire actor files. Loading it with 
  different versions of Walpurgis may cause compatibility issues or 
  unexpectedly override original weapon behaviors from those versions.
+
+ Version 1.1.0
+ TRansitioning from file replacements to Decorator inheritance.
 _______________________________________________________________________________
 
 ===============================================================================
@@ -187,7 +190,7 @@ _______________________________________________________________________________
     energy effect looks bright but won't obstruct geometry or targets behind it.
 
   * Tertiary Attack
-    Mana cost increased from 6+6 to 9+9 (+50%). The previous cost was 
+    Mana cost increased from 6+6 to 8+8 (+33%). The previous cost was 
     tuned too low, making this powerful ability overly spammable.
 
 -----------------------------------------------------------------------------
@@ -286,3 +289,12 @@ _______________________________________________________________________________
     purpose of a point-blank defensive attack and crowd-control tool.
 
 _____________________________________________________________________________
+
+=============================================================================
+                               VERSION HISTORY
+=============================================================================
+
+v1.1.0
+- transitioning from file replacement to decorator inheritance
+- Quietus Mana increase from +50% to +33%
+

@@ -1,0 +1,105 @@
+ACTOR StarHammer_FI : StarHammer replaces StarHammer
+{
+	Weapon.AmmoUse1 3
+	Weapon.AmmoUse2 3
+	States
+	{
+	Fire:
+		CRUX A 0 A_JumpIfInventory("PowerAmbitMana", 1, "FlameSwings")
+		CRUX A 0 A_JumpIfInventory("Mana1W", 3, "Check")
+		CRUX A 0 A_CheckReload
+		Goto Ready
+	Check:
+		CRUX A 0 A_JumpIfInventory("Mana2W", 3, "FlameSwings")
+		CRUX A 0 A_CheckReload
+		Goto Ready
+	FlameSwings: 
+		CRUX A 0 A_JumpIfTargetInLOS("FireShieldGo",120,JLOSF_COMBATANTONLY,95,0)
+		CRUX A 0 A_JumpIfInventory("PunchRight",1,"HammerFlameSkipper")
+		CRUX A 0 {if(CountInv("CruxUpgrade") == 1 || CountInv("CruxUpgrade") == 4 || CountInv("CruxUpgrade") == 6 || CountInv("CruxUpgrade") == 9)
+				{	A_GiveInventory("MaceChargeCheck2",1);}		}
+		ST7H AB 2 
+		ST7H C 1
+	HammerFlameSkipper:
+		TNT1 A 5 A_OverlayOffset(23,-20,5,WOF_ADD)
+		ST7H D 3 {A_StartSound("SwingItNow",0,CHANF_OVERLAP|CHANF_LOCAL,0.7,ATTN_STATIC,0.7); A_OverlayOffset(23,-20,5,WOF_ADD); A_AlertMonsters;}
+		ST7H D 1 {	A_OverlayOffset(23,-20,5,WOF_ADD);
+					A_StartSound("FireBlue",0,CHANF_OVERLAP,1,ATTN_STATIC,1);
+				if(random(0,4) >= 3 && (GetCVar("walp_silentprotagonists")==0))
+				{A_StartSound("CrusExerts",CHAN_AUTO,CHANF_OVERLAP,0.9,ATTN_NONE,frandom(0.97,1.04));}}
+		ST7H E 3 {A_OverlayOffset(23,-20,5,WOF_ADD);}
+		ST7H F 2 {
+				A_CustomPunch (random(82,154), 1, 0, "CrusHammerPuff", 164, 0);
+				A_QuakeEx(0,0,8,20,0,1,"-",QF_SCALEDOWN);
+				if(CountInv("CruxUpgrade") == 1 || CountInv("CruxUpgrade") == 4 || CountInv("CruxUpgrade") == 6 || CountInv("CruxUpgrade") == 9)
+				{A_SpawnItemEx("FlamePillarWallBlue",60,-20,0,3,0,0.2,0,SXF_SETTARGET|SXF_SETMASTER);
+				 A_SpawnItemEx("FlamePillarWallBlue",60,20,0,3,0,0.2,0,SXF_SETTARGET|SXF_SETMASTER);
+				 A_SpawnItemEx("FlamePillarWallBlue",60,-35,0,3,0,0.2,0,SXF_SETTARGET|SXF_SETMASTER);
+				 A_SpawnItemEx("FlamePillarWallBlue",60,35,0,3,0,0.2,0,SXF_SETTARGET|SXF_SETMASTER);
+				 A_FireProjectile("ForceBlastHammer",0,0,0,0,FPF_NOAUTOAIM);}
+				else
+				{A_SpawnItemEx("FlamePillarWallBlue",60,-20,0,3,0,0.2,0,SXF_SETTARGET|SXF_SETMASTER);
+				 A_SpawnItemEx("FlamePillarWallBlue",60,20,0,3,0,0.2,0,SXF_SETTARGET|SXF_SETMASTER);}
+				A_TakeInventory("Mana1W", 3,TIF_NOTAKEINFINITE);
+				A_TakeInventory("Mana2W", 3,TIF_NOTAKEINFINITE);
+				}
+		ST7H GH 2
+		ST7H I 2 A_StartSound("HammerAndAnvil",0,CHANF_OVERLAP|CHANF_LOCAL,0.7,ATTN_STATIC,0.7)
+		ST7H J 2
+		TNT1 A 2 A_Refire("HammerSwingsFSideCheck")
+		Goto EndSwings
+	Reload:
+		CRUX A 0 A_JumpIfInventory("PowerAmbitMana", 1, "FireRocket")
+		CRUX A 0 A_JumpIfInventory("Mana1W", 40, "AltCheck")
+		CRUX A 0 A_JumpIfInventory("Mana1W", 3, "Fire")
+		CRUX A 0 A_CheckReload
+		Goto Ready
+	AltCheck:
+		CRUX A 0 A_JumpIfInventory("Mana2W", 40, "FireRocket")
+		CRUX A 0 A_JumpIfInventory("Mana2W", 3, "Fire")
+		CRUX A 0 A_CheckReload
+		Goto Ready
+	FireRocket:
+		ST5H A 3 
+		ST5H BQ 3
+		ST7H KL 3 		
+		{	
+			A_TakeInventory("Mana1W", 10,TIF_NOTAKEINFINITE);
+			A_TakeInventory("Mana2W", 10,TIF_NOTAKEINFINITE);
+			A_AlertMonsters;
+		}
+		ST7H M 2 A_StartSound("AStarIsBorn",0,CHANF_OVERLAP,0.5,ATTN_NORM)
+		ST7H N 4 Offset(0, 36) 
+		{ 
+			if(CountInv("CruxUpgrade") == 5 || CountInv("CruxUpgrade") == 6 || CountInv("CruxUpgrade") == 8 || CountInv("CruxUpgrade") == 9)
+				{
+				A_FireProjectile("CalicusRocketSuper",0,0,0,3);
+				}
+				else
+				{
+				A_FireProjectile("CalicusRocket",0,0,0,3);
+				}
+			A_Recoil(4);
+			A_Playsound("FireSummon",7,0.9,false);
+			A_SetPitch(pitch-2.5);
+		}
+		ST7H O 2 A_SetBlend("0000ff", 1.0, 40)
+		ST7H O 1 
+		ST7H PM 2 Offset(0, 32) A_SetPitch(pitch+0.5)
+		ST7H LK 1
+		ST5H QBA 3
+		Goto Ready
+	AltFire: //Yes this was switched around
+		ST5H A 0 A_JumpIfInventory("PowerAmbitMana", 1, "BarrageAnime")
+		ST5H A 0 A_JumpIfInventory("Mana1W", 14, "BarrageCheck")
+		CRUX A 0 A_CheckReload
+		Goto Fire
+	BarrageCheck:
+		ST5H A 0 A_JumpIfInventory("Mana2W", 14, "BarrageAnime")
+		CRUX A 0 A_CheckReload
+		Goto Fire
+	AltFireBack:
+		ST8H O 3
+		Goto AltFire
+	}
+}

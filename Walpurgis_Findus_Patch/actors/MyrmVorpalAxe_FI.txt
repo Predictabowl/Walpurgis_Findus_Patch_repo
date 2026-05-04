@@ -1,0 +1,96 @@
+ACTOR VorpalAxe_FI : VorpalAxe replaces VorpalAxe
+{
+	States
+	{
+	Fire1Mut:
+		FAXE A 0 A_JumpIfInventory ("Mana1W",1,"Fire1Mut2") //If no mana for mutate swings, use normal swings.
+		Goto Fire1
+	Fire1Mut2:
+		FAXE A 0 A_JumpIfInventory ("ComboCounter", 3, "FireChopM") 
+		FAXE A 0 A_JumpIfInventory ("ComboCounter", 2, "FireTopM") 
+		FAXE A 0 A_JumpIfInventory ("ComboCounter", 1, "FireSideM") 
+		Goto FireTopM
+	FireTopM: 
+		FAXE A 1 Offset (14, 52) A_TakeInventory("Walpurgisnacht")
+		F4XE B 2 Offset (15, 32) {	A_AlertMonsters; 
+									A_Overlay(23,"LectroAxeOverlay");
+									A_OverlayOffset(23,random(-110,-220),random(10,-10));
+									A_SpawnItemEx("DecorativePhatSparks",random(45,50)* cos(pitch),0,(40 - (40 * sin(pitch))),0,0,0);}
+		F4XE C 2 Offset (15, 32) {A_StartSound("SwingItNow",1,CHANF_OVERLAP|CHANF_LOCAL,0.9,ATTN_STATIC,frandom(1,1.15)); A_StartSound("ZappitySwings",2,CHANF_OVERLAP,1,ATTN_NORM,1);}
+		T4XE D 1 Offset (15, 32) {if(random(0,4) >= 2 && (GetCVar("walp_silentprotagonists")==0) && (CountInv("PowerShutItWilson")) == 0)
+				{A_StartSound("MyrmExertsLight",CHAN_AUTO,CHANF_OVERLAP,0.9,ATTN_NONE,frandom(0.97,1.04));}}
+		T4XE D 1 Offset (-5, 70) A_CustomPunch (random(65,125), 1, CPF_NOTURN, "AxeShockPuff", 144, 0)
+		T4XE D 1 Offset (-25, 90) 
+		F4XE E 2 Offset (15, 32) 
+		F4XE E 2 Offset (10, 54) A_GiveInventory("ComboCounter",1)
+		F4XE E 2 Offset (10, 150) A_WeaponReady(WRF_ALLOWRELOAD | WRF_NOBOB | WRF_NOPRIMARY) 
+		Goto FireEnded
+	FireSideM:	
+		F4XE E 0 Offset (15, 32) {A_AlertMonsters; A_TakeInventory("Walpurgisnacht");}
+		F4XE E 0 {A_StartSound("SwingItNow",1,CHANF_OVERLAP|CHANF_LOCAL,0.9,ATTN_STATIC,frandom(1,1.15)); A_StartSound("ZappitySwings",2,CHANF_OVERLAP,1,ATTN_NORM,1);}
+		F4XE E 1 {if(random(0,4) >= 3 && (GetCVar("walp_silentprotagonists")==0) && (CountInv("PowerShutItWilson")) == 0)
+				{A_StartSound("MyrmExertsLight",CHAN_AUTO,CHANF_OVERLAP,0.9,ATTN_NONE,frandom(0.97,1.04));}
+				A_SpawnItemEx("DecorativePhatSparks",random(45,50)* cos(pitch),0,(40 - (40 * sin(pitch))),0,0,0);
+				A_Overlay(23,"LectroAxeOverlay");
+				A_OverlayOffset(23,random(-110,-220),random(10,-10));}
+		F4XE EFFG 1
+		V4XE GHI 1
+		V4XE I 1 A_CustomPunch (random(65,125), 1, CPF_NOTURN, "AxeShockPuffLeft", 144, 0) //DecorativePhatSparks
+		F4XE K 1 
+		F4XE K 1 A_GiveInventory("ComboCounter",1)
+		TNT1 A 2
+		Goto FireEnded
+	FireChopM:
+		SM4X A 0 Offset (15, 32) {A_AlertMonsters; A_TakeInventory("Walpurgisnacht");}
+		SM4X A 0 {A_StartSound("SwingItNow",1,CHANF_OVERLAP|CHANF_LOCAL,0.9,ATTN_STATIC,frandom(1,1.15)); A_StartSound("ZappitySwings",2,CHANF_OVERLAP,1,ATTN_NORM,1);}
+		SM4X A 2 {if(random(0,4) >= 3 && (GetCVar("walp_silentprotagonists")==0) && (CountInv("PowerShutItWilson")) == 0)
+				{A_StartSound("MyrmExertsLight",CHAN_AUTO,CHANF_OVERLAP,0.9,ATTN_NONE,frandom(0.97,1.04));}
+				A_SpawnItemEx("DecorativePhatSparks",random(45,50)* cos(pitch),0,(40 - (40 * sin(pitch))),0,0,0);
+				A_Overlay(23,"LectroAxeOverlay");
+				A_OverlayOffset(23,random(-110,-220),random(10,-10));}
+		SM4X BCC 1
+		SM5X D 1
+		SM5X E 2 Offset (-5, 70) A_CustomPunch (random(65,125), 1, CPF_NOTURN, "AxeShockPuffRight", 144, 0)
+		SM5X FG 1
+		SM4X G 1 A_TakeInventory("ComboCounter")
+		TNT1 A 2
+	}
+}
+
+ACTOR AxeShockPuff_FI : AxeShockPuff replaces AxeShockPuff
+{
+	+PUFFGETSOWNER
+	States
+	{
+	Crash:
+		TNT1 A 0
+		FHFX S 0 {	A_SpawnItemEx ("DecorativeZaps",-12,random(-2,2),random(-1,1),random(-1,1),random(-1,1),random(-3,3));
+					A_SpawnItemEx ("DecorativeZaps",-12,random(-2,2),random(-1,1),random(-1,1),random(-1,1),random(-3,3));
+					A_SpawnItemEx ("DecorativeZaps",-12,random(-2,2),random(-1,1),random(-1,1),random(-1,1),random(-3,3));
+					A_StartSound("ZappitySwings",2,CHANF_OVERLAP,1,ATTN_STATIC,1);}
+		FHFX STUVW 4
+		Stop
+	Melee:
+		TNT1 A 0
+		TNT1 A 0 {	A_SpawnItemEx ("DecorativeZaps",-12,random(-2,2),random(-1,1),random(-1,1),random(-1,1),random(-3,3));
+					A_SpawnItemEx ("DecorativeZaps",-12,random(-2,2),random(-1,1),random(-1,1),random(-1,1),random(-3,3));
+					A_SpawnItemEx ("DecorativeZaps",-12,random(-2,2),random(-1,1),random(-1,1),random(-1,1),random(-3,3));
+					A_TakeInventory("Mana1W", 1, TIF_NOTAKEINFINITE,AAPTR_TARGET);}
+		TNT1 A 0 A_GiveInventory("Haemorrage",1,AAPTR_TRACER)
+		TNT1 A 0 { if (CountInv("TKCounter",AAPTR_TRACER) == 0)
+					{A_SpawnItemEx("BleedControllerLesser",0,0,0,0,0,0,0,SXF_TRANSFERPOINTERS|SXF_ORIGINATOR|SXF_SETMASTER);}
+				 }
+		TNT1 A 2 A_ChangeVelocity(-5,0,2,CVF_RELATIVE|CVF_REPLACE,AAPTR_TRACER)
+		Stop
+	}
+}
+
+ACTOR AxeShockPuffLeft_FI : AxeShockPuff_FI replaces AxeShockPuffLeft
+{
+	Decal "AxeSlashDecalLeft"
+}
+
+ACTOR AxeShockPuffRight_FI : AxeShockPuff_FI replaces AxeShockPuffRight
+{
+	Decal "AxeSlashDecalRight"
+}

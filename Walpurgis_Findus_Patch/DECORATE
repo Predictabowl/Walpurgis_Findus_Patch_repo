@@ -1,0 +1,5 @@
+#include "actors/MyrmQuietusX_FI.txt"
+#include "actors/MyrmVorpalAxe_FI.txt"
+#include "actors/MyrmHammerOfR_FI.txt"
+#include "actors/MyrmBardiche_FI.txt"
+#include "actors/CrusaderStarHammer_FI.txt"

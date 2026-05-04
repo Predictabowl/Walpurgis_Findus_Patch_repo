@@ -6,16 +6,16 @@
 setslot 1 VisExpello CrusaderMace Queensbury Baselard
 
 // SLOT 2 - Basic Projectiles / Sweeps
-setslot 2 Algor SturmSpear VorpalAxe DogMode
+setslot 2 Algor SturmSpear VorpalAxe_FI DogMode
 
 // SLOT 3 - Mid-Tier
 setslot 3 Aestus Lightbringer Gladius DagonsCane
 
 // SLOT 4 - High-Tier
-setslot 4 Fulgur Heavensever HammerOfR Hebiko
+setslot 4 Fulgur Heavensever HammerOfR_FI Hebiko
 
 // SLOT 5 - Heavy AoE / Summons
-setslot 5 LapisFlos FireStormFont Bardiche DryadMode
+setslot 5 LapisFlos FireStormFont Bardiche_FI DryadMode
 
 // SLOT 6 - Ultimate Weapons
-setslot 6 Agnus StarHammer QuietusX Ichival
+setslot 6 Agnus StarHammer_FI QuietusX_FI Ichival
