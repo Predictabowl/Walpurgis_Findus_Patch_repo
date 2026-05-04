@@ -5,5 +5,7 @@
 #include "actors/CrusaderBlade_FI.txt"
 #include "actors/CrusaderStarHammer_FI.txt"
 #include "actors/MagisterAestus_FI.txt"
+#include "actors/MagisterLapis_FI.txt"
+#include "actors/MagisterVis_FI.txt"
 #include "actors/DruidDagon_FI.txt"
 #include "actors/DruidIchival_FI.txt"

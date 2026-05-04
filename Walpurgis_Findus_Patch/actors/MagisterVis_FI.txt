@@ -1,0 +1,191 @@
+ACTOR ForceBlastL_Findus : ForceBlastL replaces ForceBlastL //Main forceblast
+{					
+	States
+	{
+		XDeath:
+			FORD D 1 Bright 
+			{
+			A_RadiusThrust(275, 25, RTF_THRUSTZ, 15);
+			if (A_CheckFlag("ISMONSTER", "Check", AAPTR_TRACER)) { A_ChangeVelocity (-5,-2,2,CVF_RELATIVE,AAPTR_TRACER); } // Patch-ID: MONSTER_ONLY_PUSH
+			A_Fadeout(0.03);
+			A_SetRoll(roll+44);
+			}
+			FORD D 1 Bright {A_Fadeout(0.03); A_SetRoll(roll+44);} 	
+			FORD ABE 2 Bright {A_Fadeout(0.03); A_SetRoll(roll+44);}
+			Stop
+	}
+}
+
+ACTOR ForceBlastR_Findus : ForceBlastL_Findus replaces ForceBlastR
+{
+	States
+	{
+		XDeath:
+			FORD D 1 Bright 
+			{
+			A_RadiusThrust(275, 25, RTF_THRUSTZ, 15);
+			A_Fadeout(0.03);
+			A_SetRoll(roll+44);
+			if (A_CheckFlag("ISMONSTER", "Check", AAPTR_TRACER)) { A_ChangeVelocity (-5,3,2,CVF_RELATIVE,AAPTR_TRACER); } // Patch-ID: MONSTER_ONLY_PUSH //Right handed blast throws foes opposite direction
+			}
+			FORD D 1 Bright {A_Fadeout(0.03); A_SetRoll(roll+44);}	
+			FORD ABE 2 Bright {A_Fadeout(0.03); A_SetRoll(roll+44);}
+			Stop
+	}
+}
+
+ACTOR ForceStasisBall_Findus : ForceBlastL_Findus replaces ForceStasisBall //Tertiary Fire, when added, crushes foes in a bubble of force.
+{
+	XScale 0.5
+	YScale 0.5
+	Alpha 0.6
+	Damage 2
+	MissileType "ForceBlastStars"
+	MissileHeight 8
+	//+FORCEPAIN
+	+EXTREMEDEATH
+	+SKYEXPLODE //weird but needed
+	States
+	{
+		Spawn:
+			TNT1 A 1
+			TNT1 A 2 A_Jump(256,"Spawn2","Spawn3")
+			Goto Spawn2
+		Spawn2:
+			FORD F 1 Bright A_SetRoll(roll-44)
+			Loop
+		Spawn3:
+			FORD F 1 Bright A_SetRoll(roll+44)
+			Loop
+		Death:
+			FORD D 1 Bright 
+			{
+			A_RadiusThrust(75, 25, RTF_THRUSTZ, 15);
+			A_Fadeout(0.03);
+			A_SetRoll(roll+44);
+			A_GiveInventory("QUFLMCounter",1,AAPTR_TARGET);
+			}
+			FORD D 1 Bright {A_Fadeout(0.03); A_SetRoll(roll+44);} 	
+			FORD ABE 2 Bright {A_Fadeout(0.03); A_SetRoll(roll+44);}
+			TNT1 A 0 Bright A_GiveInventory("QUFLMCounter",1,AAPTR_TARGET) //just in case of loop
+			Stop
+		XDeath:
+			FORD B 0 Bright {A_Stop; if (A_CheckFlag("ISMONSTER", "Check", AAPTR_TRACER)) { A_ChangeVelocity (0,0,0,CVF_RELATIVE|CVF_REPLACE,AAPTR_TRACER); } // Patch-ID: MONSTER_ONLY_PUSH
+			A_Fadeout(0.4); A_Changeflag("NOCLIP",true);}
+			FORD B 1 Bright 
+			{
+			A_Warp(AAPTR_TRACER,0,0,0,0,WARPF_COPYVELOCITY|WARPF_NOCHECKPOSITION);
+			if (A_CheckFlag("ISMONSTER", "Check", AAPTR_TRACER)) { A_ChangeVelocity (0,0,10,CVF_RELATIVE|CVF_REPLACE,AAPTR_TRACER); } // Patch-ID: MONSTER_ONLY_PUSH
+			A_ChangeVelocity (0,0,10,CVF_RELATIVE|CVF_REPLACE,AAPTR_DEFAULT);
+			A_SetRoll(roll+44);
+			}
+			Goto StasisF
+		StasisF:
+			FORD B 2 Bright 
+			{
+			A_Warp(AAPTR_TRACER,random(-1,1),random(-1,1),32,0,WARPF_COPYVELOCITY|WARPF_NOCHECKPOSITION);
+			if (A_CheckFlag("ISMONSTER", "Check", AAPTR_TRACER)) { A_ChangeVelocity (0,0,(CountInv("QUFLMCounter")/5),CVF_RELATIVE|CVF_REPLACE,AAPTR_TRACER); } // Patch-ID: MONSTER_ONLY_PUSH
+			A_ChangeVelocity (0,0,(CountInv("QUFLMCounter")/5),CVF_RELATIVE|CVF_REPLACE,AAPTR_TRACER); 
+			A_SetAngle(randompick(0,45,90,135,180,225,270,315),SPF_INTERPOLATE,AAPTR_TRACER); 
+			A_SetScale(scalex+0.01,scaley-0.01);
+			A_SetRoll(roll+44); 
+			A_GiveInventory("QUFLMCounter",1);
+			A_Explode(2,44);
+			}	
+			FORD B 0 Bright A_JumpIfInventory("QUFLMCounter",25,"StasisEnd")
+			Loop
+		StasisEnd:
+			FORD B 1 Bright
+			{
+			A_Playsound("PerunD",7,1.2,false,ATTN_NONE,false,0.9);
+			//A_ChangeVelocity (0,randompick(-4,4),20,CVF_RELATIVE|CVF_REPLACE,AAPTR_TRACER);
+			A_SetRoll(roll+44); 
+			A_SetScale(scalex-0.1,scaley+0.1);
+			A_TakeInventory("QUFLMCounter");
+			A_GiveInventory("QUFLMCounter",1,AAPTR_TARGET);
+			}
+			FORD D 1 Bright {A_Fadeout(0.03); A_SetRoll(roll+44); A_SetScale(scalex-0.1,scaley+0.1); if (A_CheckFlag("ISMONSTER", "Check", AAPTR_TRACER)) { A_ChangeVelocity (0,0,-20,CVF_RELATIVE|CVF_REPLACE,AAPTR_TRACER); } } // Patch-ID: MONSTER_ONLY_PUSH	
+			FORD ABE 2 Bright {A_Fadeout(0.03); A_SetRoll(roll+44); A_SetScale(scalex-0.1,scaley+0.1);}
+			TNT1 A 0 Bright A_Warp(AAPTR_TRACER,0,0,0,0,WARPF_COPYVELOCITY|WARPF_NOCHECKPOSITION)
+			TNT1 A 1 Bright A_Explode(388,88) //To make sure Doom/Heretic Monsters also die; 
+			Stop
+	}
+}
+
+ACTOR ForceBlastLBounce_Findus : ForceBlastL_Findus replaces ForceBlastLBounce
+{
+	States
+	{
+		Spawn:
+			TNT1 A 1
+			TNT1 A 2 A_Jump(256,"Spawn2","Spawn3")
+			Goto Spawn2
+		Spawn2:
+			FORD C 1 Bright {A_SetRoll(roll-44); A_SpawnItemEx("ForceBlastStars",random (-30,30),random(-18,18),random(-18,18),-2,random(2,-2),random(2,-2),random(8,-8),SXF_SETMASTER | SXF_ORIGINATOR);}
+			Loop
+		Spawn3:
+			FORD C 1 Bright {A_SetRoll(roll+44); A_SpawnItemEx("ForceBlastStars",random (-30,30),random(-18,18),random(-18,18),-2,random(2,-2),random(2,-2),random(8,-8),SXF_SETMASTER | SXF_ORIGINATOR);}
+			Loop
+		XDeath:
+			FORD D 1 Bright 
+			{
+			A_RadiusThrust(375, 25, RTF_THRUSTZ, 15);
+			if (A_CheckFlag("ISMONSTER", "Check", AAPTR_TRACER)) { A_ChangeVelocity (-5,-2,12,CVF_RELATIVE,AAPTR_TRACER); } // Patch-ID: MONSTER_ONLY_PUSH
+			A_Explode(random(9,18),64,XF_THRUSTZ,true,64);
+			A_Fadeout(0.03);
+			A_SetRoll(roll+44);
+			A_SpawnItemEx("ForceBlastStars",0,0,0,random(-1,1),random(-1,1),random(-1,1));
+			A_SpawnItemEx("ForceBlastStars",0,0,0,random(-1,1),random(-1,1),random(-1,1));
+			A_SpawnItemEx("ForceBlastStars",0,0,0,random(-1,1),random(-1,1),random(-1,1));
+			A_SpawnItemEx("ForceBlastStars",0,0,0,random(-1,1),random(-1,1),random(-1,1));
+			}
+			FORD D 1 Bright {A_Fadeout(0.03); A_SetRoll(roll+44); A_SpawnItemEx ("ForceBlastStars",random (-20,20),random(-8,8),random(-8,8),0,0,0,0,SXF_SETMASTER | SXF_ORIGINATOR);} 	
+			FORD ABE 2 Bright {A_Fadeout(0.03); A_SetRoll(roll+44); A_SpawnItemEx ("ForceBlastStars",random (-20,20),random(-8,8),random(-8,8),0,0,0,0,SXF_SETMASTER | SXF_ORIGINATOR);}
+			Stop
+		Death:
+			FORD D 1 Bright 
+			{
+			A_RadiusThrust(75, 25, RTF_THRUSTZ, 15);
+			A_Fadeout(0.03);
+			A_SetRoll(roll+44);
+			}
+			FORD D 1 Bright {A_Fadeout(0.03); A_SetRoll(roll+44);} 	
+			FORD ABE 2 Bright {A_Fadeout(0.03); A_SetRoll(roll+44);}
+			Stop
+	}
+}
+
+ACTOR ForceBlastRBounce_Findus : ForceBlastLBounce_Findus replaces ForceBlastRBounce
+{
+	States
+	{
+		XDeath:
+			FORD D 1 Bright 
+			{
+			A_RadiusThrust(375, 25, RTF_THRUSTZ, 15);
+			if (A_CheckFlag("ISMONSTER", "Check", AAPTR_TRACER)) { A_ChangeVelocity (-5,3,12,CVF_RELATIVE,AAPTR_TRACER); } // Patch-ID: MONSTER_ONLY_PUSH
+			A_Explode(random(9,18),64,XF_THRUSTZ,true,64);
+			A_Fadeout(0.03);
+			A_SetRoll(roll+44);
+			A_SpawnItemEx("ForceBlastStars",0,0,0,random(-1,1),random(-1,1),random(-1,1));
+			A_SpawnItemEx("ForceBlastStars",0,0,0,random(-1,1),random(-1,1),random(-1,1));
+			A_SpawnItemEx("ForceBlastStars",0,0,0,random(-1,1),random(-1,1),random(-1,1));
+			A_SpawnItemEx("ForceBlastStars",0,0,0,random(-1,1),random(-1,1),random(-1,1));
+			}
+			FORD D 1 Bright {A_Fadeout(0.03); A_SetRoll(roll+44); A_SpawnItemEx("ForceBlastStars",0,0,0,0,random(-1,1),random(-1,1));} 	
+			FORD ABE 2 Bright {A_Fadeout(0.03); A_SetRoll(roll+44); A_SpawnItemEx("ForceBlastStars",0,0,0,0,random(-1,1),random(-1,1));}
+			Stop
+	}
+}
+
+ACTOR ForceBlastSlow_Findus : ForceBlastSlow replaces ForceBlastSlow //Fired in a spread of five blasts, with a shortrange, deadly ripper effect.
+{
+	States
+	{
+	Spawn:
+		FORD DCCABE 2 Nodelay {A_SetRoll(roll-20); if (A_CheckFlag("ISMONSTER", "Check", AAPTR_TRACER)) { A_ChangeVelocity (-1,0,1,CVF_RELATIVE,AAPTR_TRACER); } } // Patch-ID: MONSTER_ONLY_PUSH //dies after 12 tics
+	Death:
+		TNT1 A 0 
+		Stop
+	}
+}
