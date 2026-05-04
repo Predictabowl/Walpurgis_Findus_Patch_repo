@@ -1,0 +1,65 @@
+ACTOR SeverTheUnclean_Findus: SeverTheUnclean replaces SeverTheUnclean //SecondaryFire  
+{
+  States
+  {
+  Death:
+    TNT1 A 1 A_Changeflag("FLOORHUGGER",false)
+	TNT1 A 0 A_Warp(AAPTR_TRACER,8,0,0,0,WARPF_COPYVELOCITY)
+	TNT1 A 0 {  A_Setroll(randompick(20,-24,34,-15,7)); 
+				if (A_CheckFlag("ISMONSTER", "Null", AAPTR_TRACER)) { // PATCH_CRUSADER_SEVER_BLEED_26042026
+					A_GiveInventory("Haemorrage",4,AAPTR_TRACER); // PATCH_CRUSADER_SEVER_BLEED_26042026
+					if (CountInv("TKCounter",AAPTR_TRACER) < 9) // PATCH_CRUSADER_SEVER_BLEED_26042026
+					{A_SpawnItemEx("BleedController",0,0,0,0,0,0,0,SXF_TRANSFERPOINTERS|SXF_ORIGINATOR|SXF_SETMASTER);} // PATCH_CRUSADER_SEVER_BLEED_26042026
+				}} // PATCH_CRUSADER_SEVER_BLEED_26042026
+	TNT1 A 1 A_StartSound("HeavenSlicing",125,CHANF_OVERLAP,1,ATTN_NONE,frandom(0.97,1.04))
+	HVSV AAA 1 Bright {A_Setscale(scalex *1.25,scaley); A_FadeIn(0.25); A_DamageTracer(15,"StunHit",DMSS_NOFACTOR); A_SpawnItemEx("RedSparklies4",random(-10,10),random(-10,10),random(40,20),random(-3,3),random(-3,3),random(-3,3)); } 
+	HVSV AAAAAA 1 Bright {A_Setscale(scalex *1.25,scaley); A_DamageTracer(15,"StunHit",DMSS_NOFACTOR); A_SpawnItemEx("RedSparklies4",random(-10,10),random(-10,10),random(40,20),random(-3,3),random(-3,3),random(-3,3)); }
+	HVSV AAA 1 Bright {A_Setscale(scalex *0.6,scaley); A_FadeOut(0.27); A_DamageTracer(15,"StunHit",DMSS_NOFACTOR); A_SpawnItemEx("RedSparklies4",random(-10,10),random(-10,10),random(40,20),random(-3,3),random(-3,3),random(-3,3)); }
+    HVSV A 0 { if(A_CheckFlag("ISMONSTER", "Null", AAPTR_TRACER)) { A_ChangeVelocity(randompick(-7,-3,3,7),randompick(-7,-3,3,7),random(3,7),CVF_RELATIVE|CVF_REPLACE,AAPTR_TRACER); } } // PATCH_CRUSADER_SEVER_KB_26042026
+	Stop
+  }
+}
+
+ACTOR SeverTheUncleanUpgrade_Findus : SeverTheUnclean_Findus replaces SeverTheUncleanUpgrade //nerfed version since 2 are fired
+{
+  States
+  {
+  Death:
+    TNT1 A 1 A_Changeflag("FLOORHUGGER",false)
+	TNT1 A 0 A_Warp(AAPTR_TRACER,8,0,0,0,WARPF_COPYVELOCITY)
+	TNT1 A 0 {  A_Setroll(randompick(20,34,7)); 
+				if (A_CheckFlag("ISMONSTER", "Null", AAPTR_TRACER)) { // PATCH_CRUSADER_SEVER_BLEED_26042026
+					A_GiveInventory("Haemorrage",4,AAPTR_TRACER); // PATCH_CRUSADER_SEVER_BLEED_26042026
+					if (CountInv("TKCounter",AAPTR_TRACER) < 9) // PATCH_CRUSADER_SEVER_BLEED_26042026
+					{A_SpawnItemEx("BleedController",0,0,0,0,0,0,0,SXF_TRANSFERPOINTERS|SXF_ORIGINATOR|SXF_SETMASTER);} // PATCH_CRUSADER_SEVER_BLEED_26042026
+				}} // PATCH_CRUSADER_SEVER_BLEED_26042026
+	TNT1 A 1 A_StartSound("HeavenSlicing",125,CHANF_OVERLAP,1,ATTN_NONE,frandom(0.97,1.04))
+	HVSV AAA 1 Bright {A_Setscale(scalex *1.25,scaley); A_FadeIn(0.25); A_DamageTracer(9,"StunHit",DMSS_NOFACTOR); A_SpawnItemEx("RedSparklies2",random(-10,10),random(-10,10),random(40,20),random(-3,3),random(-3,3),random(-3,3)); } 
+	HVSV AAAAAA 1 Bright {A_Setscale(scalex *1.25,scaley); A_DamageTracer(9,"StunHit",DMSS_NOFACTOR); A_SpawnItemEx("RedSparklies2",random(-10,10),random(-10,10),random(40,20),random(-3,3),random(-3,3),random(-3,3)); }
+	HVSV AAA 1 Bright {A_Setscale(scalex *0.6,scaley); A_FadeOut(0.27); A_DamageTracer(9,"StunHit",DMSS_NOFACTOR); A_SpawnItemEx("RedSparklies2",random(-10,10),random(-10,10),random(40,20),random(-3,3),random(-3,3),random(-3,3)); }
+    HVSV A 0 { if(A_CheckFlag("ISMONSTER", "Null", AAPTR_TRACER)) { A_ChangeVelocity(randompick(-7,-3,3,7),randompick(-7,-3,3,7),random(3,7),CVF_RELATIVE|CVF_REPLACE,AAPTR_TRACER); } } // PATCH_CRUSADER_SEVER_KB_26042026
+	Stop
+  }
+}
+
+ACTOR SeverTheUncleanUpgradeReverse_Findus: SeverTheUncleanUpgrade_Findus replaces SeverTheUncleanUpgradeReverse
+{
+  States
+  {
+  Death:
+    TNT1 A 1 A_Changeflag("FLOORHUGGER",false)
+	TNT1 A 0 A_Warp(AAPTR_TRACER,8,0,0,0,WARPF_COPYVELOCITY)
+	TNT1 A 0 {  A_Setroll(randompick(-28,-15,-9)); 
+				if (A_CheckFlag("ISMONSTER", "Null", AAPTR_TRACER)) { // PATCH_CRUSADER_SEVER_BLEED_26042026
+					A_GiveInventory("Haemorrage",4,AAPTR_TRACER); // PATCH_CRUSADER_SEVER_BLEED_26042026
+					if (CountInv("TKCounter",AAPTR_TRACER) < 9) // PATCH_CRUSADER_SEVER_BLEED_26042026
+					{A_SpawnItemEx("BleedController",0,0,0,0,0,0,0,SXF_TRANSFERPOINTERS|SXF_ORIGINATOR|SXF_SETMASTER);} // PATCH_CRUSADER_SEVER_BLEED_26042026
+				}} // PATCH_CRUSADER_SEVER_BLEED_26042026
+	TNT1 A 1 A_StartSound("HeavenSlicing",120,CHANF_OVERLAP,1,ATTN_NONE,frandom(0.97,1.04))
+	HVSV AAA 1 Bright {A_Setscale(scalex *1.25,scaley); A_FadeIn(0.25); A_DamageTracer(9,"StunHit",DMSS_NOFACTOR); A_SpawnItemEx("RedSparklies2",random(-10,10),random(-10,10),random(40,20),random(-3,3),random(-3,3),random(-3,3)); } 
+	HVSV AAAAAA 1 Bright {A_Setscale(scalex *1.25,scaley); A_DamageTracer(9,"StunHit",DMSS_NOFACTOR); A_SpawnItemEx("RedSparklies2",random(-10,10),random(-10,10),random(40,20),random(-3,3),random(-3,3),random(-3,3)); }
+	HVSV AAA 1 Bright {A_Setscale(scalex *0.6,scaley); A_FadeOut(0.27); A_DamageTracer(8,"StunHit",DMSS_NOFACTOR); A_SpawnItemEx("RedSparklies2",random(-10,10),random(-10,10),random(40,20),random(-3,3),random(-3,3),random(-3,3)); }
+    HVSV A 0 { if(A_CheckFlag("ISMONSTER", "Null", AAPTR_TRACER)) { A_ChangeVelocity(randompick(-7,-3,3,7),randompick(-7,-3,3,7),random(3,7),CVF_RELATIVE|CVF_REPLACE,AAPTR_TRACER); } } // PATCH_CRUSADER_SEVER_KB_26042026
+	Stop
+  }
+}
