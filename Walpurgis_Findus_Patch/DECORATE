@@ -4,3 +4,4 @@
 #include "actors/MyrmBardiche_FI.txt"
 #include "actors/CrusaderStarHammer_FI.txt"
 #include "actors/MagisterAestus_FI.txt"
+#include "actors/DruidIchival_FI.txt"

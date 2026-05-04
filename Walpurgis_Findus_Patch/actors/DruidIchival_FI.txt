@@ -1,0 +1,60 @@
+ACTOR Ichival_Findus : Ichival replaces Ichival
+{
+	Weapon.AmmoUse1 5
+	Weapon.AmmoUse2 5
+	States
+	{
+	Fire:
+		IBEW A 0 A_JumpIfInventory("Mana1W", 5, "FireCheck")
+		IBEW A 0 A_Checkreload
+		IBEW A 0 A_WeaponOffset(0,0)
+		Goto Ready
+	FireCheck:
+		IBEW A 0 A_JumpIfInventory("Mana2W", 5, "FireSetup")
+		IBEW A 0 A_Checkreload
+		Goto Ready
+	FireSetup:
+		IBEW A 0 A_PlaySound("IchiString",CHAN_6,1.6,false,ATTN_NORM,false,0.9)
+		Goto FireArrow		
+	FireArrow:
+		IBEW A 0 {A_PlaySound("LBRecharge",CHAN_5,1.1,false,ATTN_NORM,false,0.9); A_WeaponOffset(0,0);}
+		IBEW IJKLN 2 {A_TakeInventory("Mana2W", 1,TIF_NOTAKEINFINITE); A_TakeInventory("Mana1W", 1,TIF_NOTAKEINFINITE);}
+		IBEW OPQ 2 
+		IBEW R 0 A_Playsound("LBLoop",CHAN_7,0.4,true,ATTN_NONE,false,0.9)
+		Goto FireHold	
+	}
+}
+
+ACTOR LightArrow_Findus : LightArrow replaces LightArrow
+{
+	States 
+	{ 
+	Death: 
+		YGLW A 0 
+		{
+		A_Stop;
+		A_Explode(random(195,260)+random(2,8),128,XF_THRUSTZ|XF_EXPLICITDAMAGETYPE,true,32,0,0,FireActive,"Blast");
+		A_SetScale(0.6,0.6);
+		A_PlaySound("HolyBooms",CHAN_6,1.1,false,ATTN_NORM,false,0.9);
+		}
+		TNT1 A 0 A_SpawnItemEx("PostBurstLightArrowz",-9,0,0,-1,0,0)
+		Stop
+	} 
+}
+
+ACTOR LightArrowPlus_Findus : LightArrowPlus replaces LightArrowPlus
+{
+	States 
+	{ 
+	Death: 
+		YGLW A 0 
+		{
+		A_Stop;
+		A_Explode(random(195,260)+random(2,8),128,XF_THRUSTZ|XF_EXPLICITDAMAGETYPE,true,64,0,0,FireActive,"Blast");
+		A_SetScale(0.6,0.6);
+		A_PlaySound("HolyBooms",CHAN_6,1.1,false,ATTN_NORM,false,0.9);
+		}
+		TNT1 A 0 A_SpawnItemEx("PostBurstLightArrowz",-9,0,0,-1,0,0)
+		Stop
+	} 
+}
