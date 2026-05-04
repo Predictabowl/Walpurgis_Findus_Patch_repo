@@ -93,13 +93,14 @@ _______________________________________________________________________________
     Damage increased by +11%.
 
   [Consideration]
-  In testing, the mutated variant felt weaker than the Upgraded one. To verify,
+  While playing, the mutated variant felt weaker than the Upgraded one. To verify,
   I ran frame-by-frame analysis and DPS calculations four separate times from
   scratch. It turned out the Upgraded version has roughly 11-12% higher DPS.
-  The shock knockback is useful but wasn't powerful enough to compensate for
-  burning 1 mana per hit. Rather than nerfing the Upgraded version, I bumped
-  the mutated damage by +11% to match the DPS, making the mana cost a real
-  tradeoff against the shock's stagger utility instead of a penalty.
+  The shock knockback is useful but unreliable, some monsters just don't
+  get even fazed by it, and in conclusion wasn't powerful enough to compensate for
+  burning 1 mana per hit and less damage.
+  I bumped the mutated damage by +11% to match the upgraded DPS, making the
+  mana cost a real tradeoff against the shock's stagger utility instead of a penalty.
 
 -----------------------------------------------------------------------------
  [ MYRMIDON ]
