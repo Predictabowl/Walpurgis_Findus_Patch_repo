@@ -17,19 +17,20 @@ jobs:
 
       - name: Create PK3 and Zip
         run: |
+          VERSION=${{ github.ref_name }}
           # Create the pk3 file from the Walpurgis_Findus_Patch folder
           # pk3 files are essentially zip files with a different extension
           cd Walpurgis_Findus_Patch
-          zip -r ../Walpurgis_Findus_Patch.pk3 .
+          zip -r ../Walpurgis_Findus_Patch_${VERSION}.pk3 .
           cd ..
           
           # Create the final zip containing README.txt and the .pk3 file
-          zip Walpurgis_Findus_Patch.zip README.txt Walpurgis_Findus_Patch.pk3
+          zip Walpurgis_Findus_Patch_${VERSION}.zip README.txt Walpurgis_Findus_Patch_${VERSION}.pk3
 
       - name: Release
         uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/')
         with:
-          files: Walpurgis_Findus_Patch.zip
+          files: Walpurgis_Findus_Patch_${{ github.ref_name }}.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
