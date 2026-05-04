@@ -189,3 +189,55 @@ ACTOR QuietusX_FI : QuietusX replaces QuietusX
 		Goto Ready
 	}
 }
+
+/////////////////////////////////
+/// SECONDARY (NRG TORPEDO!!) ///
+/////////////////////////////////
+
+Actor QuietusTorpedo_Findus: QuietusTorpedo replaces QuietusTorpedo //JT- Quietus Chargeable Torpedo
+{
+	RenderStyle Add
+	
+	States {
+		Enlarge:
+		TORP ABC 1 Bright
+		{
+		A_SetScale(ScaleX+0.033,ScaleY+0.033);
+		A_SetRoll(roll-(-3-(CountInv("LightningCheck")*2)));
+		A_SetRenderStyle(0.5, STYLE_Add);
+		A_SpawnItemEx("QuietSparklies",0,0,0,random(-1,1),random(-1,1),0.3);
+		A_Warp(AAPTR_TARGET,70 * cos(pitch),0,46- (40 * sin(pitch)),0,WARPF_NOCHECKPOSITION|WARPF_COPYPITCH);
+		}
+		TORP A 0 Bright
+		{	
+		A_GiveInventory("LightningCheck", 1);
+		A_TakeInventory("MaceChargeCheck2");	
+		A_SetSize(Radius+1,Height+1);
+		}
+		Goto Charge
+	}
+}
+
+ACTOR QuietusTorpedoUpgraded_Findus: QuietusTorpedoUpgraded replaces QuietusTorpedoUpgraded //Adds Aurora Effect to Explosion. Again super annoying this fails in it inherits.
+{	
+	RenderStyle Add
+	
+	States {
+		Enlarge:
+			TORP ABC 1 Bright
+			{
+			A_SetScale(ScaleX+0.033,ScaleY+0.033);
+			A_SetRoll(roll-(-3-(CountInv("LightningCheck")*2)));
+			A_SetRenderStyle(0.5, STYLE_Add);
+			A_SpawnItemEx("QuietSparklies",0,0,0,random(-1,1),random(-1,1),0.3);
+			A_Warp(AAPTR_TARGET,70 * cos(pitch),0,46- (40 * sin(pitch)),0,WARPF_NOCHECKPOSITION|WARPF_COPYPITCH);
+			}
+			TORP A 0 Bright
+			{	
+			A_GiveInventory("LightningCheck", 1);
+			A_TakeInventory("MaceChargeCheck2");	
+			A_SetSize(Radius+1,Height+1);
+			}
+			Goto Charge
+	}
+}
