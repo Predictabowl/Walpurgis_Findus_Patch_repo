@@ -1,0 +1,85 @@
+ACTOR SturmSpear_Findus : SturmSpear replaces SturmSpear
+{
+	States {
+	FireThrustShock:
+		SP3A I 0 A_JumpIfTargetInLOS("ShieldSlam2",0,JLOSF_COMBATANTONLY,50,0)
+		SP3A J 1 {A_AlertMonsters; A_StartSound("SpearSwish",0,CHANF_OVERLAP|CHANF_LOCAL,0.6,ATTN_STATIC,0.95);}
+		SP3A K 1 {A_OverlayOffset(23,-20,5,WOF_ADD);
+					if(random(0,4) >= 3 && (GetCVar("walp_silentprotagonists")==0) && (CountInv("PowerShutItWilson")) == 0)
+				{A_StartSound("CrusExertsLight",CHAN_AUTO,CHANF_OVERLAP,0.9,ATTN_NONE,frandom(0.97,1.04));}}
+		SP3A L 2 A_OverlayOffset(23,-20,5,WOF_ADD)
+		SP3A M 1 A_OverlayOffset(23,-20,5,WOF_ADD)
+		SP7A N 2 {A_OverlayOffset(23,-20,5,WOF_ADD); 
+					if(CountInv("Mana1W") > 0)
+					{A_CustomPunch (random(76,102), 1, 0, "SpearShockPuff", 195, 0); // +11% Damage
+					A_TakeInventory("Mana1W", 1, TIF_NOTAKEINFINITE);
+					A_CustomPunch (1, 1, 0, "SpearShockPuffRefunder", 195, 0);}
+					else
+					{A_CustomPunch (random(56,78), 1, 0, "SpearPuff", 195, 0);}
+				 }
+		SP7A N 1
+		SP3A N 0 { if(CountInv("PunchRight") >= 1)
+					{A_GiveInventory("Mana1W",1); A_TakeInventory("PunchRight");}}
+		SP3A M 1 A_TakeInventory("ComboCounter")
+		SP3A L 2 A_OverlayOffset(23,40,-10,WOF_ADD)
+		SP3A K 1 A_OverlayOffset(23,40,-10,WOF_ADD)
+		SP3A I 0 A_GiveInventory("ComboCounter",randompick(2,3,4,5))
+		SP3A I 0 A_JumpIf((GetPlayerInput (INPUT_BUTTONS) & BT_ATTACK),"FireSet")
+		Goto Ready
+	FireStabShock:
+		SP3A I 0 A_JumpIfTargetInLOS("ShieldSlam2",0,JLOSF_COMBATANTONLY,50,0)
+		TNT1 A 1 {A_AlertMonsters; A_StartSound("SpearSwish",0,CHANF_OVERLAP|CHANF_LOCAL,0.6,ATTN_STATIC,0.95);}
+		TNT1 A 1 {A_OverlayOffset(23,-20,5,WOF_ADD);
+					if(random(0,5) >= 4 && (GetCVar("walp_silentprotagonists")==0) && (CountInv("PowerShutItWilson")) == 0)
+				{A_StartSound("CrusExertsLight",CHAN_AUTO,CHANF_OVERLAP,0.9,ATTN_NONE,frandom(0.97,1.04));}}
+		SP3A O 1 A_OverlayOffset(23,-20,5,WOF_ADD)
+		SP3A Z 2 A_OverlayOffset(23,-20,5,WOF_ADD)
+		SP3A P 1 A_OverlayOffset(23,-20,5,WOF_ADD)
+		SP3A [ 2 
+		SP3A Q 1
+		SP7A A 2 {
+					if(CountInv("Mana1W") > 0)
+					{A_CustomPunch (random(110,144), 1, 0, "SpearShockPuff", 195, 0); 
+					A_TakeInventory("Mana1W", 1, TIF_NOTAKEINFINITE);
+					A_CustomPunch (1, 1, 0, "SpearShockPuffRefunder", 195, 0);}
+					else
+					{A_CustomPunch (random(83,93), 1, 0, "SpearPuff", 195, 0);}
+				 }
+		SP3A [ 1
+		SP3A [ 0 { if(CountInv("PunchRight") >= 1)
+					{A_GiveInventory("Mana1W",1); A_TakeInventory("PunchRight");}}
+		SP3A P 2 A_TakeInventory("ComboCounter")
+		SP3A O 1 A_OverlayOffset(23,40,-10,WOF_ADD)
+		TNT1 A 1 A_OverlayOffset(23,40,-10,WOF_ADD)
+		TNT1 A 1 A_GiveInventory("ComboCounter",randompick(1,2,3,4,5))	
+		SP3A I 0 A_JumpIf((GetPlayerInput (INPUT_BUTTONS) & BT_ATTACK),"FireSet")
+		Goto Ready
+	FireChopShock:
+		SP3A I 0 A_JumpIfTargetInLOS("ShieldSlam2",0,JLOSF_COMBATANTONLY,50,0)
+		SP3A R 1 {A_AlertMonsters; A_StartSound("SwingItNow",0,CHANF_OVERLAP|CHANF_LOCAL,0.55,ATTN_STATIC,0.95);}
+		TNT1 A 2 {A_OverlayOffset(23,-20,5,WOF_ADD);
+					if(random(0,4) >= 3 && (GetCVar("walp_silentprotagonists")==0) && (CountInv("PowerShutItWilson")) == 0)
+				{A_StartSound("CrusExertsLight",CHAN_AUTO,CHANF_OVERLAP,0.9,ATTN_NONE,frandom(0.97,1.04));}}
+		SP3A S 1 A_OverlayOffset(23,-20,5,WOF_ADD)
+		SP3A T 1 A_OverlayOffset(23,-20,5,WOF_ADD)
+		SP3A U 2 A_OverlayOffset(23,-20,5,WOF_ADD)
+		SP3A V 1 {
+					A_TakeInventory("ComboCounter"); 
+					if(CountInv("Mana1W") > 0)
+					{A_CustomPunch (random(97,118), 1, 0, "SpearShockPuff", 195, 0);  
+					A_TakeInventory("Mana1W", 1, TIF_NOTAKEINFINITE);
+					A_CustomPunch (1, 1, 0, "SpearShockPuffRefunder", 202, 0);}
+					else
+					{A_CustomPunch (random(66,80), 1, 0, "SpearPuff", 195, 0);}
+				 }
+		SP7A W 2 
+		SP3A X 1 A_OverlayOffset(23,40,-10,WOF_ADD)
+		SP3A Y 1 A_OverlayOffset(23,40,-10,WOF_ADD)
+		TNT1 A 3 { if(CountInv("PunchRight") >= 1)
+					{A_GiveInventory("Mana1W",1); A_TakeInventory("PunchRight");}}
+		SP3A I 0 A_GiveInventory("ComboCounter",randompick(1,3,4,5))
+		SP3A I 0 A_JumpIf((GetPlayerInput (INPUT_BUTTONS) & BT_ATTACK),"FireSet")
+		Goto Ready
+
+	}
+}

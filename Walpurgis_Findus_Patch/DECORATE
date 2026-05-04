@@ -2,6 +2,7 @@
 #include "actors/MyrmVorpalAxe_FI.txt"
 #include "actors/MyrmHammerOfR_FI.txt"
 #include "actors/MyrmBardiche_FI.txt"
+#include "actors/CrusaderSpear_FI.txt"
 #include "actors/CrusaderBlade_FI.txt"
 #include "actors/CrusaderStarHammer_FI.txt"
 #include "actors/MagisterAestus_FI.txt"
