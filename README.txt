@@ -289,11 +289,17 @@ _______________________________________________________________________________
     The physical weight of a summoned celestial rock should be felt by 
     anything unfortunate enough to be directly under it.
 
-    [Considerations]    
+    [Considerations]
     While the meteor is primarily an AoE attack, its actual radius isn't 
-    massive, and the initial direct impact felt underwhelming. Adding 
-    a small, localized burst upon contact ensures that a direct hit 
-    feels impactful, rewarding precision when targeting high-tier enemies.
+    massive, and it's unreliable. The initial direct impact felt underwhelming.
+    The projectile often hits the geometry rather than the target, making it
+    frustrating to land this attack regardless of which upgrade you take. A
+    falling meteor will commonly explode in the sky due to collision quirks.
+    Furthermore, the primary attack mutation provides better AoE coverage in
+    almost every way.
+    Adding a small, localized burst upon contact ensures that a direct hit 
+    feels impactful, reducing the gap and preventing it from being completely
+    outclassed.
 
   * Tertiary Attack (Fire Whip)
     Increased the casting speed of the fire whip wind-up animation (casting time reduced by ~40%).
