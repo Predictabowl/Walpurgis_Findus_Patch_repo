@@ -1,6 +1,6 @@
-## Fourth Evaluation
+# Original Sturm Spear Fourth Evaluation
 
-### Frame Counts (My Independent Tic Count)
+## Frame Counts (My Independent Tic Count)
 
 | Attack | Tic-by-Tic | **Total** |
 | :--- | :--- | :--- |
@@ -14,10 +14,9 @@
 | FireChopFast | R1+TNT**1**+S1+T1+U**1**+V1+W1+X1+Y1+TNT**2** | **11** |
 | FireChopShock | same as FireChop except W**2** | **15** |
 
-
 ---
 
-### DPS Table (35 tics/sec, 50% Stab / 25% Chop / 25% Thrust weighting)
+## DPS Table (35 tics/sec, 50% Stab / 25% Chop / 25% Thrust weighting)
 
 $$\text{DPS} = \frac{\text{Avg Dmg}}{\text{Avg Tics}} \times 35$$
 
@@ -31,7 +30,7 @@ $$\text{DPS} = \frac{\text{Avg Dmg}}{\text{Avg Tics}} \times 35$$
 
 ---
 
-### On the Mana Cost Justification — This is the Key Finding
+## On the Mana Cost Justification — This is the Key Finding
 
 **The mana refund system for normal combat.**
 
