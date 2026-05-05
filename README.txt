@@ -36,8 +36,21 @@ _______________________________________________________________________________
  different versions of Walpurgis may cause compatibility issues or 
  unexpectedly override original weapon behaviors from those versions.
 
- Version 1.1.0
- TRansitioning from file replacements to Decorator inheritance.
+_______________________________________________________________________________
+
+ [ VERSION HISTORY ]
+-------------------------------------------------------------------------------
+
+v2.0.0 - BREAKING CHANGE
+  This version replaces the original files with inheritance, fundamentally 
+  changing how the patch integrates with Walpurgis. As such, it will BREAK 
+  WEAPONS IN ONGOING GAMES. You will need to start a new game to use this 
+  patch version properly.
+
+v1.1.0
+  - Transitioning from file replacement to decorator inheritance
+  - Quietus Mana increase from +50% to +33%
+
 _______________________________________________________________________________
 
 ===============================================================================
@@ -310,12 +323,4 @@ _______________________________________________________________________________
     purpose of a point-blank defensive attack and crowd-control tool.
 
 _____________________________________________________________________________
-
-=============================================================================
-                               VERSION HISTORY
-=============================================================================
-
-v1.1.0
-- transitioning from file replacement to decorator inheritance
-- Quietus Mana increase from +50% to +33%
 
