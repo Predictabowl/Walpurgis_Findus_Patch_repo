@@ -1,0 +1,988 @@
+ACTOR Ichival : DruidWeapon
+{
+	//The Ichival is originally a divine bow used by Ulir blooded characters in
+	//Fire Emblem 4 on the SNES. I've actually used it a few times in my D&D
+	//settings as well. I liked making the sprite for this.
+	//It went through quite a revision for 0.91 though as I wasn't happy with
+	//its firemodes very much... and now its pretty badass!
+	Inventory.RestrictedTo DruidPlayer
+	Health 3
+	Weapon.SelectionOrder 1
+	Weapon.SlotNumber 4
+	Weapon.SlotPriority 0
+	Weapon.AmmoType1 "Mana1W"
+	Weapon.AmmoType2 "Mana2W"
+	//Weapon.AmmoUse1 8 // Original line
+	//Weapon.AmmoUse2 8 // Original line
+	Weapon.AmmoUse1 5
+	Weapon.AmmoUse2 5
+	Weapon.AmmoGive1 25
+	Weapon.AmmoGive2 25
+	Weapon.YAdjust 10
+	Weapon.BobStyle InverseSmooth
+	Weapon.BobSpeed 2.1
+	Weapon.BobRangeY 0.4
+	Weapon.BobRangeX 0.5
+	+BLOODSPLATTER
+	+NOTAUTOAIMED
+	+UNDROPPABLE
+	//+WEAPON.NOALERT
+	+WEAPON.PRIMARY_USES_BOTH
+	Inventory.PickupSound "WeaponBuild"
+	Inventory.PickupMessage "\c[white]Created The \c[gold]'Ichival'\c[white]: the Bow of the Brightest Butterfly! [\c[yellow]4\c[white]]"
+	Tag "The Ichival"
+	Obituary "%o was incinerated by the power of the Brightest Butterfly."
+	States
+	{
+	Spawn:
+		IC1V L -1 Bright
+		Stop
+	Select:
+		TNT1 A 1
+		TNT1 A 0 A_GiveInventory("IchivalInHand",1)
+		TNT1 A 0 A_JumpIfInventory("ChainHook",1,"BirbCheck") //If Birb is supposed to be here, check him.
+		Goto Select2
+	Deselect:
+		TNT1 A 0 A_TakeInventory("IchivalInHand")
+		TNT1 A 0 
+		{
+			A_TakeInventory("ComboCounter");
+			A_TakeInventory("BowCharge");
+			A_Stopsound(7);
+		}
+		Goto Deselect2
+	Select2:
+		IBEW A 1 A_Raise
+		Loop
+	BirbCheck:
+		TNT1 A 0 {A_GiveToChildren("LightningCheck",1); A_SpawnItemEx("CorvusB",0,0,40,0,0,0,0,SXF_SETMASTER);}
+		Goto Select2
+	Deselect2:
+		IBEW A 1 A_Lower
+		Loop
+	Ready:
+		IBEW A 0 A_JumpIfInventory("BowCharge", 1, "Ready2")
+		IBEW A 1 A_WeaponOffset(0,24,WOF_INTERPOLATE)
+		IBEW A 1 A_WeaponOffset(0,16,WOF_INTERPOLATE)
+		IBEW A 1 A_WeaponOffset(0,8,WOF_INTERPOLATE)
+		IBEW A 1 {A_WeaponOffset(0,0,WOF_INTERPOLATE); A_GiveInventory("BowCharge",1);}
+	Ready2:
+		IBEW ABCDEFG 4 {A_WeaponReady(WRF_ALLOWRELOAD); A_WeaponOffset(0,0);}	
+		Loop
+	Fire:
+		//IBEW A 0 A_JumpIfInventory("Mana1W", 8, "FireCheck") // Original line
+		IBEW A 0 A_JumpIfInventory("Mana1W", 5, "FireCheck")
+		IBEW A 0 A_Checkreload
+		IBEW A 0 A_WeaponOffset(0,0)
+		Goto Ready
+	FireCheck:
+		//IBEW A 0 A_JumpIfInventory("Mana2W", 8, "FireSetup") // Original line
+		IBEW A 0 A_JumpIfInventory("Mana2W", 5, "FireSetup")
+		IBEW A 0 A_Checkreload
+		Goto Ready
+	FireSetup:
+		IBEW A 0 A_PlaySound("IchiString",CHAN_6,1.6,false,ATTN_NORM,false,0.9)
+		Goto FireArrow
+	FireArrow:
+		IBEW A 0 {A_PlaySound("LBRecharge",CHAN_5,1.1,false,ATTN_NORM,false,0.9); A_WeaponOffset(0,0);}
+		//IBEW IJKLNOPQ 2 {A_TakeInventory("Mana2W", 1,TIF_NOTAKEINFINITE); A_TakeInventory("Mana1W", 1,TIF_NOTAKEINFINITE);} // Original line
+		IBEW IJKLN 2 {A_TakeInventory("Mana2W", 1,TIF_NOTAKEINFINITE); A_TakeInventory("Mana1W", 1,TIF_NOTAKEINFINITE);}
+		IBEW OPQ 2
+		IBEW R 0 A_Playsound("LBLoop",CHAN_7,0.4,true,ATTN_NONE,false,0.9)
+	FireHold:
+		IBEW R 2 
+		IBEW R 0 A_JumpIf((CountInv("MaceChargeCheck1") ==1),"FireZoom")
+		IBEW R 0 A_JumpIf((GetPlayerInput (INPUT_BUTTONS) & BT_ATTACK),"FireHold2")
+		Goto FireRelease
+	FireHold2:
+		IBEW S 2 
+		IBEW S 0 A_JumpIf((GetPlayerInput (INPUT_BUTTONS) & BT_ATTACK),"FireHold3")
+		Goto FireRelease
+	FireHold3:
+		IBEW T 2 
+		IBEW T 0 {if(CountInv("Walpurgisnacht") < 7) //This counts how long you hold. At 48 tics (1.3 secs)
+				  {									 //You go into time-slowing zoom mode.
+					if(CountInv("IchivalUpgrade") == 1 || CountInv("IchivalUpgrade") == 4 || CountInv("IchivalUpgrade") == 6 || CountInv("IchivalUpgrade") == 9)
+					{A_GiveInventory("Walpurgisnacht",2);} //However, if upgraded, you zoom twice as fast!
+					else
+					{A_GiveInventory("Walpurgisnacht",1);} } 
+				  else if(CountInv("Walpurgisnacht") >= 7)
+				  {A_GiveInventory("MaceChargeCheck1",1); A_GiveInventory("Walpurgisnacht",1);}
+				  else
+				  {}
+				  }
+		IBEW T 0 A_JumpIf((GetPlayerInput (INPUT_BUTTONS) & BT_ATTACK),"FireHold")
+		Goto FireRelease
+	FireZoom:
+		Z00M P 2 {	A_ZoomFactor(1.33); 					//The Zoom is pretty complex; as it involves
+					A_TakeInventory("MaceChargeCheck1"); 	//the time slow power, the tunnel vision
+					A_Overlay(23,"ZoomOverlays");			//overlay, and the deep breath SFX all at once. 
+					A_OverlayFlags(23,PSPF_ADDWEAPON,false);
+					A_StartSound("Concentrate",CHAN_6,CHANF_OVERLAP|CHANF_UI,1.3,false,ATTN_NONE);
+					}
+		Z00M P 0 A_JumpIf((GetPlayerInput (INPUT_BUTTONS) & BT_ATTACK),"FireZoom2")
+		Goto FireReleaseZ
+	FireZoom2:
+		Z00M Q 2 Offset(3,35) A_ZoomFactor(1.66)
+		Z00M Q 0 A_JumpIf((GetPlayerInput (INPUT_BUTTONS) & BT_ATTACK),"FireZoom3")
+		Goto FireReleaseZ
+	FireZoom3:
+		Z00M R 2 Offset(6,35) A_ZoomFactor(2)
+		Z00M R 0 A_JumpIf((GetPlayerInput (INPUT_BUTTONS) & BT_ATTACK),"FireZoomHold2")
+		Goto FireReleaseZ
+	FireZoomHold:
+		Z00M R 2 Offset(9,35) A_GiveInventory("IchivalPower", 1)
+		Z00M R 0 A_JumpIf((GetPlayerInput (INPUT_BUTTONS) & BT_ATTACK),"FireZoomHold2")
+		Goto FireReleaseZ
+	FireZoomHold2:
+		Z00M S 2 Offset(9,35)
+		Z00M S 0 A_JumpIf((GetPlayerInput (INPUT_BUTTONS) & BT_ATTACK),"FireZoomHold3")
+		Goto FireReleaseZ
+	FireZoomHold3:
+		Z00M T 2 Offset(9,35) 
+		Z00M T 0 A_JumpIf((GetPlayerInput (INPUT_BUTTONS) & BT_ATTACK),"FireZoomHold")
+		Goto FireReleaseZ
+	FireReleaseZ:
+		Z00M U 1 Offset(5,33) {A_TakeInventory("PowerFocusBreath"); A_TakeInventory("IchivalPower"); A_TakeInventory("PowerTimeFreezer");}
+		Z00M U 1 Offset(5,33) {A_Stopsound(7); A_ZoomFactor(1); A_GiveInventory("MaceChargeCheck2",1); A_GiveInventory("IchivalPowerEnd",1);}
+		Goto FireRelease2
+	FireRelease:
+		IBEW U 2 {A_Stopsound(7); 
+		if(GetCVar("walp_silentprotagonists")==0 && (CountInv("PowerShutItWilson")) == 0)
+		{A_StartSound("DruiExerts",CHAN_AUTO,CHANF_OVERLAP,0.9,ATTN_NONE,frandom(0.97,1.04));}}
+	FireRelease2:
+		IBEW W 1 Offset(0,32) {A_SetBlend("Yellow",0.4,20); A_TakeInventory("PowerFocusBreathEnd"); A_TakeInventory("PowerTimeFreezer");}
+		IBEW W 1 {
+				if(CountInv("IchivalUpgrade") == 1 || CountInv("IchivalUpgrade") == 4 || CountInv("IchivalUpgrade") == 6 || CountInv("IchivalUpgrade") == 9)
+				{
+				A_FireProjectile("LightArrowPlus", 0, 0, 0, 2, FPF_NOAUTOAIM,0);		
+				}
+				else
+				{
+				A_FireProjectile("LightArrow", 0, 0, 0, 2, FPF_NOAUTOAIM,0);
+				}
+			A_StartSound("FireBew",CHAN_6,CHANF_OVERLAP|CHANF_UI,1,false,ATTN_NONE);
+				}
+		IBEW W 2  
+		IBEW I 6 A_TakeInventory("Walpurgisnacht")
+		IBEW A 4   
+		Goto Ready
+	ZoomOverlays:
+		Z00M XY 2 
+	ZoomOverlays2:
+		Z00M Z 1 A_JumpIfInventory ("MaceChargeCheck2", 1, "KillZOverlays") 
+		Loop
+	KillZOverlays:
+		Z00M YX 2 A_TakeInventory("MaceChargeCheck2")
+		Stop
+	AltFire:
+		IBEW A 0 A_JumpIfInventory("Mana1W", 18, "AltCheck")
+		IBEW A 0 A_Checkreload
+		IBEW A 0 A_WeaponOffset(0,0)
+		Goto Fire
+	AltCheck:
+		IBEW A 0 A_JumpIfInventory("Mana2W", 18, "AltSetup")
+		IBEW A 0 A_Checkreload
+		Goto Fire
+	AltSetup:
+		IBEW A 0 A_PlaySound("IchiString",CHAN_6,1.6,false,ATTN_NORM,false,0.9)
+		Goto AltFireArrow
+	AltFireArrow:
+		IBEW A 0 {A_StartSound("BewChargeA",CHAN_5,CHANF_OVERLAP,1.2,false,ATTN_NONE); A_WeaponOffset(0,0);}
+		IBEW IJKLN 2 {A_TakeInventory("Mana2W", 3,TIF_NOTAKEINFINITE); A_TakeInventory("Mana1W", 3,TIF_NOTAKEINFINITE);}
+		IBEW N 0 {	A_Overlay(23,"AltFireOverlays");
+					A_OverlayFlags(23,PSPF_ADDBOB|PSPF_ADDWEAPON,true);}
+		IBEW OPQ 3 {A_TakeInventory("Mana2W", 1,TIF_NOTAKEINFINITE); A_TakeInventory("Mana1W", 1,TIF_NOTAKEINFINITE);}
+		IBEW R 0 A_Playsound("LBLoop",CHAN_7,0.6,true,ATTN_NONE,false,0.9)
+	AltFireHold:
+		IBEW R 2  
+		IBEW R 0 A_JumpIf((GetPlayerInput (INPUT_BUTTONS) & BT_ALTATTACK),"AltFireHold2")
+		Goto AltFireRelease
+	AltFireHold2:
+		IBEW S 2 
+		IBEW S 0 A_JumpIf((GetPlayerInput (INPUT_BUTTONS) & BT_ALTATTACK),"AltFireHold3")
+		Goto AltFireRelease
+	AltFireHold3:
+		IBEW T 2 
+		IBEW T 0 A_JumpIf((GetPlayerInput (INPUT_BUTTONS) & BT_ALTATTACK),"AltFireHold")
+		Goto AltFireRelease
+	AltFireOverlays:
+		VBEW OPQ 3 
+	AltFireOverlays2:
+		VBEW RR 1 A_JumpIfInventory ("MaceChargeCheck1", 1, "KillOverlays") //ensure the overlay
+		VBEW SS 1 A_JumpIfInventory ("MaceChargeCheck1", 1, "KillOverlays") //dies if the player
+		VBEW TT 1 A_JumpIfInventory ("MaceChargeCheck1", 1, "KillOverlays") //fires.
+		Loop
+	KillOverlays:
+		VBEW R 2 A_TakeInventory("MaceChargeCheck1")
+		Stop
+	AltFireRelease:
+		IBEW U 0 A_GiveInventory("MaceChargeCheck1",1) //kills the overlay
+		IBEW U 2 A_Stopsound(7)
+		IBEW W 1 A_SetBlend("Yellow",0.4,20) 
+		IBEW W 1 {
+			if(CountInv("IchivalUpgrade") == 3 || CountInv("IchivalUpgrade") == 4 || CountInv("IchivalUpgrade") == 8 || CountInv("IchivalUpgrade") == 9)
+				{
+				A_FireProjectile("ArtilleryArrowOP", 0, 0, 0, 2, FPF_NOAUTOAIM,0);
+				}
+				else
+				{
+				A_FireProjectile("ArtilleryArrow", 0, 0, 0, 2, FPF_NOAUTOAIM,0);
+				}		
+			A_StartSound("FireBew",CHAN_6,CHANF_OVERLAP,1.1,false,ATTN_NONE); 
+			A_StartSound("HolyBoom",CHAN_7,CHANF_OVERLAP,1,false,ATTN_NONE);
+				}
+		IBEW W 2 {if(GetCVar("walp_silentprotagonists")==0 && (CountInv("PowerShutItWilson")) == 0)
+		{A_StartSound("DruiExertsHeavy",CHAN_AUTO,CHANF_OVERLAP,0.9,ATTN_NONE,frandom(0.97,1.04));}}
+		IBEW I 6 
+		IBEW A 4 
+		Goto Ready
+	Reload:	 
+		IBEW A 0 A_JumpIfInventory("Mana1W", 10, "RelCheck")
+		IBEW A 0 A_Checkreload
+		IBEW A 0 A_WeaponOffset(0,0)
+		Goto Fire
+	RelCheck:
+		IBEW A 0 A_JumpIfInventory("Mana2W", 10, "RelSetup")
+		IBEW A 0 A_Checkreload
+		Goto Fire
+	RelSetup:
+		IBEW A 0 A_PlaySound("IchiString",CHAN_6,1.6,false,ATTN_NORM,false,0.9)
+		Goto FireComet
+	FireComet:
+		IBEW A 0 {A_PlaySound("LBRecharge",CHAN_5,1.1,false,ATTN_NORM,false,0.9); A_StartSound("FStormEnd",CHAN_5,CHANF_OVERLAP,0.9,false,ATTN_NONE); A_WeaponOffset(0,0);}
+		IBEW IJKL 2 {A_TakeInventory("Mana2W", 1,TIF_NOTAKEINFINITE); A_TakeInventory("Mana1W", 1,TIF_NOTAKEINFINITE);}	
+		IBEW N 0 {	A_Overlay(23,"RFireOverlays");
+					A_OverlayFlags(23,PSPF_ADDBOB|PSPF_ADDWEAPON,true);}
+		IBEW NOP 2 {A_TakeInventory("Mana2W", 2,TIF_NOTAKEINFINITE); A_TakeInventory("Mana1W", 2,TIF_NOTAKEINFINITE);}
+		IBEW Q 2 	
+		IBEW R 0 A_Playsound("LBLoop",CHAN_7,0.4,true,ATTN_NONE,false,0.9)
+	ReloadFireHold:
+		IBEW R 2  
+		IBEW R 0 A_JumpIf((GetPlayerInput (INPUT_BUTTONS) & BT_RELOAD),"ReloadFireHold2")
+		Goto ReloadFireRelease
+	ReloadFireHold2:
+		IBEW S 2 
+		IBEW S 0 A_JumpIf((GetPlayerInput (INPUT_BUTTONS) & BT_RELOAD),"ReloadFireHold3")
+		Goto ReloadFireRelease
+	ReloadFireHold3:
+		IBEW T 2 
+		IBEW T 0 A_JumpIf((GetPlayerInput (INPUT_BUTTONS) & BT_RELOAD),"ReloadFireHold")
+		Goto ReloadFireRelease
+	RFireOverlays:
+		ZBEW OPQ 3 
+	RFireOverlays2:
+		ZBEW RR 1 A_JumpIfInventory ("MaceChargeCheck1", 1, "KillROverlays") //ensure the overlay
+		ZBEW SS 1 A_JumpIfInventory ("MaceChargeCheck1", 1, "KillROverlays") //dies if the player
+		ZBEW TT 1 A_JumpIfInventory ("MaceChargeCheck1", 1, "KillROverlays") //fires.
+		ZBEW UU 1 A_JumpIfInventory ("MaceChargeCheck1", 1, "KillROverlays") 
+		Loop
+	KillROverlays:
+		ZBEW R 2 A_TakeInventory("MaceChargeCheck1")
+		Stop
+	ReloadFireRelease:
+		IBEW U 0 A_GiveInventory("MaceChargeCheck1",1) //kills the overlay
+		IBEW U 2 A_Stopsound(7)
+		IBEW W 1 A_SetBlend("Yellow",0.4,20)
+		IBEW W 1 {
+			if(CountInv("IchivalUpgrade") == 5 || CountInv("IchivalUpgrade") == 6 || CountInv("IchivalUpgrade") == 8 || CountInv("IchivalUpgrade") == 9)
+				{
+				A_FireProjectile("BounceArrowPlus", 0, 0, 0, 2, FPF_NOAUTOAIM,0);
+				}
+				else
+				{
+				A_FireProjectile("BounceArrow", 0, 0, 0, 2, FPF_NOAUTOAIM,0);
+				}
+			A_StartSound("FireBew",CHAN_6,CHANF_OVERLAP,1,false,ATTN_NONE);  
+			A_StartSound("GoodnessGracious",CHAN_6,CHANF_OVERLAP,1,false,ATTN_NONE); //GOODNEZZ GRASHUSSH GREAT-BALLZ O FAYAAA!!
+				}
+		IBEW W 2 {if(GetCVar("walp_silentprotagonists")==0 && (CountInv("PowerShutItWilson")) == 0)
+		{A_StartSound("DruiExerts",CHAN_AUTO,CHANF_OVERLAP,0.9,ATTN_NONE,frandom(0.97,1.04));}}
+		IBEW I 6 
+		IBEW A 4 
+		Goto Ready
+	}
+}
+
+ACTOR LightArrow : FastProjectile
+{ 
+	Obituary "%o was burned alive by %k's purification arrows." 
+	Radius 7 
+	Height 6 
+	Speed 132
+	Scale 0.55
+	Damage 4
+	Damagetype "Sacred"
+	MissileType "SunProjectileTrail" 
+	MissileHeight 8
+	Renderstyle Add
+	Projectile
+	Decal "SerpentScorch"
+	+CANBOUNCEWATER
+	+FORCEXYBILLBOARD
+	+FORCERADIUSDMG
+	+ACTIVATEIMPACT
+	+MTHRUSPECIES 
+	+DONTBLAST
+	+NOTIMEFREEZE
+	+ROLLSPRITE
+	+ROLLCENTER
+	alpha 1.0
+	SeeSound "CruxShots"
+	States 
+	{ 
+	Spawn:
+		L4R0 ABCDEFGHI 2 Bright 
+		Loop
+	Death: 
+		YGLW A 0 
+		{
+		A_Stop;
+		//A_Explode(random(195,260)+random(2,8),212,XF_THRUSTZ|XF_EXPLICITDAMAGETYPE,true,170,0,0,FireActive,"Blast"); // Original line
+		A_Explode(random(195,260)+random(2,8),128,XF_THRUSTZ|XF_EXPLICITDAMAGETYPE,true,32,0,0,FireActive,"Blast");
+		A_SetScale(0.6,0.6);
+		A_PlaySound("HolyBooms",CHAN_6,1.1,false,ATTN_NORM,false,0.9);
+		}
+		TNT1 A 0 A_SpawnItemEx("PostBurstLightArrowz",-9,0,0,-1,0,0)
+		Stop
+	} 
+}
+
+Actor PostBurstLightArrowz 
+{
+ +NOGRAVITY
+ +NOCLIP
+ +NOINTERACTION
+ +FORCEXYBILLBOARD
+ +ROLLSPRITE
+ +ROLLCENTER
+ -SOLID
+ Radius 0
+ Height 0
+ RenderStyle Add
+ Alpha 1.0
+ Scale 0.6
+ States
+ {
+  Spawn:
+   TNT1 A 0 Bright Nodelay A_Setroll(roll+random(-22,22))
+   TNT1 AAAAAAAA 0 {A_SpawnItemEx("YellowCruxTrail2",random(-20,20),random(-20,20),1,random(-4,-18),random(-12,12),random(4,9));
+				A_SpawnItemEx("YellowCruxTrail2",random(-20,20),random(-20,20),1,random(-4,-18),random(-12,12),random(4,9));}
+   L4R0 JKLMNO 2 Bright {A_Fadeout(0.1); A_SetScale(scalex+0.18,scaley+0.18); A_Setroll(roll+random(11,22));}
+   Stop
+ }
+}
+
+ACTOR LightArrowPlus : LightArrow //upgraded prumary fire  
+{
+	Damage 6
+	+HITTRACER
+	States 
+	{ 
+	Spawn:
+		L4R0 ABCDEFGHI 2 Bright A_SpawnItemEx("YellowSparklies2",random(25,35)* cos(pitch),random(10,25),(random(26,30) - (40 * sin(pitch))),velx,vely,velz+0.3)
+		Loop
+	Death: 
+		YGLW A 0 
+		{
+		A_Stop;
+		//A_Explode(random(195,260)+random(2,8),212,XF_THRUSTZ|XF_EXPLICITDAMAGETYPE,true,80,0,0,FireActive,"Blast"); // Original line
+		A_Explode(random(195,260)+random(2,8),128,XF_THRUSTZ|XF_EXPLICITDAMAGETYPE,true,64,0,0,FireActive,"Blast");
+		A_SetScale(0.6,0.6);
+		A_PlaySound("HolyBooms",CHAN_6,1.1,false,ATTN_NORM,false,0.9);
+		}
+		TNT1 A 0 A_SpawnItemEx("PostBurstLightArrowz",-9,0,0,-1,0,0)
+		Stop
+	} 
+}
+
+ACTOR MIRVArrow : LightArrow //The core part of secondary fire
+{
+	Speed 95
+	Damage 1
+	+FRIENDLY
+	States 
+	{
+	Spawn:
+		TNT1 A 0
+		LARO A 0 
+		Goto Spawn2
+	Spawn2:
+		L4R0 ABCDEFGHI 2 Bright 
+		Loop
+	Death: 
+		YGLW A 0 
+		{
+		A_Stop;
+		A_Explode(random(35,65)+random(2,8),188,XF_THRUSTZ|XF_EXPLICITDAMAGETYPE,true,80,0,0,FireActive,"Light");
+		A_SetScale(1.2,1.2);
+		A_PlaySound("HolyBooms",CHAN_6,1.1,false,ATTN_NORM,false,0.9);
+		}
+		YGLW AAAAAAAAAAA 2 Bright {A_SetScale(scalex+0.15,scaley+0.15); A_Fadeout(0.1); A_Setroll(roll+random(22,44));}
+		Stop
+	} 
+}
+
+ACTOR MIRVArrowPlus : MIRVArrow //upgraded Artillery Arrow piece for insane chaos.
+{
+	+HEXENBOUNCE
+	BounceFactor 0.1
+	BounceCount 1
+	States
+	{
+	Death: 
+		YGLW A 0 
+		{
+		A_Stop;
+		A_Explode(random(35,65)+random(2,8),188,XF_THRUSTZ|XF_EXPLICITDAMAGETYPE,true,80,0,0,FireActive,"Light");
+		A_SetScale(1.2,1.2);
+		A_PlaySound("HolyBooms",CHAN_6,1.1,false,ATTN_NORM,false,0.9);
+		A_SpawnProjectile("CalicusShotIchival", 0, 0, random(95, 270), CMF_AIMDIRECTION, random(-10, 30));
+		}
+		YGLW AAAAAAAAAAA 2 Bright {A_SetScale(scalex+0.15,scaley+0.15); A_Fadeout(0.1); A_Setroll(roll+random(22,44));}
+		Stop
+	Crash: 
+		YGLW A 0 
+		{
+		A_Stop;
+		A_Explode(random(35,65)+random(2,8),188,XF_THRUSTZ|XF_EXPLICITDAMAGETYPE,true,80,0,0,FireActive,"Light");
+		A_SetScale(1.2,1.2);
+		A_PlaySound("HolyBooms",CHAN_6,1.1,false,ATTN_NORM,false,0.9);
+		A_SpawnProjectile("CalicusShotIchival", 0, 0, random(95, 270), CMF_AIMDIRECTION, random(-10, 30));
+		}
+		YGLW AAAAAAAAAAA 2 Bright {A_SetScale(scalex+0.15,scaley+0.15); A_Fadeout(0.1); A_Setroll(roll+random(22,44));}
+		Stop
+	}
+}
+
+ACTOR ArtilleryArrow : MIRVArrow //Spawns MIRVArrow as it travels.
+{
+	+EXTREMEDEATH
+	States 
+	{ 
+	Spawn:
+		LARO A 0 
+		LARO A 0 {	A_FaceMovementDirection(0,180,180); //important to stop it acting wonky.
+					A_Playsound("BlazeTrail",CHAN_7,1,true,ATTN_NORM,false,0.9);}
+	Spawn2:
+		L4R0 ABCDEFGHI 2 Bright {
+			A_GiveInventory("Mana2",1); //As it travels, it spits out multiple MIRV arrows for a crazy wave of devastation
+			A_SpawnItemEx("MIRVArrow",cos(pitch)*-5,25*(CountInv("Mana2")) ,25*(CountInv("Mana2"))-(sin(pitch)*25)	,cos(pitch)*80,0+((CountInv("Mana2")*2)),-sin(pitch)*80-((CountInv("Mana2")*2)),0,SXF_ORIGINATOR|SXF_SETMASTER|SXF_TRANSFERPITCH );
+			A_SpawnItemEx("MIRVArrow",cos(pitch)*-5,-25*(CountInv("Mana2")),-25*(CountInv("Mana2"))-(sin(pitch)*25)	,cos(pitch)*80,0-((CountInv("Mana2")*2)),-sin(pitch)*80+((CountInv("Mana2")*2)),0,SXF_ORIGINATOR|SXF_SETMASTER|SXF_TRANSFERPITCH );
+			A_SpawnItemEx("MIRVArrow",cos(pitch)*-5,25*(CountInv("Mana2")) ,-25*(CountInv("Mana2"))-(sin(pitch)*25)	,cos(pitch)*80,0-((CountInv("Mana2")*2)),-sin(pitch)*80-((CountInv("Mana2")*2)),0,SXF_ORIGINATOR|SXF_SETMASTER|SXF_TRANSFERPITCH );
+			A_SpawnItemEx("MIRVArrow",cos(pitch)*-5,-25*(CountInv("Mana2")),25*(CountInv("Mana2"))-(sin(pitch)*25)	,cos(pitch)*80,0+((CountInv("Mana2")*2)),-sin(pitch)*80+((CountInv("Mana2")*2)),0,SXF_ORIGINATOR|SXF_SETMASTER|SXF_TRANSFERPITCH );
+			A_SpawnItemEx("MIRVArrow",cos(pitch)*-5,0					   ,35*(CountInv("Mana2"))-(sin(pitch)*35)	,cos(pitch)*80,0+((CountInv("Mana2")*2)),-sin(pitch)*80,0,SXF_ORIGINATOR|SXF_SETMASTER|SXF_TRANSFERPITCH );
+			A_SpawnItemEx("MIRVArrow",cos(pitch)*-5,0					   ,-35*(CountInv("Mana2"))-(sin(pitch)*35)	,cos(pitch)*80,0-((CountInv("Mana2")*2)),-sin(pitch)*80,0,SXF_ORIGINATOR|SXF_SETMASTER|SXF_TRANSFERPITCH );
+			A_SpawnItemEx("MIRVArrow",cos(pitch)*-5,-35*(CountInv("Mana2")),(sin(pitch)*35)							,cos(pitch)*80,0,-sin(pitch)*80+((CountInv("Mana2")*2)),0,SXF_ORIGINATOR|SXF_SETMASTER|SXF_TRANSFERPITCH );
+			A_SpawnItemEx("MIRVArrow",cos(pitch)*-5,35*(CountInv("Mana2")) ,(sin(pitch)*35)							,cos(pitch)*80,0,-sin(pitch)*80-((CountInv("Mana2")*2)),0,SXF_ORIGINATOR|SXF_SETMASTER|SXF_TRANSFERPITCH );	
+			A_SetRoll(roll+(CountInv("Mana2")));
+			}
+		Loop
+	Death: 
+		YGLW A 0 
+		{
+		A_Stop;
+		A_Stopsound(7);
+		A_Explode(random(35,65)+random(2,8),188,XF_THRUSTZ|XF_EXPLICITDAMAGETYPE,true,80,0,0,FireActive,"Light");
+		A_SetScale(1.2,1.2);
+		A_PlaySound("HolyBooms",CHAN_6,1.1,false,ATTN_NORM,false,0.9);
+		}
+		YGLW AAAAAAAAAAA 2 Bright {A_SetScale(scalex+0.15,scaley+0.15); A_Fadeout(0.1); A_Setroll(roll+random(22,44));}
+		Stop
+	}
+}
+
+ACTOR ArtilleryArrowOP : MIRVArrow //The upgraded Artillery Arrow also drops explosives on death for needless OP.
+{
+	+EXTREMEDEATH
+	States 
+	{ 
+	Spawn:
+		LARO A 0 
+		LARO A 0 {	A_FaceMovementDirection(0,180,180); //important to stop it acting wonky.
+					A_Playsound("BlazeTrail",CHAN_7,1,true,ATTN_NORM,false,0.9);}
+	Spawn2:
+		L4R0 ABCDEFGHI 2 Bright {
+			A_GiveInventory("Mana2",1); //As it travels, it spits out multiple MIRV arrows for a crazy wave of devastation
+			A_SpawnItemEx("MIRVArrowPlus",cos(pitch)*-5,25*(CountInv("Mana2")) ,25*(CountInv("Mana2"))-(sin(pitch)*25)	,cos(pitch)*80,0+((CountInv("Mana2")*2)),-sin(pitch)*80-((CountInv("Mana2")*2)),0,SXF_ORIGINATOR|SXF_SETMASTER|SXF_TRANSFERPITCH );
+			A_SpawnItemEx("MIRVArrowPlus",cos(pitch)*-5,-25*(CountInv("Mana2")),-25*(CountInv("Mana2"))-(sin(pitch)*25)	,cos(pitch)*80,0-((CountInv("Mana2")*2)),-sin(pitch)*80+((CountInv("Mana2")*2)),0,SXF_ORIGINATOR|SXF_SETMASTER|SXF_TRANSFERPITCH );
+			A_SpawnItemEx("MIRVArrowPlus",cos(pitch)*-5,25*(CountInv("Mana2")) ,-25*(CountInv("Mana2"))-(sin(pitch)*25)	,cos(pitch)*80,0-((CountInv("Mana2")*2)),-sin(pitch)*80-((CountInv("Mana2")*2)),0,SXF_ORIGINATOR|SXF_SETMASTER|SXF_TRANSFERPITCH );
+			A_SpawnItemEx("MIRVArrowPlus",cos(pitch)*-5,-25*(CountInv("Mana2")),25*(CountInv("Mana2"))-(sin(pitch)*25)	,cos(pitch)*80,0+((CountInv("Mana2")*2)),-sin(pitch)*80+((CountInv("Mana2")*2)),0,SXF_ORIGINATOR|SXF_SETMASTER|SXF_TRANSFERPITCH );
+			A_SpawnItemEx("MIRVArrowPlus",cos(pitch)*-5,0					   ,35*(CountInv("Mana2"))-(sin(pitch)*35)	,cos(pitch)*80,0+((CountInv("Mana2")*2)),-sin(pitch)*80,0,SXF_ORIGINATOR|SXF_SETMASTER|SXF_TRANSFERPITCH );
+			A_SpawnItemEx("MIRVArrowPlus",cos(pitch)*-5,0					   ,-35*(CountInv("Mana2"))-(sin(pitch)*35)	,cos(pitch)*80,0-((CountInv("Mana2")*2)),-sin(pitch)*80,0,SXF_ORIGINATOR|SXF_SETMASTER|SXF_TRANSFERPITCH );
+			A_SpawnItemEx("MIRVArrowPlus",cos(pitch)*-5,-35*(CountInv("Mana2")),(sin(pitch)*35)							,cos(pitch)*80,0,-sin(pitch)*80+((CountInv("Mana2")*2)),0,SXF_ORIGINATOR|SXF_SETMASTER|SXF_TRANSFERPITCH );
+			A_SpawnItemEx("MIRVArrowPlus",cos(pitch)*-5,35*(CountInv("Mana2")) ,(sin(pitch)*35)							,cos(pitch)*80,0,-sin(pitch)*80-((CountInv("Mana2")*2)),0,SXF_ORIGINATOR|SXF_SETMASTER|SXF_TRANSFERPITCH );	
+			A_SetRoll(roll+(CountInv("Mana2")));
+			}
+		Loop
+	Death: 
+		YGLW A 0 
+		{
+		A_Stop;
+		A_Stopsound(7);
+		A_Explode(random(35,65)+random(2,8),188,XF_THRUSTZ|XF_EXPLICITDAMAGETYPE,true,80,0,0,FireActive,"Light");
+		A_SetScale(1.2,1.2);
+		A_PlaySound("HolyBooms",CHAN_6,1.1,false,ATTN_NORM,false,0.9);
+		}
+		YGLW AAAAAAAAAAA 2 Bright {A_SetScale(scalex+0.15,scaley+0.15); A_Fadeout(0.1); A_Setroll(roll+random(22,44));}
+		Stop
+	}
+}
+
+ACTOR ButterflyShot : FastProjectile //No longer used, it was a bit shit.
+{
+	Obituary "%o was burned alive by %k's purification arrows." 
+	Radius 7 
+	Height 6 
+	Speed 132
+	Scale 1.1
+	Damagetype "Sacred"
+	MissileType "SunProjectileTrail" 
+	MissileHeight 8
+	Renderstyle Add
+	Projectile
+	//Decal "SerpentScorch"
+	+CANBOUNCEWATER
+	+FORCEXYBILLBOARD
+	+FORCERADIUSDMG
+	+ACTIVATEIMPACT
+	+MTHRUSPECIES 
+	+DONTBLAST
+	alpha 1.0
+	SeeSound "CruxShots"
+	States 
+	{ 
+	Spawn:
+		LARO A 1 Bright 
+		Loop
+	Crash:
+		YGLW A 0 A_ChangeFlag("NOCLIP",true)
+		YGLW A 0 A_Stop
+		YGLW A 0 A_SpawnItemEx("BFSpawner",0,0,80,0,0,0,0,SXF_ORIGINATOR|SXF_SETMASTER )
+		YGLW AAAAA 1 Bright {A_SetScale(scalex+0.15,scaley+0.15); A_Fadeout(0.1); A_Setroll(roll+random(22,44));}	
+		Stop
+	XDeath:
+		YGLW A 0 A_ChangeFlag("NOCLIP",true)
+		YGLW A 0 A_Stop
+		YGLW A 0 A_SpawnItemEx("BFSpawner",0,0,60,0,0,0,0,SXF_ORIGINATOR|SXF_SETMASTER )
+		YGLW AAAAA 1 Bright {A_SetScale(scalex+0.15,scaley+0.15); A_Fadeout(0.1); A_Setroll(roll+random(22,44));}	
+		Stop
+	Death:
+		YGLW A 0 A_ChangeFlag("NOCLIP",true)
+		YGLW A 0 A_SpawnItemEx("BFSpawner",-35,0,60,-2,0,0,0,SXF_ORIGINATOR|SXF_SETMASTER ) //If it dies against a wall/floor, moves a bit to reduce clipping sprites
+		YGLW AAAAA 1 Bright {A_SetScale(scalex+0.15,scaley+0.15); A_Fadeout(0.1); A_Setroll(roll+random(22,44));}	
+		Stop	
+	}	
+}
+
+Actor BFSpawner //No longer used. Spawns Butterflies
+{
+	radius 0
+	height 0
+	damage 0
+	speed 0
+	+NOCLIP
+	+DROPOFF
+	+FLOORCLIP
+	+NOBLOCKMAP
+	+DONTBLAST
+	+FRIENDLY
+	States
+	{
+	Spawn:
+		TNT1 AA 1 
+	Death:
+		TNT1 A 0 
+		TNT1 A 1
+		{
+			A_ChangeFlag("NOGRAVITY", TRUE);
+			While(CountInv("Mana1") < 36)
+			{	//Spawns a bunch of explosion effect things
+				A_SpawnItemEx("BrightestButterfly",random(15,30),0,Random(1,30),Random(1,2),0,Random(1,2),20*CountInv("Mana1"),SXF_ORIGINATOR|SXF_SETMASTER );
+				A_GiveInventory("Mana1",1);
+			}
+		}	
+		Stop
+	}
+}	
+
+ACTOR BrightestButterfly //Shoddy fucking targeting sometimes... can't figure out why...
+{
+	Radius 4
+	Height 4
+	Speed 24
+	Damage 12
+	DamageType "Blast"
+	Projectile
+	Species "Playerally"
+	Bouncetype "Hexen"
+	BounceCount 2
+	BounceFactor 0.05
+	+FRIENDLY
+	+MISSILE
+	+FORCEXYBILLBOARD
+	+NOTIMEFREEZE
+	+SEEKERMISSILE
+	//+SCREENSEEKER
+	+THRUSPECIES
+	+MTHRUSPECIES
+	//+LOOKALLAROUND
+	+ROLLSPRITE
+	+ROLLCENTER
+	Scale 0.1
+	Renderstyle Add
+	Alpha 0.8
+	States
+	{
+	Spawn:
+		BFLY Z 0 Nodelay {
+		A_ChangeVelocity(random(-4,4),random(-4,4),random(-1,2),CVF_RELATIVE|CVF_REPLACE); 
+		A_FaceMovementDirection;
+		A_Setroll(roll+random(-2,2));
+		}
+		BFLY ZYXY 3 Bright 
+		BFLY Z 0 A_GiveInventory("CoptersSound",1)
+		BFLY Z 0 A_JumpIfInventory("CoptersSound",6,"Hunterkiller") 
+		Loop
+	Hunterkiller:
+		BFLY Z 0 {
+		A_ChangeVelocity(random(-4,4),random(-4,4),random(-1,2),CVF_RELATIVE|CVF_REPLACE); 
+		A_Setroll(roll+random(-2,2));
+		A_LookEx(LOF_NOSEESOUND,0,0,0,360,"Intercept");
+		}
+		BFLY Z 2 A_LookEx(LOF_NOSEESOUND,0,0,0,270,"Intercept")
+		BFLY Z 1 A_SetAngle(angle+20)
+		BFLY Y 2 A_LookEx(LOF_NOSEESOUND,0,0,0,270,"Intercept")
+		BFLY Y 1 A_SetAngle(angle+20)
+		BFLY X 2 A_LookEx(LOF_NOSEESOUND,0,0,0,270,"Intercept")
+		BFLY X 1 A_SetAngle(angle+20)
+		BFLY Y 2 A_LookEx(LOF_NOSEESOUND,0,0,0,270,"Intercept")
+		BFLY Y 1 A_SetAngle(angle+20)
+		Loop
+	Intercept:
+		BFLY Z 0 {
+		A_Facetarget(0,180,random(-2,2),random(-2,2),FAF_BOTTOM);
+		//A_ChangeVelocity(random(20,36),0,0,CVF_RELATIVE|CVF_REPLACE);
+		//A_LookEx(LOF_NOSEESOUND,0,0,0,360,"Intercept");
+		A_Setroll(roll+random(-2,2));
+		A_SeekerMissile(90,45,SMF_PRECISE|SMF_LOOK,256,750);
+		}
+		BFLY ZYXY 3 Bright A_SeekerMissile(180,45,SMF_PRECISE|SMF_LOOK,256,750)
+		BFLY Z 0 A_CheckRange(650,"Hunterkiller")
+		Loop
+	Death:
+		BFLY V 0 A_Explode(6+random(2,8),60,XF_THRUSTZ|XF_EXPLICITDAMAGETYPE,true,60,0,0,"None","Blast")
+		BFLY VVVV 2 {A_Fadeout(0.2); A_Setscale(scalex+0.3,scaley+0.3);}
+		stop
+	}
+}
+
+ACTOR CometArrow : LightArrow	//The old 0.9 bouncy arrow. No longer used.
+{					
+	+FRIENDLY
+	Species "Playerally"
+	Damage ((16 * random(2, 4))+random(1,8))
+	Bouncetype "Grenade"
+	BounceCount 6
+	BounceFactor 0.05
+	States
+	{
+	Spawn:
+		LARO A 0 Nodelay A_FaceMovementDirection 
+		LARO A 1 A_Look
+		Loop
+	See:
+		LARO A 0 A_Facetarget
+		LARO A 1 Bright A_SpawnProjectile("Cometspitter", 0, 0, random(0, 360), CMF_AIMDIRECTION, random(0, 30))
+		Goto Spawn
+	Crash:
+		UXSH FEDCBA 1 Bright A_SpawnProjectile("Cometspitter", 0, 0, random(0, 360), CMF_AIMDIRECTION, random(0, 30))
+		Stop
+	XDeath:
+		UXSH DCBA 1 Bright 
+		Stop
+	Death:
+		UXSH FEDCBA 1 Bright A_SpawnProjectile("Cometspitter", 0, 0, random(0, 360), CMF_AIMDIRECTION, random(0, 30))
+		Stop
+	}
+}
+
+ACTOR Cometspitter : CalicusShot 
+{
+	DamageType "Blast"
+	Gravity 0.1
+	Speed 15
+	Scale 0.1
+	Damage (6 + random(1,8))
+	Species "Playerally"
+	-BLOODSPLATTER
+	-RIPPER
+	+SEEKERMISSILE
+	+SCREENSEEKER
+	+FRIENDLY
+	States
+	{
+	Spawn:
+		SHUR Z 1 Bright {A_SeekerMissile(45,25,SMF_LOOK,256,8); A_SetRoll(roll-15);}
+		Loop
+	XDeath:
+		FX12 EFG 5 Bright A_Explode(35,45)
+		Stop
+	Crash:
+		UXSH FEDCBA 1 Bright A_SpawnProjectile("CometS2", 0, 0, random(0, 360), CMF_AIMDIRECTION, random(0, 30))
+		Stop
+	Death:
+		UXSH FEDCBA 1 Bright A_SpawnProjectile("CometS2", 0, 0, random(0, 360), CMF_AIMDIRECTION, random(0, 30))
+		Stop
+	}		
+}
+
+ACTOR CometS2 : Cometspitter
+{
+	Scale 0.05
+	States
+	{
+	Crash:
+		FX12 EFG 5 Bright A_Explode(35,45)
+		Stop
+	Death:
+		FX12 EFG 5 Bright A_Explode(35,45)
+		Stop
+	}
+}
+
+ACTOR BounceArrow //Bouncing-Blazer, the Tertiary fire.
+{ 
+	Obituary "%o was burned alive by %k's purification arrows." 
+	Radius 7 
+	Height 6 
+	Speed 99
+	Scale 1.1
+	Damage (5)
+	Damagetype "Blast"
+	Renderstyle Add
+	Bouncetype Grenade
+	Projectile
+	BounceFactor 0.95
+	WallBounceFactor 0.95
+	BounceCount 12
+	Bouncesound "BounceFire"
+	Deathsound "BallExplod"
+	Decal "SerpentScorch"
+	Species "Ichival"
+	+CANBOUNCEWATER
+	+FORCEXYBILLBOARD
+	+FORCERADIUSDMG
+	+ACTIVATEIMPACT
+	+MTHRUSPECIES 
+	+DONTBLAST
+	+USEBOUNCESTATE
+	+ALLOWBOUNCEONACTORS
+	+BOUNCEONACTORS
+	+SEEKERMISSILE
+	alpha 1.0
+	SeeSound "CruxShots"
+	States 
+	{ 
+	Spawn:
+		LARO A 1 Bright {A_SpawnItemEx("FlameTh",0,0,0,-2,random(3,-3),random(3,-3)); A_SpawnItemEx("FlameTh",0,0,0,-2,random(3,-3),random(3,-3)); A_SeekerMissile(10, 13);}
+		Loop
+	//Bounce.Actor.Creature:
+		//LARO A 0 Bright {
+		//				A_Explode(random(20,40)+random(2,8),66,XF_THRUSTZ|XF_EXPLICITDAMAGETYPE,true,80,0,0,FireActive,"Blast");
+		//Goto Spawn
+	Bounce:
+		LARO A 0 Bright { 
+				A_SpawnItemEx ("MIRVClusterIchival",0,0,0,Random(5,15),Random(-5,5),Random(10,18),0);
+				A_SeekerMissile(90, 90);
+						}
+		Goto Spawn
+	Death: 
+		YGLW A 0 
+		{
+		A_Stop;
+		A_Explode(random(20,40)+random(2,8),212,XF_THRUSTZ|XF_EXPLICITDAMAGETYPE,true,80,0,0,FireActive,"Blast");
+		A_SetScale(1.2,1.2);
+		A_PlaySound("HolyBooms",CHAN_6,1.1,false,ATTN_NORM,false,0.9);
+		}
+		YGLW AAAAAAAAAAA 2 Bright {A_SetScale(scalex+0.15,scaley+0.15); A_Fadeout(0.1); A_Setroll(roll+random(22,44));}
+		Stop
+	} 
+}
+
+ACTOR BounceArrowPlus : BounceArrow //lets out the hilariously strong Pyre-Master Shot on Bounce!!
+{
+	Damage 3
+	States
+	{
+	Bounce:
+		LARO A 0 Bright { 
+				A_SpawnItemEx ("FireSpiralIchival",0,0,0,Random(5,15),Random(-5,5),Random(10,18),0);
+				A_SeekerMissile(90, 90);
+						}
+		Goto Spawn
+	}
+}
+
+ACTOR MIRVClusterIchival //Payloads dropped by the bouncing blazer.
+{
+	Speed 20
+	Radius 1
+	Height 8
+	Damage (0)
+	DamageType "Blast"
+	Gravity 4
+	Mass 600
+	+FRIENDLY
+	+HITTRACER
+	+BLOODSPLATTER
+	+NOTELEPORT
+	+NOTIMEFREEZE
+	+MISSILE
+	-NOGRAVITY
+	+NOTELEPORT
+	+THRUACTORS
+	States
+	{
+	Spawn:
+		TNT1 A 0 
+		M5P2 ABCD 2 Bright 
+		Loop
+	Death:
+		MSP1 G 0 Bright A_Playsound("MageStaffExplode",7)
+		MSP1 GGHHII 1 Bright
+		{
+				A_SpawnItemEx ("MirvBombsIchival",0,0,0,Random(-5,5),Random(-5,5),Random(10,18),0);
+				A_SpawnItemEx ("MirvBombsIchival",0,0,0,Random(-5,5),Random(-5,5),Random(10,18),0);
+				A_SpawnItemEx ("MirvBombsIchival",0,0,0,Random(-5,5),Random(-5,5),Random(10,18),0);
+				A_SpawnItemEx ("MirvBombsIchival",0,0,0,Random(-5,5),Random(-5,5),Random(10,18),0);
+		}
+		Stop
+  }
+}
+
+ACTOR MirvBombsIchival	//Remade version of Bloodscourge ones
+{
+	Damage (0)
+	Speed 10
+	Radius 1
+	Scale 0.6
+	Gravity 5
+	Projectile
+	DamageType "Blast"
+	-NOGRAVITY
+	//+FOILINVUL
+	//+RIPPER
+	+FORCERADIUSDMG
+	+BLOODLESSIMPACT
+	+NOTIMEFREEZE
+	+THRUACTORS
+	Bouncetype Grenade
+	BounceFactor 0.2
+	WallBounceFactor 0.2
+	BounceCount 1
+	DeathSound "MageStaffExplode"
+	Species "Ichival"
+	States
+	{
+		Spawn:
+			FRBA AB 2 Bright 
+			Loop
+		Bounce.Actor.Creature:
+			FRBA A 0 Bright 
+			Goto Death
+		Death:
+			MSP2 E 0 A_SetScale (1)	//just flies up then down then explodes
+			MSP2 E 4 Bright A_SetTranslucent(1, 1)
+			MSP2 F 5 Bright A_Explode(random(2,7), 192, 0, 0, 70)
+			MSP2 GHI 4 Bright A_SpawnItemEx("DecorativeEmberH",random(-4,4),random(-4,4),1,-2,random(-3,1),random(3,7))
+			Stop
+	}
+}
+
+Actor FireSpiralIchival
+{
+	+NOINTERACTION
+	+DONTBLAST
+	Reactiontime 15
+	Height 1
+	Radius 1
+	SeeSound "FireWhipping"
+	DamageType "Blast"
+	States
+	{
+	Spawn:
+		TNT1 A 0 Nodelay {A_SpawnItemEx("FireSpiralIchivalReverse",30,0,0,velx,vely,velz,0,SXF_TRANSFERPOINTERS|SXF_ORIGINATOR|SXF_SETMASTER); A_StartFire;}
+	Spawn2:
+		TNT1 A 0 A_SetAngle(angle+15)
+		TNT1 A 0 A_ChangeVelocity(3,3,3,CVF_RELATIVE|CVF_REPLACE)
+		TNT1 A 1 A_SpawnItemEx("FireSpiralIchivalEffect",0,0,0)
+		TNT1 A 0 {A_CountDown; A_Fire;}
+		Loop
+	Death:
+		TNT1 A 0 A_Startsound("vile/firecrkl",0,CHANF_OVERLAP,1,ATTN_IDLE)
+		Stop
+	}
+}
+
+Actor FireSpiralIchivalReverse
+{
+	+NOINTERACTION
+	+DONTBLAST
+	Reactiontime 15
+	Height 1
+	Radius 1
+	DamageType "Blast"
+	States
+	{
+	Spawn:
+		TNT1 A 0 A_SetAngle(angle+15)
+		TNT1 A 0 A_ChangeVelocity(-3,-3,3,CVF_RELATIVE|CVF_REPLACE)
+		TNT1 A 1 A_SpawnItemEx("FireSpiralIchivalEffect2",0,0,0)
+		TNT1 A 0 {A_CountDown; A_Fire;}
+		Loop
+	Death:
+		TNT1 A 0
+		Stop
+	}
+}
+
+ACTOR FireSpiralIchivalEffect : ArchvileFire
+{
+	+NOINTERACTION
+	Renderstyle add
+	Alpha 0.85
+	XScale 1
+	YScale 1
+	+ROLLSPRITE
+	+ROLLCENTER
+	DamageType "Blast"
+	States
+	{
+	Spawn:
+		FIRE A 2 Bright Nodelay A_Setroll(random(0,180))
+		FIRE ABCDE 2 Bright A_Setroll(roll+random(5,15))
+		FIRE E 0 Bright A_SpawnItemEx ("MirvBombsIchival",0,0,0,Random(-5,5),Random(-5,5),Random(10,18),0)
+		Stop
+	}
+}
+
+ACTOR FireSpiralIchivalEffect2 : ArchvileFire //this version doesn't crackle
+{
+	+NOINTERACTION
+	Renderstyle add
+	Alpha 0.85
+	XScale 1
+	YScale 1
+	+ROLLSPRITE
+	+ROLLCENTER
+	DamageType "Blast"
+	States
+	{
+	Spawn:
+		FIRE A 2 Bright Nodelay A_Setroll(random(0,180))
+		FIRE ABCDE 2 Bright A_Setroll(roll+random(5,15))
+		FIRE E 0 Bright A_SpawnItemEx ("MirvBombsIchival",0,0,0,Random(-5,5),Random(-5,5),Random(10,18),0)
+		Stop
+	}
+}

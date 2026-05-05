@@ -9,4 +9,4 @@
 #include "actors/MagisterLapis_FI.txt"
 #include "actors/MagisterVis_FI.txt"
 #include "actors/DruidDagon_FI.txt"
-#include "actors/DruidIchival_FI.txt"
+//#include "actors/DruidIchival_FI.txt"

@@ -41,6 +41,11 @@ _______________________________________________________________________________
  [ VERSION HISTORY ]
 -------------------------------------------------------------------------------
 
+v2.0.1
+  Restored full file replacement for Ichival, because using inheritance 
+  would break the custom Walpurgis HUD, preventing it from showing the 
+  complete version of the weapon.
+
 v2.0.0 - BREAKING CHANGE
   This version replaces the original files with inheritance, fundamentally 
   changing how the patch integrates with Walpurgis. As such, it will BREAK 
