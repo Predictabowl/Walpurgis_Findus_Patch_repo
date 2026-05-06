@@ -1,3 +1,4 @@
+#include "actors/MyrmQueensbury_FI.txt"
 #include "actors/MyrmQuietusX_FI.txt"
 #include "actors/MyrmVorpalAxe_FI.txt"
 #include "actors/MyrmHammerOfR_FI.txt"

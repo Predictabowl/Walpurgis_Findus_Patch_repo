@@ -132,6 +132,15 @@ _______________________________________________________________________________
   Myrmidon weapons that it effectively rendered them obsolete. These changes 
   ensure that choosing a weapon remains a meaningful decision.
 
+# QUEENSBURY GAUNTLETS
+
+  * Bugfix (Map Decoration Pushing & Bleeding)
+    Fixed an issue where the Tertiary attack (Pilum projectile) would apply 
+    bleeding status and a violent backward thrust to map decorations. 
+    These effects and the resulting physics kick are now restricted to 
+    monsters only, preventing the weapon from moving indestructible scenery
+    or breaking map geometry.
+
 # TIMON'S AXE
 
   * Primary Attack (Electric Mutation)
