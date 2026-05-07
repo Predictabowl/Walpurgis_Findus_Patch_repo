@@ -130,3 +130,48 @@ ACTOR Bardiche_FI : Bardiche replaces Bardiche
 		Goto Fire		
 	}
 }
+
+
+ACTOR BardicheSlashVertUpgrade_Findus : BardicheSlashVertUpgrade replaces BardicheSlashVertUpgrade
+{
+	Args 2
+	States
+	{
+	Spawn:
+		TNT1 A 0 
+		TNT1 A 1 {	A_RadiusGive("BardicheCutEffectLesser",68,RGF_MONSTERS,1);
+					A_Explode(18,58,XF_THRUSTZ,true,58,0,0,"None","StunHit"); 
+					A_StartSound("Telekin6",1,CHANF_OVERLAP,0.7,ATTN_NORM,frandom(0.8,0.92));}
+		TNT1 AA 1 {A_Explode(18,58,XF_THRUSTZ,true,58,0,0,"None","StunHit"); A_RadiusGive("BardicheCutEffectLeast",68,RGF_MONSTERS,1);}
+	Spawn2:
+		TNT1 A 0 Bright {	A_RadiusGive("BardicheCutEffect2",68,RGF_MONSTERS,1);
+							A_RadiusThrust(750,radius+80,RTF_NOTMISSILE,80);
+							A_Explode(6,48,XF_THRUSTZ,true,40,0,0,"None","StunHit");}
+		TNT1 A 1 Bright A_CountdownArg(0,"Death")
+		Loop
+	}
+}
+
+ACTOR BardicheSlashHorizUpgrade_Findus : BardicheSlashHorizUpgrade replaces BardicheSlashHorizUpgrade 
+{
+	Args 3
+	States
+	{
+	Spawn:
+		TNT1 A 0 
+		TNT1 A 1 {	A_Explode(14,80,XF_THRUSTZ,true,59,0,0,"None","StunHit");
+					A_SetAngle(angle-25);
+					A_RadiusGive("BardicheCutEffectLesser",92,RGF_MONSTERS,1);
+					A_StartSound("Telekin6",1,CHANF_OVERLAP,0.7,ATTN_NORM,frandom(0.8,0.92));}
+		TNT1 AA 1 {A_Explode(17,82,XF_THRUSTZ,true,62,0,0,"None","StunHit"); A_RadiusGive("BardicheCutEffectLesser",80,RGF_MONSTERS,1);}
+	Spawn2:
+		TNT1 A 0 Bright {	A_RadiusGive("BardicheCutEffectLeast",92,RGF_MONSTERS,1);
+							A_RadiusThrust(750,radius+80,RTF_NOTMISSILE,80);
+							A_Explode(6,48,XF_THRUSTZ,true,40,0,0,"None","StunHit");}
+		TNT1 A 1 Bright A_CountdownArg(0,"Death")
+		Loop
+	Death:
+		TNT1 A 1 Bright {A_Fadeout(0.33); A_RadiusThrust(350,radius+40,RTF_NOTMISSILE,80);}
+		Loop
+	}
+}

@@ -186,7 +186,49 @@ _______________________________________________________________________________
 
 # BARDICHE
 
-  * Primary Attack (Triple Projectiles)
+  I do honestly think that the Bardiche primary attack is overtuned.
+  Even if it's slow It does a lot of damage, it have a lot of range,
+  it hits multiple targets in an AoE, it forces pain on enemies, and it heals when hit.
+  Compared to the Hammer primary attack, which is short range , single target,
+  and does not force pain, it show even more the huge gap between the 
+  primary attacks. Of course you cannot compare 2 weapons from the 
+  primary attack alone, but anyway I decided to leave it entouched as
+  is it, and only make very small adjustments to its upgrades.
+
+  * Primary Attack (Upgraded)
+    The Upgraded version now correctly implements the promised +20% damage 
+    and +20% AoE radius bonus to both slash attack variants:
+    
+    VERTICAL SLASH:
+      Damage Before: +27% damage increase vs base
+      Damage After:  +20% damage increase vs base
+      Radius: Untouched (it's around from +17% to +20% vs base, not
+        consistent for all components)
+    
+    HORIZONTAL SLASH:
+      Damage Before: +83% damage increase vs base (yes, it was very high)
+      Damage After:  +20% damage increase vs base
+      Radius Before: This was weird, it was mostly shrinked vs base
+      Radius After: It was standardized to increase in percentage like the 
+        Vertical Slash, so around +20%. Which means horizontal slash now
+        have a lot of range.
+    
+    [Considerations]
+    The original upgrade was overtuned, especially if compared
+    to other similar upgrades for the Axe, Gladius and Hammer of Retribution.
+    The rebalance normalizes both variants to faithfully represent what the 
+    in-game upgrade page promises: a clean +20% increase across both damage
+    and Area of Effect radius.
+    The Horizontal slash was especially weird, as the upgrade massively increased
+    the damage and slightly reduce the AoE radius. I've noticed that with the 
+    original values, the upgraded Horizontal was almost the same as the upgraded
+    Vertical, while in the base version the Horizonal is a lot less damaging
+    but have much more AoE radius.
+    I preferred to keep the base attacks as they are, and just upscale the
+    upgraded to +20% across the board. If think it's low, consider that increasing
+    +20% and +20% is a moltiplicative total DPS increase, not additive.
+
+  * Primary Attack (Triple Projectiles - Mutation)
     Consumes 1G mana per use. Projectiles will no longer spawn if mana is 
     depleted.
 
@@ -195,9 +237,13 @@ _______________________________________________________________________________
     ethereal projectiles during the swing.
 
     [Considerations]
-    Increasing the cost to 2G would likely make this upgrade less 
-    desirable than the standard version. A 1G cost maintains its 
-    utility while adding a minor resource requirement.
+    While it have a lot less AoE potential compared to the upgraded version,
+    if you use the 3 projectiles as a shotgun it's a mssive single burst damage
+    increase, that reduce by a LOT the TTK (Time to Kill). Plus you have 
+    ranged projectiles to finish off weakened enemies from the distance.
+    If you pair with the corpse explosion tertiary, it will cost 2 mana per swing,
+    but with shorter TTK you also get earlier corpse explosion, I believe it's
+    worth it.
 
   * Secondary Attack (Spiky Retort - Geyser/Spikes)
     Restricted the pull/knockback effect to only affect monsters (ISMONSTER check). 
