@@ -175,3 +175,49 @@ ACTOR BardicheSlashHorizUpgrade_Findus : BardicheSlashHorizUpgrade replaces Bard
 		Loop
 	}
 }
+
+ACTOR SpikyRetortCreator_Findus : SpikyRetortCreator replaces SpikyRetortCreator
+{
+	States
+	{
+	XDeath:
+		TNT1 A 0 A_SpawnItemEx("BardicheSpikes",0,0,0,0,0,0,0,SXF_SETMASTER,0)
+		TNT1 A 0 A_CheckFlag("ISMONSTER", "XDeathLaunch", AAPTR_TRACER)
+		TNT1 A 2
+		Stop
+	XDeathLaunch:
+		TNT1 A 2 A_ChangeVelocity(-1,0,12,CVF_RELATIVE,AAPTR_TRACER)
+		Stop
+	Death:
+		TNT1 A 0 A_SpawnItemEx("BardicheSpikes",-30,0,0,0,0,0,0,SXF_SETMASTER,0)
+		TNT1 A 0 A_CheckFlag("ISMONSTER", "DeathLaunch", AAPTR_TRACER)
+		TNT1 A 2
+		Stop
+	DeathLaunch:
+		TNT1 A 2 A_ChangeVelocity(-1,0,12,CVF_RELATIVE,AAPTR_TRACER)
+		Stop
+	}
+}
+
+ACTOR SpikyRetortCreatorLong_Findus : SpikyRetortCreatorLong replaces SpikyRetortCreatorLong
+{
+	States
+	{
+	XDeath:
+		TNT1 A 0 A_SpawnItemEx("BardicheSpikesUpg",0,0,0,0,0,0,0,SXF_SETMASTER,0)
+		TNT1 A 0 A_CheckFlag("ISMONSTER", "XDeathLaunch", AAPTR_TRACER)
+		TNT1 A 2
+		Stop
+	XDeathLaunch:
+		TNT1 A 2 A_ChangeVelocity(-1,0,12,CVF_RELATIVE,AAPTR_TRACER)
+		Stop
+	Death:
+		TNT1 A 0 A_SpawnItemEx("BardicheSpikesUpg",-30,0,0,0,0,0,0,SXF_SETMASTER,0)
+		TNT1 A 0 A_CheckFlag("ISMONSTER", "DeathLaunch", AAPTR_TRACER)
+		TNT1 A 2
+		Stop
+	DeathLaunch:
+		TNT1 A 2 A_ChangeVelocity(-1,0,12,CVF_RELATIVE,AAPTR_TRACER)
+		Stop
+	}
+}

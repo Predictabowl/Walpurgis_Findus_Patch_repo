@@ -249,7 +249,7 @@ _______________________________________________________________________________
     Restricted the pull/knockback effect to only affect monsters (ISMONSTER check). 
     This prevents the weapon's projectiles from moving indestructible map decorations 
     and breaking map geometry.
-
+    
 # QUIETUS
 
   * Primary Attack
