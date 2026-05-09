@@ -18,4 +18,4 @@ setslot 4 Fulgur Heavensever HammerOfR_FI Hebiko
 setslot 5 LapisFlos FireStormFont Bardiche_FI DryadMode
 
 // SLOT 6 - Ultimate Weapons
-setslot 6 Agnus StarHammer_Findus QuietusX_FI Ichival_Findus
+setslot 6 Agnus StarHammer_Findus QuietusX_FI Ichival
