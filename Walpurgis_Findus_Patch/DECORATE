@@ -5,6 +5,7 @@
 #include "actors/MyrmBardiche_FI.txt"
 #include "actors/CrusaderSpear_FI.txt"
 #include "actors/CrusaderBlade_FI.txt"
+#include "actors/CrusaderLB_FI.txt"
 #include "actors/CrusaderStarHammer_FI.txt"
 #include "actors/MagisterAestus_FI.txt"
 #include "actors/MagisterLapis_FI.txt"

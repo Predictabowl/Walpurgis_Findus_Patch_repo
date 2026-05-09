@@ -120,6 +120,17 @@ _______________________________________________________________________________
   I bumped the mutated damage by +11% to match the upgraded DPS, making the
   mana cost a real tradeoff against the shock's stagger utility instead of a penalty.
 
+# LIGHTBRINGER
+
+  * Primary Attack (base version)
+    The mana cost was decreased from 3 to 2.5 per shot.
+
+    [Considerations]
+    The base version felt inefficient compared to the rest of the Crusader's 
+    arsenal. When compared to the Druid's Dagon's Cane—which features a 
+    very similar primary attack—the Lightbringer was heavily outclassed.
+    I'm considering to take it down to 2 Mana per shot.
+
 -----------------------------------------------------------------------------
  [ MYRMIDON ]
 -----------------------------------------------------------------------------
