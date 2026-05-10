@@ -123,13 +123,28 @@ _______________________________________________________________________________
 # LIGHTBRINGER
 
   * Primary Attack (base version)
-    The mana cost was decreased from 3 to 2.5 per shot.
+    The mana cost was decreased from 3 to 2 per shot. Raised slightly the projectile
+    so it will aling with the crosshair.
 
     [Considerations]
     The base version felt inefficient compared to the rest of the Crusader's 
     arsenal. When compared to the Druid's Dagon's Cane—which features a 
     very similar primary attack—the Lightbringer was heavily outclassed.
-    I'm considering to take it down to 2 Mana per shot.
+    The upgraded version still costs 3 mana, sicne before it was giving
+    +110% damage for the same mana cost (now is +110% damage but +50% mana),
+    and the mutated version is even more efficient, albeit very imprecise.
+
+  * Primary Attack (upgraded version)
+    Spread pattern slightly changed, to make more viable over long distances.
+
+    [Considerations]
+    Unlike the base version's perfect accuracy, both the upgraded and 
+    mutated variants were previously very imprecise at range. I often 
+    defaulted to the mutated fire mode because its rapid, low-cost shots would 
+    eventually hit distant targets. 
+    The new pattern for the upgraded version ensures the three shots stay 
+    reasonably packed together, making it a viable long-distance tool in 
+    contrast to the still intentionally imprecise mutated version.
 
 -----------------------------------------------------------------------------
  [ MYRMIDON ]
