@@ -143,8 +143,9 @@ _______________________________________________________________________________
     defaulted to the mutated fire mode because its rapid, low-cost shots would 
     eventually hit distant targets. 
     The new pattern for the upgraded version ensures the three shots stay 
-    reasonably packed together, making it a viable long-distance tool in 
-    contrast to the still intentionally imprecise mutated version.
+    reasonably packed together, making it a asemi- viable long-distance tool
+    in contrast to the still intentionally imprecise mutated version, which
+    shines in close quarters.
 
 -----------------------------------------------------------------------------
  [ MYRMIDON ]
@@ -214,12 +215,31 @@ _______________________________________________________________________________
 
   I do honestly think that the Bardiche primary attack is overtuned.
   Even if it's slow It does a lot of damage, it have a lot of range,
-  it hits multiple targets in an AoE, it forces pain on enemies, and it heals when hit.
+  it hits multiple targets in an AoE, it forces pain on enemies, and has life leech.
   Compared to the Hammer primary attack, which is short range , single target,
   and does not force pain, it show even more the huge gap between the 
   primary attacks. Of course you cannot compare 2 weapons from the 
-  primary attack alone, but anyway I decided to leave it entouched as
-  is it, and only make very small adjustments to its upgrades.
+  primary attack alone, and yet this disparity made me want to avoid
+  to use this weapons.
+
+  * Primary Attack (Base & Upgraded)
+    Drains 1 Green mana every 2 swings. If the player does not have enough 
+    mana available, the attack suffers approximately -20% damage and range 
+    penalties, and lifesteal on hit is disabled.
+
+    [RPG Lore]
+    The Bardiche's power scales with magical resonance. Without sufficient 
+    mana reserves, the weapon's strikes lack the necessary force and reach.
+
+    [Considerations]
+    The Bardiche is difficult to balance—I genuinely feel its primary
+    attack is overpowered. I wanted to avoid completely redesigning it
+    since this patch aims for minimal, targeted changes. However, I also
+    wanted to avoid adding a mana cost entirely, as free primary attacks
+    define the Myrmidon's core identity. I ultimately settled on a hybrid
+    solution: a modest mana drain paired with a fallback penalty system.
+    This way, players low on mana can still use the weapon at reduced
+    effectiveness rather than losing it entirely.
 
   * Primary Attack (Upgraded)
     The Upgraded version now correctly implements the promised +20% damage 

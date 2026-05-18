@@ -17,7 +17,15 @@ ACTOR Bardiche_FI : Bardiche replaces Bardiche
 	Fire:
 		B4RD A 0 A_GiveInventory("MaceChargeCheck1",1)
 		B4RD A 0 
-		B4RD A 0 A_JumpIfInventory("ComboCounter",1,"FireCleave") 	
+		B4RD A 0 A_JumpIfInventory("ComboCounter",1,"FireCleave")
+		TNT1 A 0 { //Decrease Damage if no mana, takes mana every 2 swings since the previous jump will skip it
+			if(CountInv("Mana2W") > 0) {
+				A_SetInventory("WeakBardiche_Findus", 0);
+				A_TakeInventory("Mana2W", 1, TIF_NOTAKEINFINITE);
+			} else {
+				A_SetInventory("WeakBardiche_Findus", 1);
+			}
+		} 
 	FireSplit:
 		B4RD B 1 A_StartSound("DaggerSwish",1,CHANF_OVERLAP|CHANF_LOCAL,0.4,ATTN_STATIC,frandom(0.40,0.56))
 		B4RD B 1 A_WeaponOffset(4,38) 
@@ -35,7 +43,12 @@ ACTOR Bardiche_FI : Bardiche replaces Bardiche
 		B4RD E 2 
 		B9RD F 2
 		B9RD GHIJK 1
-		B9RD L 1 A_CustomPunch (1, 1, CPF_NOTURN, "AxePuffWalp", 280, 2) //decal and lifesteal
+		//B9RD L 1 A_CustomPunch (1, 1, CPF_NOTURN, "AxePuffWalp", 280, 2) //decal and lifesteal
+		B9RD L 1 { //decal and lifesteal, only if powered by mana
+			if(CountInv("WeakBardiche_Findus") == 0) {
+				A_CustomPunch (1, 1, CPF_NOTURN, "AxePuffWalp", 280, 2); 
+			}
+		}
 		B9RD M 1 {
 				if(CountInv("BardicheUpgrade") == 1 || CountInv("BardicheUpgrade") == 4 || CountInv("BardicheUpgrade") == 6 || CountInv("BardicheUpgrade") == 9)
 				{	A_FireProjectile("BardicheSlashVertUpgrade",0,false,0,0,FPF_NOAUTOAIM);}
@@ -102,7 +115,12 @@ ACTOR Bardiche_FI : Bardiche replaces Bardiche
 					}
 				}
 				}
-		B6RD L 1 A_CustomPunch (1, 1, CPF_NOTURN, "AxePuffWalpLeft", 290, 2) //decal and lifesteal
+		//B6RD L 1 A_CustomPunch (1, 1, CPF_NOTURN, "AxePuffWalpLeft", 290, 2) //decal and lifesteal
+		B9RD L 1 { //decal and lifesteal, only if powered by mana
+			if(CountInv("WeakBardiche_Findus") == 0) {
+				A_CustomPunch (1, 1, CPF_NOTURN, "AxePuffWalpLeft", 290, 2); 
+			}
+		}
 		B6RD MNO 1
 		B6RD PQ 2
 		TNT1 A 0 A_TakeInventory("ComboCounter")
@@ -131,6 +149,68 @@ ACTOR Bardiche_FI : Bardiche replaces Bardiche
 	}
 }
 
+ACTOR WeakBardiche_Findus : Inventory
+{
+    Inventory.MaxAmount 1
+    +INVENTORY.UNDROPPABLE
+    -INVENTORY.INVBAR // Keeps it hidden so it doesn't clutter the player's item bar
+    
+    States
+    {
+    Spawn:
+        TNT1 A -1
+        Stop
+    }
+}
+
+ACTOR BardicheSlashVertical_Findus : BardicheSlashVertical replaces BardicheSlashVertical
+{
+	States
+	{
+	Spawn:
+		TNT1 A 0
+		TNT1 A 1 {	A_RadiusGive("BardicheCutEffectLeast",58,RGF_MONSTERS,1);
+					A_Explode(17,50,XF_THRUSTZ,true,50,0,0,"None","StunHit"); 
+					A_StartSound("Telekin6",1,CHANF_OVERLAP,0.7,ATTN_NORM,frandom(0.8,0.92));}
+		TNT1 AA 1 {A_Explode(17,48,XF_THRUSTZ,true,40,0,0,"None","StunHit"); A_RadiusGive("BardicheCutEffectLesser",58,RGF_MONSTERS,1);}
+		TNT1 A 0 {  //Decrease Damage if no mana
+			if(CountInv("WeakBardiche_Findus", AAPTR_TARGET) > 0) {
+				A_CountdownArg(0,"Death");
+			}
+		}
+	Spawn2:
+		TNT1 A 0 Bright {	A_RadiusGive("BardicheCutEffect2",58,RGF_MONSTERS,1);
+							A_RadiusThrust(750,radius+80,RTF_NOTMISSILE,80);
+							A_Explode(5,48,XF_THRUSTZ,true,40,0,0,"None","StunHit");}
+		TNT1 A 1 Bright A_CountdownArg(0,"Death")
+		Loop
+	}
+}
+
+ACTOR BardicheSlashHorizontal_Findus : BardicheSlashHorizontal replaces BardicheSlashHorizontal
+{
+	States
+	{
+	Spawn:
+		TNT1 A 0
+		TNT1 A 1 {	A_Explode(11,68,XF_THRUSTZ,true,50,0,0,"None","StunHit"); 
+					A_RadiusGive("BardicheCutEffectLesser",78,RGF_MONSTERS,1);
+					A_StartSound("Telekin6",1,CHANF_OVERLAP,0.7,ATTN_NORM,frandom(0.8,0.92));}
+		TNT1 AA 1 {A_Explode(13,68,XF_THRUSTZ,true,50,0,0,"None","StunHit"); A_RadiusGive("BardicheCutEffectLeast",78,RGF_MONSTERS,1);}
+		TNT1 A 0 {  //Decrease Damage if no mana
+			if(CountInv("WeakBardiche_Findus", AAPTR_TARGET) > 0) {
+				A_CountdownArg(0,"Death");
+			}
+		}
+	Spawn2:
+		TNT1 A 0 Bright {A_RadiusGive("BardicheCutEffectLesser",68,RGF_MONSTERS,1); 
+						 A_RadiusThrust(750,radius+80,RTF_NOTMISSILE,80); 
+						 A_Explode(5,48,XF_THRUSTZ,true,40,0,0,"None","StunHit");}
+		TNT1 A 1 Bright A_CountdownArg(0,"Death") 
+		Loop
+	}
+}
+
 
 ACTOR BardicheSlashVertUpgrade_Findus : BardicheSlashVertUpgrade replaces BardicheSlashVertUpgrade
 {
@@ -143,6 +223,11 @@ ACTOR BardicheSlashVertUpgrade_Findus : BardicheSlashVertUpgrade replaces Bardic
 					A_Explode(18,58,XF_THRUSTZ,true,58,0,0,"None","StunHit"); 
 					A_StartSound("Telekin6",1,CHANF_OVERLAP,0.7,ATTN_NORM,frandom(0.8,0.92));}
 		TNT1 AA 1 {A_Explode(18,58,XF_THRUSTZ,true,58,0,0,"None","StunHit"); A_RadiusGive("BardicheCutEffectLeast",68,RGF_MONSTERS,1);}
+		TNT1 A 0 {  //Decrease Damage if no mana
+			if(CountInv("WeakBardiche_Findus", AAPTR_TARGET) > 0) {
+				A_CountdownArg(0,"Death");
+			}
+		}
 	Spawn2:
 		TNT1 A 0 Bright {	A_RadiusGive("BardicheCutEffect2",68,RGF_MONSTERS,1);
 							A_RadiusThrust(750,radius+80,RTF_NOTMISSILE,80);
@@ -164,6 +249,11 @@ ACTOR BardicheSlashHorizUpgrade_Findus : BardicheSlashHorizUpgrade replaces Bard
 					A_RadiusGive("BardicheCutEffectLesser",92,RGF_MONSTERS,1);
 					A_StartSound("Telekin6",1,CHANF_OVERLAP,0.7,ATTN_NORM,frandom(0.8,0.92));}
 		TNT1 AA 1 {A_Explode(17,82,XF_THRUSTZ,true,62,0,0,"None","StunHit"); A_RadiusGive("BardicheCutEffectLesser",80,RGF_MONSTERS,1);}
+		TNT1 A 0 {  //Decrease Damage if no mana
+			if(CountInv("WeakBardiche_Findus", AAPTR_TARGET) > 0) {
+				A_CountdownArg(0,"Death");
+			}
+		}		
 	Spawn2:
 		TNT1 A 0 Bright {	A_RadiusGive("BardicheCutEffectLeast",92,RGF_MONSTERS,1);
 							A_RadiusThrust(750,radius+80,RTF_NOTMISSILE,80);
