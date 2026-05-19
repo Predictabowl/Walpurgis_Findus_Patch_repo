@@ -41,7 +41,76 @@ ACTOR Aestus_Findus : Aestus replaces Aestus
 	}
 }
 
-ACTOR RollingStone_Findus : RollingStone replaces RollingStone
+ACTOR FlamePillarAestusXL_Findus : FlamePillarAestus //Larger Flame Pillars
+{
+	XScale 2.4
+	YScale 1.65
+	States
+	{
+			Spawn1: 
+			CFFX DDEEFFGGHHII 1  Bright
+			{
+				if(GetCVar("walp_wheresthefire")==1)	
+				{	A_SpawnItemEx("CoronaTailNS",0,0,0,0,2,random(-2,2)); }
+				else
+				{	A_SpawnItemEx("CoronaTailAlt",0,0,0,0,2,random(-2,2));}	
+				A_Explode (random(0,1), 150, 0,0,0,0,0,"None", "Blast");
+				A_Warp (AAPTR_TRACER, 0 + CountInv("Mana1"), 0, 0, 15,WARPF_USECALLERANGLE | WARPF_NOCHECKPOSITION);
+				A_SetRoll(Roll - Random(35,45), SPF_INTERPOLATE);
+				A_GiveInventory("Mana1", 3);
+			}
+			CFFX I 0 A_JumpIfInventory("Mana1", 180, "Death")
+			Loop
+	}
+}
+
+
+ACTOR BowlingStone_Findus : BowlingStone replaces BowlingStone // Ugrade
+{
+	States
+	{
+	Death:
+		MET3 I 0 Bright {
+					A_Log("BowlingStone_Findus");
+					A_SpawnItemEx("MeteorBlasterX",0,0,0,0,0,0); 
+					A_PlaySound ("MeteorStrike",CHAN_7,6,0,0.1,false,0.9); 
+					A_QuakeEx(0,8,8,75,200,1000,"world/quake");
+					While (CountInv("Walpurgisnacht")<8)
+					{
+						A_SpawnItemEx ("ShockWave",0,0,4,1,0,0,(CountInv("DAMCOUNTER")),SXF_MULTIPLYSPEED);
+						A_SpawnItemEx ("ShockWave",0,0,4,1,0,0,(CountInv("DAMCOUNTER")+16),SXF_MULTIPLYSPEED);
+						A_GiveInventory("Walpurgisnacht",1);
+						A_GiveInventory("DAMCOUNTER",32);
+					}
+					A_Explode(36,200,0,1,200);
+					}
+		MET3 I 3 Bright 	{	
+					A_Setscale(2);
+					A_Explode(66,240,0,1,240,0,0,"None","Blast");
+					A_SpawnItemEx("FlamePillarAestusXL_Findus", 21, 0, 0, 0, 0, 0, 0);
+					A_SpawnItemEx("FlamePillarAestusXL_Findus", 21, 21, 0, 0, 0, 0, 45);
+					A_SpawnItemEx("FlamePillarAestusXL_Findus", 0, 21, 0, 0, 0, 0, 90);
+					A_SpawnItemEx("FlamePillarAestusXL_Findus", -21, 21, 0, 0, 0, 0, 135);
+					A_SpawnItemEx("FlamePillarAestusXL_Findus", -21, 0, 0, 0, 0, 0, 180);
+					A_SpawnItemEx("FlamePillarAestusXL_Findus", -21, -21, 0, 0, 0, 0, 225);
+					A_SpawnItemEx("FlamePillarAestusXL_Findus", 0, -21, 0, 0, 0, 0, 270);
+					A_SpawnItemEx("FlamePillarAestusXL_Findus", 21, -21, 0, 0, 0, 0, 315);
+					A_SpawnItemEx("SmokyOily",0,2,6,0,0,1);
+					A_SpawnItemEx("SmokyOily",0,-2,6,0,0,1);
+					A_SpawnItemEx("DecorativeEmberH",random(-4,4),random(-4,4),1,-2,random(-3,1),random(3,7));
+					A_SpawnItemEx("HammerBlastSpark",random(-4,4),random(-4,4),1,-2,random(-1,3),random(3,7));
+					A_SpawnItemEx("HammerBlastSpark",random(-4,4),random(-4,4),1,-2,random(-1,3),random(3,7));
+							}
+		MET3 JKL 3 Bright 	{	
+					A_SpawnItemEx("DecorativeEmberH",random(-4,4),random(-4,4),1,-2,random(-3,1),random(3,7));
+					A_SpawnItemEx("HammerBlastSpark",random(-4,4),random(-4,4),1,-2,random(-1,3),random(3,7));
+					A_SpawnItemEx("HammerBlastSpark",random(-4,4),random(-4,4),1,-2,random(-1,3),random(3,7));
+					}
+		Stop	
+	}
+}
+
+ACTOR FallingStone_Findus : FallingStone replaces FallingStone // Mutation
 {
 	States
 	{

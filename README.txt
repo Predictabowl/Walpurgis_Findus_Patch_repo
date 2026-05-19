@@ -41,6 +41,12 @@ _______________________________________________________________________________
  [ VERSION HISTORY ]
 -------------------------------------------------------------------------------
 
+v2.0.5
+  Changes to Aestus Secondary fire. Base version restored as the original.
+
+v2.0.4
+  Minor changes for Lightbringer and Bardiche
+
 v2.0.1
   Restored full file replacement for Ichival, because using inheritance 
   would break the custom Walpurgis HUD, preventing it from showing the 
@@ -399,26 +405,37 @@ _______________________________________________________________________________
     lifting effects are now properly restricted to monsters only.
 
 # AESTUS
-
+  
   * Secondary Attack (Meteor)
-    Added direct impact damage to make the strike more effective against 
-    single targets.
+    Upgrade (Flying) -> Increased flame AoE radius by +50%.
+    Mutation (Falling) -> Added direct impact damage.
 
     [RPG Lore]
     The physical weight of a summoned celestial rock should be felt by 
     anything unfortunate enough to be directly under it.
 
     [Considerations]
-    While the meteor is primarily an AoE attack, its actual radius isn't 
-    massive, and it's unreliable. The initial direct impact felt underwhelming.
-    The projectile often hits the geometry rather than the target, making it
-    frustrating to land this attack regardless of which upgrade you take. A
-    falling meteor will commonly explode in the sky due to collision quirks.
-    Furthermore, the primary attack mutation provides better AoE coverage in
-    almost every way.
-    Adding a small, localized burst upon contact ensures that a direct hit 
-    feels impactful, reducing the gap and preventing it from being completely
-    outclassed.
+    The Aestus secondary attack felt underwhelming as an AoE option—if you want 
+    AoE coverage, mutating the primary fire is objectively the better choice. 
+    Rather than redesigning the base attack, I differentiated the two upgrades 
+    to create distinct playstyles: the Flying Meteor handles group combat with 
+    improved AoE coverage, while the Falling Meteor specializes against single, 
+    high-health targets.
+    
+    The core problem is that the meteor's radius is small and unreliable. It 
+    often collides with geometry instead of the target, and falling meteors 
+    commonly explode mid-air due to collision quirks. This makes landing the 
+    attack frustrating regardless of which upgrade is selected.
+    
+    For the Flying Meteor upgrade, I increased the flame AoE radius by +50%. 
+    This makes it more effective against groups, especially since it tends to 
+    hit the closest enemy while leaving others nearby somewhat exposed.
+    
+    For the Falling Meteor mutation, I added direct impact damage upon contact. 
+    While the meteor is primarily an AoE attack, the initial direct impact felt 
+    underwhelming, and the attack was being completely outclassed by the primary 
+    mutation's AoE coverage. Adding a small, localized burst ensures that a direct 
+    hit feels impactful and gives this mutation a distinct niche.
 
   * Tertiary Attack (Fire Whip)
     Increased the casting speed of the fire whip wind-up animation (casting time reduced by ~40%).
