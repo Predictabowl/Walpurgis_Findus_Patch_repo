@@ -2,6 +2,7 @@ ACTOR QuietusX_FI : QuietusX replaces QuietusX
 {
 	Weapon.AmmoUse1 1
 	Weapon.AmmoUse2 1
+	Weapon.SisterWeapon "QuietusX"
 	States
 	{
 	Check:

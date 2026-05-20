@@ -3,6 +3,7 @@ ACTOR StarHammer_Findus : StarHammer replaces StarHammer
 	Weapon.AmmoUse1 3
 	Weapon.AmmoUse2 3
     Weapon.SlotNumber 6
+	Weapon.SisterWeapon "StarHammer"
 	States
 	{
 	Fire:

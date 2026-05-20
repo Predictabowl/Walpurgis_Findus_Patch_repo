@@ -2,6 +2,7 @@ ACTOR Ichival_Findus : Ichival replaces Ichival
 {
 	Weapon.AmmoUse1 5
 	Weapon.AmmoUse2 5
+	Weapon.SisterWeapon "Ichival"
 	States
 	{
 	Fire:
