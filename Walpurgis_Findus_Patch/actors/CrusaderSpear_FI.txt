@@ -18,12 +18,13 @@ ACTOR SturmSpear_Findus : SturmSpear replaces SturmSpear
 		SP3A L 2 A_OverlayOffset(23,-20,5,WOF_ADD)
 		SP3A M 1 A_OverlayOffset(23,-20,5,WOF_ADD)
 		SP7A N 2 {A_OverlayOffset(23,-20,5,WOF_ADD); 
-					if(CountInv("Mana1W") > 0)
-					{A_CustomPunch (random(76,102), 1, 0, "SpearShockPuff", 195, 0); // +11% Damage
-					//A_TakeInventory("Mana1W", 1, TIF_NOTAKEINFINITE);
-					A_CustomPunch (1, 1, 0, "SpearShockPuffRefunder", 195, 0);}
-					else
-					{A_CustomPunch (random(56,78), 1, 0, "SpearPuff", 195, 0);}
+					if(CountInv("Mana1W") > 0) {
+						A_CustomPunch (1, 1, 0, "SpearShockPuffRefunder", 195, 0);
+						A_CustomPunch (random(76,102), 1, 0, "SpearShockPuff", 195, 0); // +11% Damage
+						//A_TakeInventory("Mana1W", 1, TIF_NOTAKEINFINITE);						
+					} else {
+						A_CustomPunch (random(56,78), 1, 0, "SpearPuff", 195, 0);
+					}
 				 }
 		SP7A N 1
 		//SP3A N 0 { if(CountInv("PunchRight") >= 1)
@@ -46,12 +47,13 @@ ACTOR SturmSpear_Findus : SturmSpear replaces SturmSpear
 		SP3A [ 2 
 		SP3A Q 1
 		SP7A A 2 {
-					if(CountInv("Mana1W") > 0)
-					{A_CustomPunch (random(110,144), 1, 0, "SpearShockPuff", 195, 0); 
-					//A_TakeInventory("Mana1W", 1, TIF_NOTAKEINFINITE);
-					A_CustomPunch (1, 1, 0, "SpearShockPuffRefunder", 195, 0);}
-					else
-					{A_CustomPunch (random(83,93), 1, 0, "SpearPuff", 195, 0);}
+					if(CountInv("Mana1W") > 0) {
+						A_CustomPunch (1, 1, 0, "SpearShockPuffRefunder", 195, 0);
+						A_CustomPunch (random(110,144), 1, 0, "SpearShockPuff", 195, 0); 
+						//A_TakeInventory("Mana1W", 1, TIF_NOTAKEINFINITE);
+					} else {
+						A_CustomPunch (random(83,93), 1, 0, "SpearPuff", 195, 0);
+					}
 				 }
 		SP3A [ 1
 		//SP3A [ 0 { if(CountInv("PunchRight") >= 1)
@@ -73,12 +75,13 @@ ACTOR SturmSpear_Findus : SturmSpear replaces SturmSpear
 		SP3A U 2 A_OverlayOffset(23,-20,5,WOF_ADD)
 		SP3A V 1 {
 					A_TakeInventory("ComboCounter"); 
-					if(CountInv("Mana1W") > 0)
-					{A_CustomPunch (random(97,118), 1, 0, "SpearShockPuff", 195, 0);  
-					//A_TakeInventory("Mana1W", 1, TIF_NOTAKEINFINITE);
-					A_CustomPunch (1, 1, 0, "SpearShockPuffRefunder", 202, 0);}
-					else
-					{A_CustomPunch (random(66,80), 1, 0, "SpearPuff", 195, 0);}
+					if(CountInv("Mana1W") > 0){
+						A_CustomPunch (1, 1, 0, "SpearShockPuffRefunder", 202, 0);
+						A_CustomPunch (random(97,118), 1, 0, "SpearShockPuff", 195, 0);  
+						//A_TakeInventory("Mana1W", 1, TIF_NOTAKEINFINITE);
+					} else {
+						A_CustomPunch (random(66,80), 1, 0, "SpearPuff", 195, 0);
+					}
 				 }
 		SP7A W 2 
 		SP3A X 1 A_OverlayOffset(23,40,-10,WOF_ADD)
