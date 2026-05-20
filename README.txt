@@ -41,6 +41,9 @@ _______________________________________________________________________________
  [ VERSION HISTORY ]
 -------------------------------------------------------------------------------
 
+v2.0.6
+  Minor fix for SturmSpear
+
 v2.0.5
   Changes to Aestus Secondary fire. Base version restored as the original.
 
@@ -115,6 +118,10 @@ _______________________________________________________________________________
 
   * Primary Attack (Holy Shock Mutation)
     Damage increased by +11%.
+    Changed (Fixed ?) a state that made is use a fast stab (upgraded version) attack
+    during the combo, now will only use shock attacks.
+    Changed mana expenditure from spend and refund when missing -> spend only when
+    hitting. Also corrected a bug that won't expend any mana on finishing blow.
 
   [Consideration]
   While playing, the mutated variant felt weaker than the Upgraded one. To verify,
