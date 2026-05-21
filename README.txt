@@ -200,9 +200,8 @@ _______________________________________________________________________________
 # HAMMER
 
   * Primary Attack (Explosion Mutation)
-    Mana is only consumed on impact.
-    - Hit Enemy: 2G mana
-    - Hit Wall/Floor: 1G mana
+    Mana is only consumed on impact: Hit Enemy -> 2G mana, Hit Wall/Floor -> 1G mana
+    Single target damage increased by +5% (before was 55% of the base version, now is 60%)
 
     [RPG Lore]
     Mana is expended only when the explosion is triggered. Strikes 
@@ -214,8 +213,11 @@ _______________________________________________________________________________
     completely free, players could easily exploit it to generate infinite 
     explosions for free area-of-effect damage. The 1G mana cost prevents 
     this exploit while still providing a discount for missed direct hits.
-
-# HAMMER
+    The slight damage increase is due to the fact that this mutation is 
+    very costly (2 Mana per hit) and thus very inefficient on single targets,
+    at the same time, as an AoE, is vastly inferior to the Bardiche.
+    For now the damage increase is minuscule, let's see what will transpire
+    after even more tests.
 
   * Bugfix (Map Decoration Pushing)
     Fixed an issue where the rocks spawned by the Mutated Tertiary Attack
@@ -227,7 +229,7 @@ _______________________________________________________________________________
 # BARDICHE
 
   I do honestly think that the Bardiche primary attack is overtuned.
-  Even if it's slow It does a lot of damage, it have a lot of range,
+  Even if it's slow it does a lot of damage, it have a lot of range,
   it hits multiple targets in an AoE, it forces pain on enemies, and has life leech.
   Compared to the Hammer primary attack, which is short range , single target,
   and does not force pain, it show even more the huge gap between the 
@@ -284,8 +286,8 @@ _______________________________________________________________________________
     Vertical, while in the base version the Horizonal is a lot less damaging
     but have much more AoE radius.
     I preferred to keep the base attacks as they are, and just upscale the
-    upgraded to +20% across the board. If think it's low, consider that increasing
-    +20% and +20% is a moltiplicative total DPS increase, not additive.
+    upgraded to +20% across the board. If you think it's low, consider that
+    increasing +20% and +20% is a moltiplicative DPS increase, not additive.
 
   * Primary Attack (Triple Projectiles - Mutation)
     Consumes 1G mana per use. Projectiles will no longer spawn if mana is 
@@ -296,12 +298,12 @@ _______________________________________________________________________________
     ethereal projectiles during the swing.
 
     [Considerations]
-    While it have a lot less AoE potential compared to the upgraded version,
-    if you use the 3 projectiles as a shotgun it's a mssive single burst damage
+    While it have a less AoE potential compared to the upgraded version, if
+    you use the 3 projectiles as a shotgun it's a mssive single burst damage
     increase, that reduce by a LOT the TTK (Time to Kill). Plus you have 
     ranged projectiles to finish off weakened enemies from the distance.
-    If you pair with the corpse explosion tertiary, it will cost 2 mana per swing,
-    but with shorter TTK you also get earlier corpse explosion, I believe it's
+    If you pair with the corpse explosion tertiary, it will cost 2.5 mana per swing,
+    but with shorter TTK and this earlier corpse availability, I believe it's
     worth it.
 
   * Secondary Attack (Spiky Retort - Geyser/Spikes)
