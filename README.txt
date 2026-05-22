@@ -41,6 +41,9 @@ _______________________________________________________________________________
  [ VERSION HISTORY ]
 -------------------------------------------------------------------------------
 
+v2.0.7
+  Bardiche: the mutation now takes 1 mana per swing instead of 1.5
+
 v2.0.6
   Minor fix for SturmSpear
 
@@ -198,10 +201,13 @@ _______________________________________________________________________________
     neutralizing single, high-threat targets.
 
 # HAMMER
+  The Hammer is a very powerful weapon... if you ignore the primary attack,
 
   * Primary Attack (Explosion Mutation)
     Mana is only consumed on impact: Hit Enemy -> 2G mana, Hit Wall/Floor -> 1G mana
-    Single target damage increased by +5% (before was 55% of the base version, now is 60%)
+    Single target damage, only the physical portion, increased by +5%
+    (before was 55% of the base version, now is 60%), as such is barely
+    noticeable given that the majority of the damage is the explosion itself.
 
     [RPG Lore]
     Mana is expended only when the explosion is triggered. Strikes 
@@ -217,7 +223,9 @@ _______________________________________________________________________________
     very costly (2 Mana per hit) and thus very inefficient on single targets,
     at the same time, as an AoE, is vastly inferior to the Bardiche.
     For now the damage increase is minuscule, let's see what will transpire
-    after even more tests.
+    after even more tests. Also since most of the damage is the explosion,
+    against fire/explosion resistant monsters feels like hitting with a rubber
+    hammer.
 
   * Bugfix (Map Decoration Pushing)
     Fixed an issue where the rocks spawned by the Mutated Tertiary Attack
@@ -238,9 +246,9 @@ _______________________________________________________________________________
   to use this weapons.
 
   * Primary Attack (Base & Upgraded)
-    Drains 1 Green mana every 2 swings. If the player does not have enough 
-    mana available, the attack suffers approximately -20% damage and range 
-    penalties, and lifesteal on hit is disabled.
+    Drains 1 Green mana every 2 swings (0.5 per swing). If the player
+    does not have enough mana available, the attack suffers approximately
+    -20% damage and range penalties, and lifesteal on hit is disabled.
 
     [RPG Lore]
     The Bardiche's power scales with magical resonance. Without sufficient 
@@ -290,7 +298,7 @@ _______________________________________________________________________________
     increasing +20% and +20% is a moltiplicative DPS increase, not additive.
 
   * Primary Attack (Triple Projectiles - Mutation)
-    Consumes 1G mana per use. Projectiles will no longer spawn if mana is 
+    Consumes 1G mana per swing. Projectiles will no longer spawn if mana is 
     depleted.
 
     [RPG Lore]
@@ -302,7 +310,7 @@ _______________________________________________________________________________
     you use the 3 projectiles as a shotgun it's a mssive single burst damage
     increase, that reduce by a LOT the TTK (Time to Kill). Plus you have 
     ranged projectiles to finish off weakened enemies from the distance.
-    If you pair with the corpse explosion tertiary, it will cost 2.5 mana per swing,
+    If you pair with the corpse explosion tertiary, it will cost 2 mana per swing,
     but with shorter TTK and this earlier corpse availability, I believe it's
     worth it.
 
