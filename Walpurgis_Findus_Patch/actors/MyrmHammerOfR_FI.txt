@@ -23,7 +23,7 @@ ACTOR HammerOfR_FI : HammerOfR replaces HammerOfR
 		HMMR B 3 Offset (5, 0) 
 		HMMR C 3 Offset (5, 0) {
 				if(CountInv("HammerMutate") == 1 && CountInv("Mana2W") > 0 || CountInv("HammerMutate") == 4 && CountInv("Mana2W") > 0 || CountInv("HammerMutate") == 6 && CountInv("Mana2W") > 0 || CountInv("HammerMutate") == 9 && CountInv("Mana2W") > 0 )
-				{ A_CustomPunch (random(85,150), 1, CPF_NOTURN, "NewHammerPuffBoom", 124, 0);} //original damage 70-145
+				{ A_CustomPunch (random(100,170), 1, CPF_NOTURN, "NewHammerPuffBoom", 124, 0);} //original damage 70-145
 				else{A_CustomPunch (random(130,225), 1, CPF_NOTURN, "NewHammerPuffSmol", 124, 0); }}
 		HMMR D 3 Offset (5, 0) 
 		HMMR D 2 Offset (5, 150)

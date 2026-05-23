@@ -9,7 +9,7 @@ setslot 1 VisExpello CrusaderMace Queensbury Baselard
 setslot 2 Algor SturmSpear_Findus VorpalAxe_FI DogMode
 
 // SLOT 3 - Mid-Tier
-setslot 3 Aestus_Findus Lightbringer Gladius DagonsCane
+setslot 3 Aestus_Findus Lightbringer_Findus Gladius DagonsCane
 
 // SLOT 4 - High-Tier
 setslot 4 Fulgur Heavensever HammerOfR_FI Hebiko
