@@ -1,0 +1,5 @@
+
+ACTOR SwirlyBlizzard_Findus : SwirlyBlizzard replaces SwirlyBlizzard
+{
+  -PAINLESS
+}

@@ -41,6 +41,10 @@ _______________________________________________________________________________
  [ VERSION HISTORY ]
 -------------------------------------------------------------------------------
 
+v2.0.8
+  Aestus upgrade: reduced mana cost
+  Algor upgrade: can now inflict pain
+
 v2.0.7
   Bardiche: the mutation now takes 1 mana per swing instead of 1.5
   Hammer of Retribution: Increased single target damage of primary mutated
@@ -429,6 +433,20 @@ _______________________________________________________________________________
 
 # AESTUS
   
+  * Primary Attack
+    Upgrade now reduce mana cost by -50% (removed cost from even/right shots).
+
+    [Considerations]
+    The comparision between upgraded and mutated is extremely lopsisded in
+    the mutated favor. Albeit slower, mutated projectiles does AoE damage,
+    huge damage even against single target and, it's extremely efficient as well.
+    To kill a single target (Maulotaur) with upgraded fire you need 3x more mana
+    than what's needed with the mutated version, so I was in doubt if increase
+    mutated mana cost to 2, or decrease upgraded cost by 1/2. After comparing 
+    it with other Wizard's primary fires I decided for the latter, this way
+    I won't always default on the mutated version, which is still superior 
+    both in single target and especially in AoE.
+  
   * Secondary Attack (Meteor)
     Upgrade (Flying) -> Increased flame AoE radius by +50%.
     Mutation (Falling) -> Added direct impact damage.
@@ -468,5 +486,21 @@ _______________________________________________________________________________
     slow and had to be used preemptively. This fundamentally defeated the 
     purpose of a point-blank defensive attack and crowd-control tool.
 
+# ALGOR
+  
+  * Primary Attack
+    Upgrade: now the blizzards can inflict pain
+
+    [Considerations]
+    The main reason the upgraded version is so inferior to the mutated is not
+    the range nor the damage, it's the fact that the mutated version can 
+    effectively stunlock enemies while the upgraded version was completely painless,
+    paired to the fact that it was short range, it means you ALWAYS get
+    clobbered no matter what. The result was that the mutated version was 
+    pratically the only sensible choice.
+    With this change, only the additional blizzards of the upgraded version
+    can cause pain, which helps a lot, even if the mutated version is 
+    still superior.
+  
 _____________________________________________________________________________
 
