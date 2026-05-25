@@ -1,0 +1,60 @@
+ACTOR Fulgur_Findus : Fulgur replaces Fulgur
+{
+	States
+	{
+	FireSniper:
+		TNT1 A 0 A_TakeInventory("PunchRight")
+		TNT1 A 0 A_JumpIfInventory("PowerAmbitManaEx", 1, "FireSnipeGo")
+		TNT1 A 0 A_JumpIfInventory ("Mana2W", 5, "FireSnipeGo") 
+		TNT1 A 0 A_CheckReload
+		Goto Ready
+	FireSnipeGo: //mutated primary fire
+		TLKS JJ 1 A_WeaponOffset(0,10,WOF_ADD) 
+		TNT1 A 1 A_WeaponOffset(0,36)
+		FU1G A 2 {
+			A_TakeInventory("Mana2W", 1,TIF_NOTAKEINFINITE);
+			A_Overlay(-23,"Ambient1");
+		}
+		FU1G B 3 {
+			if(random(1,4) >= 2 && (GetCVar("walp_silentprotagonists")==0) && (CountInv("PowerShutItWilson")) == 0){
+				A_StartSound("MagiExerts",CHAN_AUTO,CHANF_OVERLAP,0.9,ATTN_NONE,frandom(0.97,1.04));
+			}
+			A_TakeInventory("Mana2W", 2,TIF_NOTAKEINFINITE);
+		}
+		FU1G CD 3 A_TakeInventory("Mana2W", 1,TIF_NOTAKEINFINITE)
+		FU1G E 3 A_StartSound("WhatISeekIsThunder",CHAN_AUTO,CHANF_OVERLAP,0.9,ATTN_NONE,1)
+		FU1G F 2 {
+				A_SpawnItemEx("HandMarkerLeftMutate",cos(pitch)*28,-12,34-(sin(pitch)*28),cos(pitch)*1,cos(pitch)*velx,0,-sin(pitch)*velz,SXF_NOCHECKPOSITION|SXF_SETMASTER|SXF_TRANSFERPITCH);
+				A_FireProjectile("FakeLightningForceMutatePrimary", 0, 0, -12, 0, FPF_NOAUTOAIM,0);
+				}
+		FU1G G 3
+		FU1G FEDCBA 2
+		TNT1 A 0 A_Refire("FireSniper")
+		TNT1 A 1 A_WeaponOffset(0,64)
+		TLKS JJ 1 A_WeaponOffset(0,-12,WOF_ADD)
+		Goto Ready
+	}
+}
+
+ACTOR DecorativeHelixZaps_Findus : DecorativeHolyZaps // replaces DecorativeHolyZaps //Yellow zappy decorative effect
+{
+	DamageType Electric
+}
+
+
+Actor HandMarkerLeftMutate_Findus : HandMarkerLeftMutate replaces HandMarkerLeftMutate //mutate only has left hand.
+{
+	States
+	{
+	Spawn:
+		TNT1 A 0 Nodelay A_JumpIfInventory("ComboCounter",1,"Death")
+		TNT1 A 0 { 	A_SetUserVarFloat(user_howfar,GetDistance(true,AAPTR_MASTER));
+					A_Warp(AAPTR_MASTER,cos(-pitch)*user_howfar,-12,34+sin(-pitch)*user_howfar,0,WARPF_NOCHECKPOSITION|WARPF_COPYPITCH|WARPF_COPYVELOCITY);}
+		TNT1 A 0 {
+			A_CustomRailgun(random(70,100),1,"0B 3C 9E","0B 3C 9E",RGF_SILENT|RGF_EXPLICITANGLE|RGF_NORANDOMPUFFZ,0,180,"DecorativeZaps",0,0,3550,8,1,0,"LaserBall2"); 
+			//A_CustomRailgun(random(70,100),-1,"0B 3C 9E","0B 3C 9E",RGF_SILENT|RGF_EXPLICITANGLE|RGF_NORANDOMPUFFZ,0,180,"DecorativeHolyZaps",0,0,3550,8,1,0,"LaserBall2Orange");
+			A_CustomRailgun(random(70,100),-1,"0B 3C 9E","0B 3C 9E",RGF_SILENT|RGF_EXPLICITANGLE|RGF_NORANDOMPUFFZ,0,180,"DecorativeHelixZaps_Findus",0,0,3550,8,1,0,"LaserBall2Orange");
+		}
+		Stop
+	}
+}

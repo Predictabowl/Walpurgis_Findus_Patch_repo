@@ -235,3 +235,11 @@ I do honestly think that the Bardiche primary attack is overtuned. Even if it's 
 * **Primary Attack**
   Upgrade: now the blizzards can inflict pain.
   > **Considerations:** Much like the Aestus, the upgraded version was significantly outclassed by the mutation. The mutated fire offers superior range, area-of-effect capabilities, and comparable damage. Crucially, it can effectively stunlock enemies, whereas the upgraded version originally lacked a pain-state trigger. This, combined with its short range, meant players were frequently overwhelmed, making the mutation the only viable choice. To address this, the upgrade's additional blizzards can now inflict pain. While this provides much-needed defensive utility, the mutated version still remains superior by a noticeable margin.
+
+#### Fulgur
+
+* **Primary Attack (Mutation / Helix)**
+  * **BugFix:** The helix should not kill the player when strafe running towards East-SouthEast. To achieve that the damage type was changed from split "Electric/Holy Shock" to full "Electric".
+  > **Considerations:** This solution was chosen because the Magister is not immune to Holy Shock, unlike the Crusader. Since modifying the player class via inheritance is not a viable solution for this trait, and I wanted to avoid replacing the entire player file or implementing a complex ZScript Event Handler, switching the attack to pure "Electric" damage was the most efficient fix. This change remains thematic since the Magister is not a "holy" class, and it has no practical impact on combat as very few enemies distinguish between these two damage types.
+  * **Mana cost Reduction:** Helix mana cost was reduced from 6 to 5.
+  > **Considerations:** I rarely chose the Helix over Chain Lightning, so I tested it for an extended period to evaluate its true value. I concluded that the extended range is not a significant advantage when weighed against the Helix's inferior DPS and high mana cost. I have reduced the mana cost to improve its viability, though it may still be underwhelming.
