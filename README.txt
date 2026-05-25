@@ -438,14 +438,23 @@ _______________________________________________________________________________
 
     [Considerations]
     The comparision between upgraded and mutated is extremely lopsisded in
-    the mutated favor. Albeit slower, mutated projectiles does AoE damage,
-    huge damage even against single target and, it's extremely efficient as well.
-    To kill a single target (Maulotaur) with upgraded fire you need 3x more mana
-    than what's needed with the mutated version, so I was in doubt if increase
-    mutated mana cost to 2, or decrease upgraded cost by 1/2. After comparing 
-    it with other Wizard's primary fires I decided for the latter, this way
-    I won't always default on the mutated version, which is still superior 
+    the mutated favor. Albeit slower, the mutated projectiles does AoE damage,
+    and even ingignoring the AoE it does huge damage even against single target,
+    killing things faster than the upgraded, furthermore is extremely mana efficient.
+    To kill a single big target (Maulotaur) with upgraded fire you need 3x more mana
+    and more time than what's needed with the mutated version, and things starts
+    to get uglier for the upgrade when fighting a crowd of enemies.
+    In short choosing the upgrade over the mutation is gimping yourself.
+    I was in doubt if increase mutated mana cost to 2, or decrease upgraded cost by 1/2.
+    After comparing  it with other Wizard's primary fires I decided for the latter,
+    this way I won't always default on the mutated version, which is still superior 
     both in single target and especially in AoE.
+
+    Just for reference, I also compared the original upgraded Aestus with the
+    Lightbringer Mutated Fire (rapid fire), they have basically the same DPS,
+    and while the Lightbringer have spread, its a lot more mana efficient (Almost double),
+    and have a small AoE on projectiles (radius 40, sometimes will damage 2 enemies).
+
   
   * Secondary Attack (Meteor)
     Upgrade (Flying) -> Increased flame AoE radius by +50%.
