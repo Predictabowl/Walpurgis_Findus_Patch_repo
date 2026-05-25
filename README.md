@@ -1,11 +1,13 @@
 # Walpurgis Findus Patch
 
 ## Related Projects
+
 * **Findus Patch:** [https://github.com/Predictabowl/Walpurgis_Findus_Patch_repo](https://github.com/Predictabowl/Walpurgis_Findus_Patch_repo)
 * **No Shield Frag:** [https://github.com/Predictabowl/Walpurgis_Findus_NoShieldFrag_repo](https://github.com/Predictabowl/Walpurgis_Findus_NoShieldFrag_repo)
 * **Faithless Trilogy Compatibility:** [https://github.com/Predictabowl/Walpurgis_Findus_Faith_Tri_repo](https://github.com/Predictabowl/Walpurgis_Findus_Faith_Tri_repo)
 
 ## Setup & Compatibility
+
 This patch is designed **SPECIFICALLY** for use with: `+Walpurgis-JT-1.0-A.pk3`.
 
 It **MUST** be loaded **AFTER** the main file.
@@ -17,35 +19,44 @@ For simplicity, this patch replaces entire actor files. Loading it with differen
 ## Version History
 
 ### v2.0.8
+
 * **Aestus upgrade:** reduced mana cost
 * **Algor upgrade:** can now inflict pain
 
 ### v2.0.7
+
 * **Bardiche:** the mutation now takes 1 mana per swing instead of 1.5
 * **Hammer of Retribution:** Increased single target damage of primary mutated
 
 ### v2.0.6
+
 * Minor fix for SturmSpear
 
 ### v2.0.5
+
 * Changes to Aestus Secondary fire. Base version restored as the original.
 
 ### v2.0.4
+
 * Minor changes for Lightbringer and Bardiche
 
 ### v2.0.1
+
 * Restored full file replacement for Ichival, because using inheritance would break the custom Walpurgis HUD, preventing it from showing the complete version of the weapon.
 
 ### v2.0.0 - BREAKING CHANGE
+
 This version replaces the original files with inheritance, fundamentally changing how the patch integrates with Walpurgis. As such, it will **BREAK WEAPONS IN ONGOING GAMES**. You will need to start a new game to use this patch version properly.
 
 ### v1.1.0
+
 * Transitioning from file replacement to decorator inheritance
 * Quietus Mana increase from +50% to +33%
 
 ---
 
 ## Philosophy & Reasoning
+
 The aim of these changes is **NOT** to balance classes against each other, but to balance all the weapons within the same class. Choosing which weapon to use should be a ponderous choice, rather than simply defaulting to the "ultimate" weapon because it is objectively better in every way. Most original values are left untouched to preserve the core feel.
 
 ---
@@ -55,6 +66,7 @@ The aim of these changes is **NOT** to balance classes against each other, but t
 ### General Changes
 
 #### Weapon Slot Reorganization
+
 All classes have been moved to an expanded 1-6 weapon slot configuration via `KEYCONF`. This removes the "Slot Sharing" found in the original mod, allowing every weapon in a class's arsenal to be accessed directly via its own dedicated hotkey (1-6) without the need for weapon cycling or inventory scrolling.
 
 ---
@@ -62,22 +74,26 @@ All classes have been moved to an expanded 1-6 weapon slot configuration via `KE
 ### Crusader
 
 #### Haven Sever
+
 * **Bugfix (Map Decoration Pushing & Bleeding)**
   Fixed an issue where the secondary attack projectiles would violently push and apply bleeding status effects to indestructible map decorations upon impact. These effects are now properly restricted to actual monsters only.
 
 #### Star Hammer
+
 * **Primary Attack**
   Increased the cost of the first swing (2+2 -> 3+3), while the second swing remains at 2+2. This increases the total cost of a standard 2-hit combo by +25% (total 5+5). If only single swings are used, the cost is consistently 3+3.
 * **Tertiary Attack (Black Hole)**
   Mana cost increased from 16+16 to 20+20 (+25%).
 
 #### Sturm Spear
+
 * **Primary Attack (Holy Shock Mutation)**
   Damage increased by +11%. Changed (Fixed?) a state that made it use a fast stab (upgraded version) attack during the combo; now it will only use shock attacks. Changed mana expenditure from "spend and refund when missing" to "spend only when hitting." Also corrected a bug that wouldn't expend any mana on the finishing blow.
 
 > **Consideration:** While playing, the mutated variant felt weaker than the Upgraded one. To verify, I ran frame-by-frame analysis and DPS calculations four separate times from scratch. It turned out the Upgraded version has roughly 11-12% higher DPS. The shock knockback is useful but unreliable; some monsters just don't get even fazed by it, and in conclusion, it wasn't powerful enough to compensate for burning 1 mana per hit and less damage. I bumped the mutated damage by +11% to match the upgraded DPS, making the mana cost a real tradeoff against the shock's stagger utility instead of a penalty.
 
 #### Lightbringer
+
 * **Primary Attack (Base Version)**
   The mana cost was decreased from 3 to 2 per shot. Raised slightly the projectile so it will align with the crosshair.
   > **Considerations:** The base version felt inefficient compared to the rest of the Crusader's arsenal. When compared to the Druid's Dagon's Cane—which features a very similar primary attack—the Lightbringer was heavily outclassed. The upgraded version still costs 3 mana, since before it was giving +110% damage for the same mana cost (now is +110% damage but +50% mana), and the mutated version is even more efficient, albeit very imprecise.
@@ -88,25 +104,34 @@ All classes have been moved to an expanded 1-6 weapon slot configuration via `KE
 ---
 
 ### Myrmidon
+
 The Myrmidon's core strength is being a highly mana-efficient class. While I personally prefer more intensive resource management, I've avoided reckless cost increases to maintain the class's identity.
 
 The main issue was that the Quietus was so inexpensive compared to other Myrmidon weapons that it effectively rendered them obsolete. These changes ensure that choosing a weapon remains a meaningful decision.
 
 #### Queensbury Gaunlets
+
 * **Bugfix (Map Decoration Pushing & Bleeding)**
   Fixed an issue where the Tertiary attack (Pilum projectile) would apply bleeding status and a violent backward thrust to map decorations. These effects and the resulting physics kick are now restricted to monsters only, preventing the weapon from moving indestructible scenery or breaking map geometry.
 
 #### Timon's Axe
+
 * **Primary Attack (Electric Mutation)**
   Mana is now only consumed when successfully hitting an enemy. This allows for "air swings" while repositioning without wasting mana.
   * **RPG Lore:** The electrical charge is held within the axe and only discharges upon direct contact with a conductor (the target).
   > **Considerations:** Even with this buff to efficiency, the Electric Mutation remains the most expensive primary attack in the Myrmidon's kit. However, its stunlocking capability makes it the premier choice for efficiently neutralizing single, high-threat targets.
 
 #### Hammer
+
 The Hammer is a very powerful weapon... if you ignore the primary attack.
 
 * **Primary Attack (Explosion Mutation)**
-  Mana is only consumed on impact: Hit Enemy -> 2G mana, Hit Wall/Floor -> 1G mana. Single target damage, only the physical portion, increased by around +15% (before was 60% of the base version, now is 75%), as such is barely noticeable given that the majority of the damage is the explosion itself.
+  * **Mana Consumption (On Impact Only):**
+    * **Enemy Hit:** 2 Green Mana
+    * **Environment Hit (Wall/Floor):** 1 Green Mana
+  * **Physical Damage (Direct Hit):**
+    * Increased by approximately +15% (now 75% of base, up from 60%).
+    * *Note: This is a minor buff to single-target viability, as the explosion remains the primary source of damage.*
   * **RPG Lore:** Mana is expended only when the explosion is triggered. Strikes against living targets are flavored to be more violent, requiring more energy.
   > **Considerations:** Hitting the floor or walls produces an explosion. If this action were completely free, players could easily exploit it to generate infinite explosions for free area-of-effect damage. The 1G mana cost prevents this exploit while still providing a discount for missed direct hits. The slight damage increase is due to the fact that this mutation is very costly (2 Mana per hit) and thus very inefficient on single targets (which I think was the intention), but at the same time, as an AoE, is really underwhelming with small radius and vastly inferior to the Bardiche. Also since most of the damage is the explosion, against fire/explosion resistant monsters feels like hitting with a rubber hammer. I opted to increase the direct hit damage because both other attacks of the hammer are AoE, and for 2 mana I honestly prefer to be more viable even against strong enemies because, for example, using the Secondary for 5 mana is almost always the better choice. Also the increased direct damage is mostly wasted on weak enemies and don't increase the AoE effectiveness.
 
@@ -114,6 +139,7 @@ The Hammer is a very powerful weapon... if you ignore the primary attack.
   Fixed an issue where the rocks spawned by the Mutated Tertiary Attack (Ground Slam) would unconditionally apply a velocity kick to whatever they impacted upon death, causing immovable map decorations to shift and potentially break maps. The knockback is now restricted to actual monsters only via an `ISMONSTER` check on the impact target.
 
 #### Bardiche
+
 I do honestly think that the Bardiche primary attack is overtuned. Even if it's slow it does a lot of damage, it has a lot of range, it hits multiple targets in an AoE, it forces pain on enemies, and has life leech. Compared to the Hammer primary attack, which is short range, single target, and does not force pain, it shows even more the huge gap between the primary attacks. Of course you cannot compare 2 weapons from the primary attack alone, and yet this disparity made me want to avoid to use this weapons.
 
 * **Primary Attack (Base & Upgraded)**
@@ -143,6 +169,7 @@ I do honestly think that the Bardiche primary attack is overtuned. Even if it's 
   Restricted the pull/knockback effect to only affect monsters (`ISMONSTER` check). This prevents the weapon's projectiles from moving indestructible map decorations and breaking map geometry.
 
 #### Quietus
+
 * **Primary Attack**
   Consumes 1+1 mana at the start of the combo, which then powers the weapon for all 4 subsequent slashes.
   * **RPG Lore:** The blade is infused with a brief burst of magical resonance, lasting just long enough for a whirlwind of strikes.
@@ -158,6 +185,7 @@ I do honestly think that the Bardiche primary attack is overtuned. Even if it's 
 ### Druid
 
 #### Dagon's Cane
+
 * **Bugfix (Map Decoration Pushing)**
   Fixed an issue where water impacts unconditionally pushed everything around them, causing immovable map decorations to shift and potentially break maps. This fix applies to the Upgraded Primary attack (Water Blast) and all Secondary attacks (Base/Upgraded Geyser and Mutated Whirlpool), ensuring they now only move real monsters.
 * **Tertiary Fire (Aqua Charge - Mutation)**
@@ -165,6 +193,7 @@ I do honestly think that the Bardiche primary attack is overtuned. Even if it's 
   > **Considerations:** While the goal is to stay as faithful to the original as possible, the mutated version felt like a downgrade compared to the standard and upgraded versions which offer invulnerability and mobility. By adding projectile deflection, it becomes a meaningful tactical choice: trading personal mobility for powerful battlefield control and moving cover.
 
 #### Ichival
+
 * **Primary Attack (Standard & Upgraded)**
   Mana cost reduced from 8+8 to 5+5. Explosion max damage radius normalized for both versions to 128 (from 212). Standard version's full-damage radius set to 32 (from 170). Upgraded version's full-damage radius set to 64 (from 80).
   > **Considerations:** All of the weapon's fire modes (Secondary and Tertiary) were heavily focused on large Area of Effect (AoE) damage, leaving it without an effective single-target option. At 8 mana per shot, the primary fire felt inefficient compared to the massively superior 10/18 mana alt-fires. Furthermore, while the upgraded version claimed a +15% damage increase, ZDoom calculates missile damage independently. This means the direct hit increase accounted for only a ~3.6% boost in total damage, which felt underwhelming. By standardizing the maximum blast radius to 128, the weapon is repurposed into a dedicated single-target tool. Giving the Standard version a very tight full-damage radius (32) ensures strict single-target damage, while giving the Upgraded version a wider full-damage radius (64) allows it to cleave small clusters. This provides a highly noticeable combat improvement that justifies the upgrade, without blindly inflating damage numbers.
@@ -174,29 +203,35 @@ I do honestly think that the Bardiche primary attack is overtuned. Even if it's 
 ### Magister
 
 #### Lapis Flos
+
 * **Bugfix (Map Decoration Pushing)**
   Fixed an issue where the rocks and fists created by the primary attack would unconditionally push everything around them upon impact, causing immovable map decorations to shift and potentially break maps. This fix ensures that the displacement knockback now only affects real monsters.
 
 #### Vis Expello
+
 * **Bugfix (Map Decoration Pushing)**
   Fixed an issue where the telekinetic force blasts (Primary and Secondary) and the Force Stasis bubble (Tertiary) would violently displace indestructible map objects and decorations. The push-back and lifting effects are now properly restricted to monsters only.
 
 #### Aestus
+
 * **Primary Attack**
   Upgrade now reduces mana cost by -50% (removed cost from even/right shots).
-  > **Considerations:** The comparison between upgraded and mutated is extremely lopsided in the mutated favor. Albeit slower, the mutated projectiles do AoE damage, and even ignoring the AoE it does huge damage even against single target, killing things faster than the upgraded, furthermore is extremely mana efficient. To kill a single big target (Maulotaur) with upgraded fire you need 3x more mana and more time than what's needed with the mutated version, and things start to get uglier for the upgrade when fighting a crowd of enemies. In short choosing the upgrade over the mutation is gimping yourself. I was in doubt whether to increase mutated mana cost to 2, or decrease upgraded cost by 1/2. After comparing it with other Wizard's primary fires I decided for the latter, this way I won't always default on the mutated version, which is still superior both in single target and especially in AoE.
+  > **Considerations:** The comparison between the upgraded and mutated versions was heavily lopsided. Despite being slower, the mutated variant's AoE and high single-target damage allow it to kill enemies faster and more efficiently than the upgraded fire. For example, killing a Maulotaur with the upgraded fire required three times more mana and significantly more time than the mutated version—a disparity that grows even more apparent against crowds. Selecting the upgrade over the mutation was effectively a self-imposed handicap. I considered doubling the mutated mana cost but instead decided to halve the upgraded cost. This aligns with other Magister primary fires while providing a reason not to always default to the mutated version, which remains superior in both single-target and AoE scenarios.
   >
   > Just for reference, I also compared the original upgraded Aestus with the Lightbringer Mutated Fire (rapid fire), they have basically the same DPS, and while the Lightbringer has spread, it's a lot more mana efficient (Almost double), and has a small AoE on projectiles (radius 40, sometimes will damage 2 enemies).
 * **Secondary Attack (Meteor)**
-  Upgrade (Flying) -> Increased flame AoE radius by +50%.
-  Mutation (Falling) -> Added direct impact damage.
+  * **Upgrade (Flying):**
+    * **Area of Effect:** Increased flame AoE radius by +50%.
+  * **Mutation (Falling):**
+    * **Direct Hit:** Added impact damage upon contact.
   * **RPG Lore:** The physical weight of a summoned celestial rock should be felt by anything unfortunate enough to be directly under it.
   > **Considerations:** The Aestus secondary attack felt underwhelming as an AoE option—if you want AoE coverage, mutating the primary fire is objectively the better choice. Rather than redesigning the base attack, I differentiated the two upgrades to create distinct playstyles: the Flying Meteor handles group combat with improved AoE coverage, while the Falling Meteor specializes against single, high-health targets. The core problem is that the meteor's radius is small and unreliable. It often collides with geometry instead of the target, and falling meteors commonly explode mid-air due to collision quirks. This makes landing the attack frustrating regardless of which upgrade is selected. For the Flying Meteor upgrade, I increased the flame AoE radius by +50%. This makes it more effective against groups, especially since it tends to hit the closest enemy while leaving others nearby somewhat exposed. For the Falling Meteor mutation, I added direct impact damage upon contact. While the meteor is primarily an AoE attack, the initial direct impact felt underwhelming, and the attack was being completely outclassed by the primary mutation's AoE coverage. Adding a small, localized burst ensures that a direct hit feels impactful and gives this mutation a distinct niche.
 * **Tertiary Attack (Fire Whip)**
   Increased the casting speed of the fire whip wind-up animation (casting time reduced by ~40%).
-  > **Considerations:** As a short-range panic button, the original wind-up animation was too slow and had to be used preemptively. This fundamentally defeated the purpose of a point-blank defensive attack and crowd-control tool.
+  > **Considerations:** As a short-range panic button, the original wind-up was too slow and required preemptive use. This was less a matter of balance and more that the sluggish animation simply didn't feel responsive or fun to use.
 
 #### Algor
+
 * **Primary Attack**
   Upgrade: now the blizzards can inflict pain.
-  > **Considerations:** The main reason the upgraded version is so inferior to the mutated is not the range nor the damage, it's the fact that the mutated version can effectively stunlock enemies while the upgraded version was completely painless, paired to the fact that it was short range, it means you ALWAYS get clobbered no matter what. The result was that the mutated version was practically the only sensible choice. With this change, only the additional blizzards of the upgraded version can cause pain, which helps a lot, even if the mutated version is still superior.
+  > **Considerations:** Much like the Aestus, the upgraded version was significantly outclassed by the mutation. The mutated fire offers superior range, area-of-effect capabilities, and comparable damage. Crucially, it can effectively stunlock enemies, whereas the upgraded version originally lacked a pain-state trigger. This, combined with its short range, meant players were frequently overwhelmed, making the mutation the only viable choice. To address this, the upgrade's additional blizzards can now inflict pain. While this provides much-needed defensive utility, the mutated version still remains superior by a noticeable margin.
