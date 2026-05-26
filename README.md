@@ -18,10 +18,14 @@ For simplicity, this patch replaces entire actor files. Loading it with differen
 
 ## Version History
 
+### v2.0.9
+
+* **Fulgor:** Primary Attack mutation mana cost reduced
+
 ### v2.0.8
 
-* **Aestus upgrade:** reduced mana cost
-* **Algor upgrade:** can now inflict pain
+* **Aestus:** reduced mana cost
+* **Algor:** can now inflict pain
 
 ### v2.0.7
 
