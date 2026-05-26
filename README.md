@@ -3,7 +3,7 @@
 ## Related Projects
 
 * **Findus Patch:** [https://github.com/Predictabowl/Walpurgis_Findus_Patch_repo](https://github.com/Predictabowl/Walpurgis_Findus_Patch_repo)
-* **No Shield Frag:** [https://github.com/Predictabowl/Walpurgis_Findus_NoShieldFrag_repo](https://github.com/Predictabowl/Walpurgis_Findus_NoShieldFrag_repo)
+* **Minor Fixes:** [https://github.com/Predictabowl/Walpurgis_Findus_MinorFixes](https://github.com/Predictabowl/Walpurgis_Findus_MinorFixes)
 * **Faithless Trilogy Compatibility:** [https://github.com/Predictabowl/Walpurgis_Findus_Faith_Tri_repo](https://github.com/Predictabowl/Walpurgis_Findus_Faith_Tri_repo)
 
 ## Setup & Compatibility
