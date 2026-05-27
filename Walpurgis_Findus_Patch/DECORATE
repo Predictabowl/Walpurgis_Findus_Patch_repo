@@ -13,4 +13,5 @@
 #include "actors/MagisterFulgur_FI.txt"
 #include "actors/MagisterVis_FI.txt"
 #include "actors/DruidDagon_FI.txt"
+#include "actors/DruidHebiko_FI.txt"
 #include "actors/DruidIchival_FI.txt"

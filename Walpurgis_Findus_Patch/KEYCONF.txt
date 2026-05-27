@@ -12,7 +12,7 @@ setslot 2 Algor SturmSpear_Findus VorpalAxe_FI DogMode
 setslot 3 Aestus_Findus Lightbringer_Findus Gladius DagonsCane
 
 // SLOT 4 - High-Tier
-setslot 4 Fulgur Heavensever HammerOfR_FI Hebiko
+setslot 4 Fulgur_Findus Heavensever HammerOfR_FI Hebiko_Findus
 
 // SLOT 5 - Heavy AoE / Summons
 setslot 5 LapisFlos FireStormFont Bardiche_FI DryadMode
