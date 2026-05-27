@@ -21,6 +21,8 @@ For simplicity, this patch replaces entire actor files. Loading it with differen
 ### v2.0.9
 
 * **Fulgor:** Primary Attack mutation mana cost reduced
+* **Hebiko:** Primary Attack mutation mana cost increased
+* **Driad Mode:** Primary Attack mana cost increased
 
 ### v2.0.8
 
@@ -195,6 +197,22 @@ I do honestly think that the Bardiche primary attack is overtuned. Even if it's 
 * **Tertiary Fire (Aqua Charge - Mutation)**
   Increased the overall damage of the water waves by approximately +100%, making it a more viable offensive option during combat. Additionally, the wave now acts as a moving shield, blocking enemy projectiles along its wide path.
   > **Considerations:** While the goal is to stay as faithful to the original as possible, the mutated version felt like a downgrade compared to the standard and upgraded versions which offer invulnerability and mobility. By adding projectile deflection, it becomes a meaningful tactical choice: trading personal mobility for powerful battlefield control and moving cover.
+
+#### Hebiko
+
+* **Primary Fire**
+  * Mutation: Mana cost increased +100%.
+  > **Considerations:** The mutation deals an insane amount of damage for minimal mana. Compared to Algor, it does more than double the damage for the same cost. Compared to Firestorm, it deals comparable damage for half the mana cost—and unlike Firestorm, it inflicts pain.
+  >
+  >Doubling the mana cost brings it more in line with these similar attacks while remaining superior: it has double the DPS of Algor and inflicts pain that Firestorm lacks.
+
+#### Dryad ;ode
+
+* **Primary Fire**
+  * Base and Upgrade: Mana cost increased from 3 to 4 (+33%).
+  > **Considerations:** I get all the shortcomings of this weapons, it's slow and short ranged, but the damage it does is simply out of this world. If you set mobs life to 5x you won't even notice since they will still be one shotted most of the times by the base, not upgraded, version. Bosses becomes a mere nuisance as they die in seconds. Lastly it damage everything in its path, as it's an excellent AoE againt grounded enemies. Despite this I undestand that there are scenarios where this weapon is hard to use, but you have different weapons for different situations, so I don't even think its a problem unless you don't have any other weapon available.
+  >
+  >The least I could do was to increae the mana cost as it really felt way too cheap otherwise.
 
 #### Ichival
 
