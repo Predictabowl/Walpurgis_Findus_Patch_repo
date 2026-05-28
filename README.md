@@ -18,6 +18,10 @@ For simplicity, this patch replaces entire actor files. Loading it with differen
 
 ## Version History
 
+### v2.1.0
+
+* **Timon's Axe:** Bugfix/balance
+
 ### v2.0.9
 
 * **Fulgor:** Primary Attack mutation mana cost reduced
@@ -126,6 +130,12 @@ The main issue was that the Quietus was so inexpensive compared to other Myrmido
   Mana is now only consumed when successfully hitting an enemy. This allows for "air swings" while repositioning without wasting mana.
   * **RPG Lore:** The electrical charge is held within the axe and only discharges upon direct contact with a conductor (the target).
   > **Considerations:** Even with this buff to efficiency, the Electric Mutation remains the most expensive primary attack in the Myrmidon's kit. However, its stunlocking capability makes it the premier choice for efficiently neutralizing single, high-threat targets.
+
+* **Secondary Attack**
+  * Mutation (Bugfix): Changed Explosion mechanic to simulate more accurately the power of base version.
+    > **Considerations:** The original mutation was intended to narrow the slash from horizontal to vertical—making it taller but narrower—while maintaining power and reducing mana cost. However, the mutation uses a NOCLIP projectile to pass through geometry without crashing into walls, which disables actor collision. This prevents the projectile's Damage property from applying, since it can't interact with targets. To fix this, I replaced the single explosion with two smaller explosions offset on the Z-axis to simulate a tall, narrow impact. This allows targets at the center to take full damage (matching the base version) while those on the sides receive minimal damage.
+  * All versions (Bugfix?): Mana consumption base and upgrade from 9 to 8. Mana consumption mutation from 5 to 4.
+    > **Considerations:** Whether this qualifies as a bugfix is debatable. The original has an inconsistency: all secondary attack variants check for 8 mana, yet the base and upgraded versions consume 9 mana (allowing usage with insufficient resources), while the mutation consumes 5 mana (preventing usage when you have enough). Evidence of copy-paste code suggests this is an oversight. Since the mutation promises roughly 50% cost reduction, the adjusted values of 8 and 4 better reflect the intended balance. For these reasons, I made this change.
 
 #### Hammer
 
