@@ -174,7 +174,7 @@ I do honestly think that the Bardiche primary attack is overtuned. Even if it's 
     * Damage After: +20% damage increase vs base
     * Radius Before: This was weird, it was mostly shrinked vs base
     * Radius After: It was standardized to increase in percentage like the Vertical Slash, so around +20%. Which means horizontal slash now has a lot of range.
-  > **Considerations:** The original upgrade was overtuned, especially if compared to other similar upgrades for the Axe, Gladius and Hammer of Retribution. The rebalance normalizes both variants to faithfully represent what the in-game upgrade page promises: a clean +20% increase across both damage and Area of Effect radius. The Horizontal slash was especially weird, as the upgrade massively increased the damage and slightly reduce the AoE radius. I've noticed that with the original values, the upgraded Horizontal was almost the same as the upgraded Vertical, while in the base version the Horizontal is a lot less damaging but have much more AoE radius. I preferred to keep the base attacks as they are, and just upscale the upgraded to +20% across the board. If you think it's low, consider that increasing +20% and +20% is a multiplicative DPS increase, not additive.
+  > **Considerations:** The original upgrade was overtuned, especially if compared to other similar upgrades for the Axe, Gladius and Hammer of Retribution. The rebalance normalizes both variants to faithfully represent what the in-game upgrade page promises: a clean +20% increase across both damage and Area of Effect radius. The Horizontal slash was especially weird, as the upgrade massively increased the damage and slightly reduce the AoE radius. I've noticed that with the original values, the upgraded Horizontal was almost the same as the upgraded Vertical, while in the base version the Horizontal is a lot less damaging but have much more AoE radius. I preferred to keep the base attacks as they are, and just upscale the upgraded to +20% across the board. If you think it's low, consider that increasing +20% damage and +20% Aoe have a multiplicative DPS increase, not additive.
 
 * **Primary Attack (Triple Projectiles - Mutation)**
   Consumes 1G mana per swing. Projectiles will no longer spawn if mana is depleted.
@@ -214,9 +214,9 @@ I do honestly think that the Bardiche primary attack is overtuned. Even if it's 
   * Mutation: Mana cost increased +100%.
   > **Considerations:** The mutation deals an insane amount of damage for minimal mana. Compared to Algor, it does more than double the damage for the same cost. Compared to Firestorm, it deals comparable damage for half the mana cost—and unlike Firestorm, it inflicts pain.
   >
-  >Doubling the mana cost brings it more in line with these similar attacks while remaining superior: it has double the DPS of Algor and inflicts pain that Firestorm lacks.
+  >Doubling the mana cost brings it more in line with these similar attacks while remaining superior (which still feels wrong): it has double the DPS of Algor and inflicts pain that Firestorm lacks.
 
-#### Dryad ;ode
+#### Dryad Mode
 
 * **Primary Fire**
   * Base and Upgrade: Mana cost increased from 3 to 4 (+33%).
@@ -260,13 +260,13 @@ I do honestly think that the Bardiche primary attack is overtuned. Even if it's 
   > **Considerations:** The Aestus secondary attack felt underwhelming as an AoE option—if you want AoE coverage, mutating the primary fire is objectively the better choice. Rather than redesigning the base attack, I differentiated the two upgrades to create distinct playstyles: the Flying Meteor handles group combat with improved AoE coverage, while the Falling Meteor specializes against single, high-health targets. The core problem is that the meteor's radius is small and unreliable. It often collides with geometry instead of the target, and falling meteors commonly explode mid-air due to collision quirks. This makes landing the attack frustrating regardless of which upgrade is selected. For the Flying Meteor upgrade, I increased the flame AoE radius by +50%. This makes it more effective against groups, especially since it tends to hit the closest enemy while leaving others nearby somewhat exposed. For the Falling Meteor mutation, I added direct impact damage upon contact. While the meteor is primarily an AoE attack, the initial direct impact felt underwhelming, and the attack was being completely outclassed by the primary mutation's AoE coverage. Adding a small, localized burst ensures that a direct hit feels impactful and gives this mutation a distinct niche.
 * **Tertiary Attack (Fire Whip)**
   Increased the casting speed of the fire whip wind-up animation (casting time reduced by ~40%).
-  > **Considerations:** As a short-range panic button, the original wind-up was too slow and required preemptive use. This was less a matter of balance and more that the sluggish animation simply didn't feel responsive or fun to use.
+  > **Considerations:** As a short-range button, the original wind-up was too slow and required preemptive use. This was less a matter of balance and more that the sluggish animation simply didn't feel responsive or fun to use.
 
 #### Algor
 
 * **Primary Attack**
   Upgrade: now the blizzards can inflict pain.
-  > **Considerations:** Much like the Aestus, the upgraded version was significantly outclassed by the mutation. The mutated fire offers superior range, area-of-effect capabilities, and comparable damage. Crucially, it can effectively stunlock enemies, whereas the upgraded version originally lacked a pain-state trigger. This, combined with its short range, meant players were frequently overwhelmed, making the mutation the only viable choice. To address this, the upgrade's additional blizzards can now inflict pain. While this provides much-needed defensive utility, the mutated version still remains superior by a noticeable margin.
+  > **Considerations:** Much like the Aestus, the upgraded version was significantly outclassed by the mutation. The mutated fire offers superior range, area-of-effect capabilities, and comparable damage. Crucially, it can effectively stunlock enemies, whereas the upgraded version originally lacked a pain-state trigger. This, combined with its short range, meant players were frequently hit while using it, making the mutation the only viable choice. To address this, the upgrade's additional blizzards can now inflict pain. While this provides much-needed defensive utility, the mutated version still remains superior by a noticeable margin.
 
 #### Fulgur
 
@@ -274,7 +274,6 @@ I do honestly think that the Bardiche primary attack is overtuned. Even if it's 
   * **BugFix:** Fixed an issue where the Helix would strike the player when strafe-running towards the East-SouthEast. To resolve this, the damage type was changed from a split of "Electric/Holy Shock" to pure "Electric".
   > **Considerations:** This solution was chosen because the Magister is not immune to Holy Shock, unlike the Crusader. Since modifying the player class via inheritance is not a viable solution for this trait, and I wanted to avoid replacing the entire player file or implementing a complex ZScript Event Handler, switching the attack to pure "Electric" damage was the most efficient fix. This change remains thematic since the Magister is not a "holy" class, and it has no practical impact on combat as very few enemies distinguish between these two damage types.
   * **Mana cost Reduction:** Helix mana cost was reduced from 6 to 5.
-  * 
   >**Considerations:** The Helix felt underwhelming compared to the Chain Lightning, as the extended range is not a significant advantage when weighed against its inferior DPS and high mana cost. To properly contextualize this, one must compare it with other similar upgraded primary attacks: Dagon's Cane (3 blue mana), the Hammer of Retribution (5 Green mana), and the Lightbringer (3 blue mana) are all objectively better than the Helix. Dagon's Cane, in particular, is mechanically similar but far more effective. I have reduced the mana cost to improve its viability, though it still remain underwhelming compared to the Chain Lightning.
   >
   >Another flaw inherent to the original Fulgur package is that selecting the Helix mutation forced every attack to be high-cost and high-damage. This often left enemies with only a sliver of health, requiring a full 6 green mana investment just to finish them off. Since weapon switching is too slow to be a viable strategy, this resulted in significant mana inefficiency.
