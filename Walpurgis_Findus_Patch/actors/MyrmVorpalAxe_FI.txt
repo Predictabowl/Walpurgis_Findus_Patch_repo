@@ -54,6 +54,7 @@ ACTOR VorpalAxe_FI : VorpalAxe replaces VorpalAxe
 		SM5X FG 1
 		SM4X G 1 A_TakeInventory("ComboCounter")
 		TNT1 A 2
+		goto FireEnded
 	AltFire3: //mutate
 		FAXE A 0 A_TakeInventory("Spearcheck1")
 		FAXE A 1 Offset (0, 52) A_JumpIfInventory("PowerAmbitMana", 1, "VorpalVertical")
