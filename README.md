@@ -18,6 +18,10 @@ For simplicity, this patch replaces entire actor files. Loading it with differen
 
 ## Version History
 
+### v2.1.1
+
+* **Aestus:** Changes to the secondary attack variants
+
 ### v2.1.0
 
 * **Timon's Axe:** Bugfix/balance
@@ -128,7 +132,10 @@ The main issue was that the Quietus was so inexpensive compared to other Myrmido
 
 * **Primary Attack (Electric Mutation)**
   Mana is now only consumed when successfully hitting an enemy. This allows for "air swings" while repositioning without wasting mana.
-  * **RPG Lore:** The electrical charge is held within the axe and only discharges upon direct contact with a conductor (the target).
+  > **RPG Lore:** The electrical charge is held within the axe and only discharges upon direct contact with a conductor (the target).
+  >
+  > ---
+  >
   > **Considerations:** Even with this buff to efficiency, the Electric Mutation remains the most expensive primary attack in the Myrmidon's kit. However, its stunlocking capability makes it the premier choice for efficiently neutralizing single, high-threat targets.
 
 * **Secondary Attack**
@@ -148,7 +155,10 @@ The Hammer is a very powerful weapon... if you ignore the primary attack.
   * **Physical Damage (Direct Hit):**
     * Increased by approximately +15% (now 75% of base, up from 60%).
     * *Note: This is a minor buff to single-target viability, as the explosion remains the primary source of damage.*
-  * **RPG Lore:** Mana is expended only when the explosion is triggered. Strikes against living targets are flavored to be more violent, requiring more energy.
+  > **RPG Lore:** Mana is expended only when the explosion is triggered. Strikes against living targets are flavored to be more violent, requiring more energy.
+  >
+  > ---
+  >
   > **Considerations:** Hitting the floor or walls triggers an explosion; a 1G mana cost prevents players from exploiting this for free AoE damage while still providing a discount for missed direct hits. This mutation is relatively inefficient on single targets due to its 2G cost, and its AoE radius is underwhelming compared to the Bardiche. Furthermore, since most damage comes from the explosion, it can feel like hitting with a "rubber hammer" against resistant enemies. I increased the direct hit damage to ensure better viability against strong targets, especially since the hammer's other fire modes are already AoE-heavy and the 5-mana secondary is often the preferred choice. This adjustment improves single-target performance without buffing its AoE or affecting its balance against weaker mobs.
 
 * **Bugfix (Map Decoration Pushing)**
@@ -160,7 +170,10 @@ I do honestly think that the Bardiche primary attack is overtuned. Even if it's 
 
 * **Primary Attack (Base & Upgraded)**
   Drains 1 Green mana every 2 swings (0.5 per swing). If the player does not have enough mana available, the attack suffers approximately -20% damage and range penalties, and lifesteal on hit is disabled.
-  * **RPG Lore:** The Bardiche's power scales with magical resonance. Without sufficient mana reserves, the weapon's strikes lack the necessary force and reach.
+  > **RPG Lore:** The Bardiche's power scales with magical resonance. Without sufficient mana reserves, the weapon's strikes lack the necessary force and reach.
+  >
+  > ---
+  >
   > **Considerations:** The Bardiche is difficult to balance—I genuinely feel its primary attack is overpowered. I wanted to avoid completely redesigning it since this patch aims for minimal, targeted changes. However, I also wanted to avoid adding a mana cost entirely, as free primary attacks define the Myrmidon's core identity. I ultimately settled on a hybrid solution: a modest mana drain paired with a fallback penalty system. This way, players low on mana can still use the weapon at reduced effectiveness rather than losing it entirely.
 
 * **Primary Attack (Upgraded)**
@@ -178,7 +191,10 @@ I do honestly think that the Bardiche primary attack is overtuned. Even if it's 
 
 * **Primary Attack (Triple Projectiles - Mutation)**
   Consumes 1G mana per swing. Projectiles will no longer spawn if mana is depleted.
-  * **RPG Lore:** The Bardiche uses a small amount of magical energy to manifest ethereal projectiles during the swing.
+  > **RPG Lore:** The Bardiche uses a small amount of magical energy to manifest ethereal projectiles during the swing.
+  >
+  > ---
+  >
   > **Considerations:** While it has less AoE potential compared to the upgraded version, if you use the 3 projectiles as a shotgun it's a massive single burst damage increase, that reduces by a LOT the TTK (Time to Kill). Plus you have ranged projectiles to finish off weakened enemies from a distance. If you pair with the corpse explosion tertiary, it will cost 2 mana per swing, but with shorter TTK and this earlier corpse availability, I believe it's worth it.
 
 * **Secondary Attack (Spiky Retort - Geyser/Spikes)**
@@ -188,7 +204,10 @@ I do honestly think that the Bardiche primary attack is overtuned. Even if it's 
 
 * **Primary Attack**
   Consumes 1+1 mana at the start of the combo, which then powers the weapon for all 4 subsequent slashes.
-  * **RPG Lore:** The blade is infused with a brief burst of magical resonance, lasting just long enough for a whirlwind of strikes.
+  > **RPG Lore:** The blade is infused with a brief burst of magical resonance, lasting just long enough for a whirlwind of strikes.
+  >
+  > ---
+  >
   > **Considerations:** Charging 1+1 per swing felt frustrating, as it punished players for missing or overkilling enemies. This "per-combo" cost keeps it economical while ensuring the "ultimate" weapon still has a per-use price.
 * **Secondary Attack (Torpedo)**
   The visual effect while charging the torpedo now uses Additive rendering instead of Translucent, maintaining a static opacity rather than getting progressively more solid.
@@ -252,12 +271,19 @@ I do honestly think that the Bardiche primary attack is overtuned. Even if it's 
   >
   > Just for reference, I also compared the original upgraded Aestus with the Lightbringer Mutated Fire (rapid fire), they have basically the same DPS, and while the Lightbringer has spread, it's a lot more mana efficient (Almost double), and has a small AoE on projectiles (radius 40, sometimes will damage 2 enemies).
 * **Secondary Attack (Meteor)**
-  * **Upgrade (Flying):**
-    * **Area of Effect:** Increased flame AoE radius by +50%.
-  * **Mutation (Falling):**
-    * **Direct Hit:** Added impact damage upon contact.
-  * **RPG Lore:** The physical weight of a summoned celestial rock should be felt by anything unfortunate enough to be directly under it.
-  > **Considerations:** The Aestus secondary attack felt underwhelming as an AoE option—if you want AoE coverage, mutating the primary fire is objectively the better choice. Rather than redesigning the base attack, I differentiated the two upgrades to create distinct playstyles: the Flying Meteor handles group combat with improved AoE coverage, while the Falling Meteor specializes against single, high-health targets. The core problem is that the meteor's radius is small and unreliable. It often collides with geometry instead of the target, and falling meteors commonly explode mid-air due to collision quirks. This makes landing the attack frustrating regardless of which upgrade is selected. For the Flying Meteor upgrade, I increased the flame AoE radius by +50%. This makes it more effective against groups, especially since it tends to hit the closest enemy while leaving others nearby somewhat exposed. For the Falling Meteor mutation, I added direct impact damage upon contact. While the meteor is primarily an AoE attack, the initial direct impact felt underwhelming, and the attack was being completely outclassed by the primary mutation's AoE coverage. Adding a small, localized burst ensures that a direct hit feels impactful and gives this mutation a distinct niche.
+  * **Upgrade (Flying):** Added substantial impact damage upon contact. No Longer Shootable or Destroyable.
+  * **Mutation (Falling):** Increased flame AoE and Explosion radius by +25%.
+  > **RPG Lore:** The physical weight of a summoned celestial rock should be felt by anything unfortunate enough to be directly under it.
+  >
+  > ---
+  >
+  > **Considerations:** The secondary attack upgrades felt underwhelming as an AoE option. If you want AoE coverage, the mutated primary fire is objectively the better choice, so I felt I needed to differentiate the two variants rather than redesign the entire secondary.
+  >
+  > **Falling Meteor** is now better suited for Area of Effect coverage. I increased the explosion radius by +25%, which should make it significantly more viable against groups. Since falling meteors can land in the middle of a group is also more suited for area denial than the other versions, which ofter explode on the nearest enemy (wasting AoE) or are shooted down even before that.
+  >
+  > **Flying Meteor** is now better suited for strong single targets. I added direct impact damage on contact while making it no longer shootable or destroyable, improving reliability. The fact that needs manual targeting rewarding careful aim with both precision impact damage and guaranteed delivery—making it the superior choice for eliminating priority threats.
+  >
+  > This mirrors the primary attack mutation, which transforms it from single-target to AoE—here.
 * **Tertiary Attack (Fire Whip)**
   Increased the casting speed of the fire whip wind-up animation (casting time reduced by ~40%).
   > **Considerations:** As a short-range button, the original wind-up was too slow and required preemptive use. This was less a matter of balance and more that the sluggish animation simply didn't feel responsive or fun to use.
