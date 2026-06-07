@@ -98,6 +98,7 @@ ACTOR SturmSpear_Findus : SturmSpear replaces SturmSpear
 
 ACTOR SpearShockPuffExpender_Findus : SpearShockPuffRefunder replaces SpearShockPuffRefunder
 {
+	+HITTRACER
 	States
 	{
 	Crash:
@@ -114,7 +115,9 @@ ACTOR SpearShockPuffExpender_Findus : SpearShockPuffRefunder replaces SpearShock
 		TNT1 A 0
 		TNT1 A 1 {	
 			A_TakeInventory("Mana1W", 1, TIF_NOTAKEINFINITE, AAPTR_TARGET);
-			A_SpawnItemEx ("DecorativeHolyZaps",-12,random(-2,2),20,10,random(-1,1),random(-3,3));}
+			A_SpawnItemEx ("DecorativeHolyZaps",-12,random(-2,2),20,10,random(-1,1),random(-3,3));
+			A_GiveInventory("StunEffectHolyShock_Findus",24,AAPTR_TRACER);
+		}
 		Stop
 	}
 }

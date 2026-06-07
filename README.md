@@ -18,6 +18,10 @@ For simplicity, this patch replaces entire actor files. Loading it with differen
 
 ## Version History
 
+### v2.2.0
+
+* **New Stun**: Added a new stun mechanic.
+
 ### v2.1.1
 
 * **Aestus:** Changes to the secondary attack variants
@@ -83,6 +87,12 @@ The aim of these changes is **NOT** to balance classes against each other, but t
 #### Weapon Slot Reorganization
 
 All classes have been moved to an expanded 1-6 weapon slot configuration via `KEYCONF`. This removes the "Slot Sharing" found in the original mod, allowing every weapon in a class's arsenal to be accessed directly via its own dedicated hotkey (1-6) without the need for weapon cycling or inventory scrolling.
+
+#### New Stun Mechanic
+
+Added a new stun mechanic that will work on all enemies, even ones not from Walpurgis, even if will not be as much spectacular. Is based on the pain chance and it can be triggered also outside of the pain chance with a multiplcative probability, so it should be configured carefully to avoid to stunlock every enemy.
+The new stun system is fairly customizabile but, if I can find the time, will be expanded upon.
+For now only the *Timon's Axe* and *Sturm Spear* mutations use it.
 
 ---
 

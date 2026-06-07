@@ -184,6 +184,7 @@ ACTOR AxeShockPuff_FI : AxeShockPuff replaces AxeShockPuff
 					A_SpawnItemEx ("DecorativeZaps",-12,random(-2,2),random(-1,1),random(-1,1),random(-1,1),random(-3,3));
 					A_TakeInventory("Mana1W", 1, TIF_NOTAKEINFINITE,AAPTR_TARGET);}
 		TNT1 A 0 A_GiveInventory("Haemorrage",1,AAPTR_TRACER)
+		TNT1 A 0 A_GiveInventory("StunEffectElectric_Findus",24,AAPTR_TRACER)
 		TNT1 A 0 { if (CountInv("TKCounter",AAPTR_TRACER) == 0)
 					{A_SpawnItemEx("BleedControllerLesser",0,0,0,0,0,0,0,SXF_TRANSFERPOINTERS|SXF_ORIGINATOR|SXF_SETMASTER);}
 				 }
