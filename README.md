@@ -21,6 +21,7 @@ For simplicity, this patch replaces entire actor files. Loading it with differen
 ### v2.1.1
 
 * **Aestus:** Changes to the secondary attack variants
+* **Hammer of Retribution:** Further Increased single target damage of primary mutated
 
 ### v2.1.0
 
@@ -153,13 +154,17 @@ The Hammer is a very powerful weapon... if you ignore the primary attack.
     * **Enemy Hit:** 2 Green Mana
     * **Environment Hit (Wall/Floor):** 1 Green Mana
   * **Physical Damage (Direct Hit):**
-    * Increased by approximately +15% (now 75% of base, up from 60%).
+    * Increased to be on par as the basic hammer (now 80% of base, up from 60%).
     * *Note: This is a minor buff to single-target viability, as the explosion remains the primary source of damage.*
   > **RPG Lore:** Mana is expended only when the explosion is triggered. Strikes against living targets are flavored to be more violent, requiring more energy.
   >
   > ---
   >
-  > **Considerations:** Hitting the floor or walls triggers an explosion; a 1G mana cost prevents players from exploiting this for free AoE damage while still providing a discount for missed direct hits. This mutation is relatively inefficient on single targets due to its 2G cost, and its AoE radius is underwhelming compared to the Bardiche. Furthermore, since most damage comes from the explosion, it can feel like hitting with a "rubber hammer" against resistant enemies. I increased the direct hit damage to ensure better viability against strong targets, especially since the hammer's other fire modes are already AoE-heavy and the 5-mana secondary is often the preferred choice. This adjustment improves single-target performance without buffing its AoE or affecting its balance against weaker mobs.
+  > **Considerations:** Hitting the floor or walls triggers an explosion; a 1G mana cost prevents players from exploiting this for free AoE damage while still providing a discount for missed direct hits.
+  >
+  >The physical portion of the damage from the mutation was 60% of the base version and, while the AoE explosion more than make up for it, in my opinion at 2G per attack was not worth it, especially when compared with the AoE primary attack of the Bardiche. Furthermore some enemies are resistant to the fire effect, resulting in pitiful damage; paradoxically when out of mana, the attack revert to its base form, resulting in a more effective attack against such enemies. Last but not least, the Hammer have the shortest melee range of any weapon, which means is often too risky to use even against melee enemies.
+  >
+  >For these reasons I changed the hammer single target damage to 80% of the damage of the base version. Since its intended as an AoE tool anyway, when fighting against a group of enemies will barely make a difference: a direct hit against weaker enemies would still result in 1 hit kill, so nothing is gained. On the other hand it will be at least viable (but noticeably worse than the other upgrade) against single high health enemies, especially since the hammer's other fire modes are already AoE-heavy.
 
 * **Bugfix (Map Decoration Pushing)**
   Fixed an issue where the rocks spawned by the Mutated Tertiary Attack (Ground Slam) would unconditionally apply a velocity kick to whatever they impacted upon death, causing immovable map decorations to shift and potentially break maps. The knockback is now restricted to actual monsters only via an `ISMONSTER` check on the impact target.
