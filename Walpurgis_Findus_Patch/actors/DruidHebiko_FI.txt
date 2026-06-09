@@ -15,7 +15,9 @@ ACTOR Hebiko_Findus : Hebiko replaces Hebiko
 					A_FireProjectile("SnekAcidSprayz",random(-2,2),0,random(-4,4),0,FPF_NOAUTOAIM,random(-5,5));	
 					A_FireProjectile("SnekAcidSprayz",random(-2,2),0,random(-4,4),0,FPF_NOAUTOAIM,random(-5,5));
 				 }
-
+		HEBI Q 0 A_Refire("SprayPoisonLoop2")				 
+		Goto Ready
+	SprayPoisonLoop2:
 		HEBI M 2 {
 					A_FireProjectile("SnekAcidSprayz",random(-2,2),0,random(-4,4),0,FPF_NOAUTOAIM,random(-5,5));	
 					A_FireProjectile("SnekAcidSprayz",random(-2,2),0,random(-4,4),0,FPF_NOAUTOAIM,random(-5,5));
@@ -26,7 +28,7 @@ ACTOR Hebiko_Findus : Hebiko replaces Hebiko
 					A_FireProjectile("SnekAcidSprayz",random(-2,2),0,random(-4,4),0,FPF_NOAUTOAIM,random(-5,5));	
 					A_FireProjectile("SnekAcidSprayz",random(-2,2),0,random(-4,4),0,FPF_NOAUTOAIM,random(-5,5));
 					}
-		HEBI Q 0 A_Refire("SprayPoisonLoop") 
+		HEBI Q 0 A_Refire("SprayPoisonLoop")
 		Goto Ready
 	}
 }
