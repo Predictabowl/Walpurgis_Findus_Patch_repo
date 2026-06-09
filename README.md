@@ -22,6 +22,7 @@ For simplicity, this patch replaces entire actor files. Loading it with differen
 
 * **New Stun**: Added a new stun mechanic.
 * **Bardiche**: Now also consume player's Health.
+* **Ichival**: Primary Attack values change
 
 ### v2.1.1
 
@@ -264,9 +265,20 @@ I do honestly think that the Bardiche primary attack is overtuned. Even if it's 
 
 #### Ichival
 
+The original Ichival, in my opinion, is the worse ultimate weapon among all classes. While this is not a problem for the class, since the other weapons are very powerful, I quickly realized that specifcally because of that, I didn't really find a reason to use it at all, save few rare cases.
+It also have the flaw that is lacks a cheaper single target attack, as all its attacks are AoE, as such is never worth to use againt single strong enemies like you would do with DOOM's Rocket Launcher.
+
 * **Primary Attack (Standard & Upgraded)**
-  Mana cost reduced from 8+8 to 5+5. Explosion max damage radius normalized for both versions to 128 (from 212). Standard version's full-damage radius set to 32 (from 170). Upgraded version's full-damage radius set to 64 (from 80).
-  > **Considerations:** All of the weapon's fire modes (Secondary and Tertiary) were heavily focused on large Area of Effect (AoE) damage, leaving it without an effective single-target option. At 8 mana per shot, the primary fire felt inefficient compared to the massively superior 10/18 mana alt-fires. Furthermore, while the upgraded version claimed a +15% damage increase, ZDoom calculates missile damage independently. This means the direct hit increase accounted for only a ~3.6% boost in total damage, which felt underwhelming. By standardizing the maximum blast radius to 128, the weapon is repurposed into a dedicated single-target tool. Giving the Standard version a very tight full-damage radius (32) ensures strict single-target damage, while giving the Upgraded version a wider full-damage radius (64) allows it to cleave small clusters. This provides a highly noticeable combat improvement that justifies the upgrade, without blindly inflating damage numbers.
+  * Mana cost reduced from 8+8 to 6+6.
+  * Explosion radius reduced for both versions: from 212 to 128
+  * Explosion full damage radius normalized and reduced: from 170 to 64 for the base version, and from 80 to 64 for upgraded version (the upgraded version was worse than the base).
+  * Direct impact single target damage: from 4-32 to 80-120 for the base version, and from 6-48 to 95-135 for the upgraded.
+  * Base version AoE damage decreased from 197-268 to 150-210 on the base version.
+  * Upgraded version AoE damage is now increased by +15% compared to the base (177-237), as advertised in the upgrade screen. Before was the same as the base version.
+  > **Considerations:** I decided that this weapon sorely needed some viable single target attack, and the primary attack is the best candidate because its aiming mechanic, time slow, and its inferiority in AoE effectivness compared to the other fire modes (Secondary and Tertiary).
+  >Furthermore since is a very slow attack it needs to pack a punch and have low damage variance.
+  >
+  >As far as the original AoE radiuses, the uprgaded version was worse than the base, and such it was not really worth to upgrade. I do think it was a bug or an oversight.
 
 ---
 
