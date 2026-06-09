@@ -14,10 +14,15 @@ ACTOR Hebiko_Findus : Hebiko replaces Hebiko
 		HEBI Q 2 {
 					A_FireProjectile("SnekAcidSprayz",random(-2,2),0,random(-4,4),0,FPF_NOAUTOAIM,random(-5,5));	
 					A_FireProjectile("SnekAcidSprayz",random(-2,2),0,random(-4,4),0,FPF_NOAUTOAIM,random(-5,5));
+				 }
+
+		HEBI M 2 {
+					A_FireProjectile("SnekAcidSprayz",random(-2,2),0,random(-4,4),0,FPF_NOAUTOAIM,random(-5,5));	
+					A_FireProjectile("SnekAcidSprayz",random(-2,2),0,random(-4,4),0,FPF_NOAUTOAIM,random(-5,5));
 					A_TakeInventory("Mana2W", 1,TIF_NOTAKEINFINITE);
 				 }
 
-		HEBI MNO 2 {
+		HEBI NO 2 {
 					A_FireProjectile("SnekAcidSprayz",random(-2,2),0,random(-4,4),0,FPF_NOAUTOAIM,random(-5,5));	
 					A_FireProjectile("SnekAcidSprayz",random(-2,2),0,random(-4,4),0,FPF_NOAUTOAIM,random(-5,5));
 					}

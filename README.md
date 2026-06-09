@@ -21,6 +21,7 @@ For simplicity, this patch replaces entire actor files. Loading it with differen
 ### v2.2.0
 
 * **New Stun**: Added a new stun mechanic.
+* **Bardiche**: Now also consume player's Health.
 
 ### v2.1.1
 
@@ -184,12 +185,15 @@ The Hammer is a very powerful weapon... if you ignore the primary attack.
 I do honestly think that the Bardiche primary attack is overtuned. Even if it's slow it does a lot of damage, it has a lot of range, it hits multiple targets in an AoE, it forces pain on enemies, and has life leech. Compared to the Hammer primary attack, which is short range, single target, and does not force pain, it shows even more the huge gap between the primary attacks. Of course you cannot compare 2 weapons from the primary attack alone, and yet this disparity made me want to avoid to use this weapons.
 
 * **Primary Attack (Base & Upgraded)**
-  Drains 1 Green mana every 2 swings (0.5 per swing). If the player does not have enough mana available, the attack suffers approximately -20% damage and range penalties, and lifesteal on hit is disabled.
-  > **RPG Lore:** The Bardiche's power scales with magical resonance. Without sufficient mana reserves, the weapon's strikes lack the necessary force and reach.
+  * Drains 1 Green mana every 2 swings (0.5 per swing). If the player does not have enough mana available, the attack suffers approximately -20% damage and range penalties, and lifesteal on hit is disabled.
+  * If the attack doesn't connect or cannot drain life (see above) then it drains 1 player's HP instead every 2 swing.
+  > **RPG Lore:** The Bardiche's power scales with magical resonance. Without sufficient mana reserves, the weapon's strikes lack the necessary force and reach. Should the blade fail to drain life from its foes—whether by missing its mark or lacking the mana to sustain the lifesteal—it hungers instead upon its wielder, drawing vital energy to fuel its strikes.
   >
   > ---
   >
   > **Considerations:** The Bardiche is difficult to balance—I genuinely feel its primary attack is overpowered. I wanted to avoid completely redesigning it since this patch aims for minimal, targeted changes. However, I also wanted to avoid adding a mana cost entirely, as free primary attacks define the Myrmidon's core identity. I ultimately settled on a hybrid solution: a modest mana drain paired with a fallback penalty system. This way, players low on mana can still use the weapon at reduced effectiveness rather than losing it entirely.
+  >
+  > Even with these changes I still felt that the primary attack was too powerful, but I didn't want to increase mana cost any further, so I implemented the self life drain mechanic. Such mechanic is  is largely incosequential (nothing change if you hit the enemy) and in theme with the blood drinking nature of the weapon and, more importantly, slightly discourage spamming the attack.
 
 * **Primary Attack (Upgraded)**
   The Upgraded version now correctly implements the promised +20% damage and +20% AoE radius bonus to both slash attack variants:
