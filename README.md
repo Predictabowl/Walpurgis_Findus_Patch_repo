@@ -265,20 +265,19 @@ I do honestly think that the Bardiche primary attack is overtuned. Even if it's 
 
 #### Ichival
 
-The original Ichival, in my opinion, is the worse ultimate weapon among all classes. While this is not a problem for the class, since the other weapons are very powerful, I quickly realized that specifcally because of that, I didn't really find a reason to use it at all, save few rare cases.
-It also have the flaw that is lacks a cheaper single target attack, as all its attacks are AoE, as such is never worth to use againt single strong enemies like you would do with DOOM's Rocket Launcher.
+The original Ichival, in my opinion, is the worst ultimate weapon among all classes. While this is not a problem for the class, since the other weapons are very powerful, I quickly realized that specifically because of that, I didn't really find a reason to use it at all, save for a few rare cases.
+It also lacks an affordable single-target option, since all its attacks are AoE—making it unsuitable for single strong enemies where other ultimate weapons excel.
 
 * **Primary Attack (Standard & Upgraded)**
   * Mana cost reduced from 8+8 to 6+6.
   * Explosion radius reduced for both versions: from 212 to 128
   * Explosion full damage radius normalized and reduced: from 170 to 64 for the base version, and from 80 to 64 for upgraded version (the upgraded version was worse than the base).
-  * Direct impact single target damage: from 4-32 to 80-120 for the base version, and from 6-48 to 95-135 for the upgraded.
-  * Base version AoE damage decreased from 197-268 to 150-210 on the base version.
-  * Upgraded version AoE damage is now increased by +15% compared to the base (177-237), as advertised in the upgrade screen. Before was the same as the base version.
-  > **Considerations:** I decided that this weapon sorely needed some viable single target attack, and the primary attack is the best candidate because its aiming mechanic, time slow, and its inferiority in AoE effectivness compared to the other fire modes (Secondary and Tertiary).
-  >Furthermore since is a very slow attack it needs to pack a punch and have low damage variance.
+  * Direct impact single target damage: from 4-32 to 110-170 for the base version.
+  * Base version AoE damage decreased from 197-268 to 150-210.
+  * Upgraded version whole  damage is now increased by +15% compared to the base, as advertised in the upgrade screen. Before only the single target got the bonus (about +9), but the AoE was the same as the base version.
+  > **Considerations:** I felt that this weapon sorely needed a viable single-target attack, and the primary attack is the best candidate: its precision aiming, time-slowing effect, and deliberate rate of fire make it well-suited to being a precision weapon. Furthermore, AoE effectiveness is substantially subpar compared to the other fire modes (Secondary and Tertiary), which also have a higher rate of fire.
   >
-  >As far as the original AoE radiuses, the uprgaded version was worse than the base, and such it was not really worth to upgrade. I do think it was a bug or an oversight.
+  >A side note: the upgraded version dealt the same AoE damage as the base (with only a paltry increase of +9 average single target damage), but had a worse minimum damage radius (170 for the base, 80 for the upgraded), so it was not really worth upgrading. I suspect it was a bug or an oversight.
 
 ---
 

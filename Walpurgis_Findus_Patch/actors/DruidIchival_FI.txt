@@ -28,7 +28,7 @@ ACTOR Ichival_Findus : Ichival replaces Ichival
 
 ACTOR LightArrow_Findus : LightArrow replaces LightArrow
 {
-	Damage (random(80, 120))
+	Damage (random(110, 170))
 	States 
 	{ 
 	Death: 
@@ -46,7 +46,7 @@ ACTOR LightArrow_Findus : LightArrow replaces LightArrow
 
 ACTOR LightArrowPlus_Findus : LightArrowPlus replaces LightArrowPlus
 {
-	Damage (random(95, 135))
+	Damage (random(131, 191))
 	States 
 	{ 
 	Death: 
