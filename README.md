@@ -190,7 +190,7 @@ The Hammer is a very powerful weapon... if you ignore the primary attack.
 I do honestly think that the Bardiche primary attack is overtuned. Even if it's slow it does a lot of damage, it has a lot of range, it hits multiple targets in an AoE, it forces pain on enemies, and has life leech. Compared to the Hammer primary attack, which is short range, single target, and does not force pain, it shows even more the huge gap between the primary attacks. Of course you cannot compare 2 weapons from the primary attack alone, and yet this disparity made me want to avoid to use this weapons.
 
 * **Primary Attack (Base & Upgraded)**
-  * Drains 0.75 Green mana every swing, but only if it hit an enemy. If the player does not have enough mana available, the attack suffers approximately -20% damage and range penalties, and lifesteal on hit is disabled.
+  * Drains 1 Green mana every swing, but only if it hit an enemy. If the player does not have enough mana available, the attack suffers approximately -20% damage and range penalties, and lifesteal on hit is disabled.
   > **Considerations:** The Bardiche is difficult to balance—I genuinely feel its primary attack is overpowered. I wanted to avoid completely redesigning it since this patch aims for minimal, targeted changes. However, I also wanted to avoid adding a mana cost entirely, as free primary attacks define the Myrmidon's core identity. I ultimately settled on a hybrid solution: a modest mana drain paired with a fallback penalty system. This way, players low on mana can still use the weapon at reduced effectiveness rather than losing it entirely.
 
 * **Primary Attack (Upgraded)**
@@ -207,7 +207,7 @@ I do honestly think that the Bardiche primary attack is overtuned. Even if it's 
   > **Considerations:** The original upgrade was overtuned, especially if compared to other similar upgrades for the Axe, Gladius and Hammer of Retribution. The rebalance normalizes both variants to faithfully represent what the in-game upgrade page promises: a clean +20% increase across both damage and Area of Effect radius. The Horizontal slash was especially weird, as the upgrade massively increased the damage and slightly reduce the AoE radius. I've noticed that with the original values, the upgraded Horizontal was almost the same as the upgraded Vertical, while in the base version the Horizontal is a lot less damaging but have much more AoE radius. I preferred to keep the base attacks as they are, and just upscale the upgraded to +20% across the board. If you think it's low, consider that increasing +20% damage and +20% Aoe have a multiplicative DPS increase, not additive.
 
 * **Primary Attack (Triple Projectiles - Mutation)**
-  Consumes 1G mana per swing, plus 0.25G mana if it hits (for a total of 1.25 mana per swing). Projectiles will no longer spawn if mana is depleted.
+  Consumes 1G mana per swing, plus 0.5G mana if it hits (for a total of 1.5 mana per swing). Projectiles will no longer spawn if mana is depleted.
   > **RPG Lore:** The Bardiche uses a small amount of magical energy to manifest ethereal projectiles during the swing.
   >
   > ---
