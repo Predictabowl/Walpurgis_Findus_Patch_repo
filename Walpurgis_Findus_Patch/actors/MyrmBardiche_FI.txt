@@ -374,8 +374,8 @@ ACTOR BardichePuffWalp_Findus : AxePuffWalpLeft
 	
 	States {
 	Melee:
-		TNT1 A 0 {  //Take mana if not weakened, standard is 0.7 mana per swing
-			if(CountInv("WeakBardiche_Findus", AAPTR_TARGET) == 0 && random(1, 10) <= 7) {
+		TNT1 A 0 {  //Take mana if not weakened, standard is 0.75 mana per swing
+			if(CountInv("WeakBardiche_Findus", AAPTR_TARGET) == 0 && random(1, 4) <= 3) {
 				A_TakeInventory("Mana2W", 1, TIF_NOTAKEINFINITE,AAPTR_TARGET);
 			}
 		}
@@ -389,8 +389,8 @@ ACTOR BardichePuffMutatedWalp_Findus : AxePuffWalpLeft
 	
 	States {
 	Melee:
-		TNT1 A 0 {  //Take mana if not weakened, mutated is 20%, for a total of 1.2 per swing
-			if(CountInv("WeakBardiche_Findus", AAPTR_TARGET) == 0 && random(1, 5) == 1) {
+		TNT1 A 0 {  //Take mana if not weakened, mutated is 25%, for a total of 1.25 per swing
+			if(CountInv("WeakBardiche_Findus", AAPTR_TARGET) == 0 && random(1, 4) == 1) {
 				A_TakeInventory("Mana2W", 1, TIF_NOTAKEINFINITE,AAPTR_TARGET);
 			}
 		}
