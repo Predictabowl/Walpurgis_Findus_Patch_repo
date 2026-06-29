@@ -21,6 +21,7 @@ For simplicity, this patch replaces entire actor files. Loading it with differen
 ### v2.2.1
 
 * **Bardiche**: Slightly increased Mana consumption.
+* **Dog Mode**: Added slight mana cost for primary attack
 
 ### v2.2.0
 
@@ -259,6 +260,18 @@ I do honestly think that the Bardiche primary attack is overtuned. Even if it's 
   > **Considerations:** I get all the shortcomings of this weapons, it's slow and short ranged, but the damage it does is simply out of this world. If you set mobs life to 5x you won't even notice since they will still be one shotted most of the times by the base, not upgraded, version. Bosses becomes a mere nuisance as they die in seconds. Lastly it damage everything in its path, as it's an excellent AoE againt grounded enemies. Despite this I undestand that there are scenarios where this weapon is hard to use, but you have different weapons for different situations, so I don't even think its a problem unless you don't have any other weapon available.
   >
   >The least I could do was to increae the mana cost as it really felt way too cheap otherwise.
+
+#### Dog Mode (Warg Transformation)
+
+* **General**
+  The weapon can no longer be selected if the player has 0 Sapphire Mana. If mana is depleted while transformed, the player will automatically revert to human form.
+* **Primary Attack (Base & Upgraded)**
+  Added a stochastic mana cost: each hit has a 1-in-6 chance to consume 1 Sapphire Mana.
+* **Primary Attack (Mutation)**
+  The four lead-up slashes are now free, but the "OraOraOra" flurry requires 1 Sapphire Mana to activate. 
+  > **Considerations:** Previously, Dog Mode was completely free, which made it objectively superior to the Gladius (especially the Mutated version) in terms of sustainability. By adding a mana "tax," we've brought its efficiency into the same tier as the Druid's other weapons.
+  >
+  > The 1-in-6 chance for the first two variants keeps them feeling like the "infinite melee" fallback they are intended to be, while the fixed 1-mana cost for the Mutated flurry makes it a deliberate strategic commitment—identical to the cost cycle of the Mutated Gladius. This ensures that choosing the Warg transformation is a choice based on playstyle and range rather than just avoiding mana costs.
 
 #### Ichival
 

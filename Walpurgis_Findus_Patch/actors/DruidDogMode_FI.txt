@@ -1,0 +1,38 @@
+ACTOR DogMode_Findus : DogMode replaces DogMode
+{
+    -WEAPON.MELEEWEAPON
+    Weapon.MinSelectionAmmo1 1
+    Weapon.AmmoUse 1
+	
+	States
+	{
+	Fire:
+		W0LF L 1 A_WeaponOffset(0,48)
+		W0LF L 1 A_WeaponOffset(0,60)
+	Fire2:
+		TNT1 A 0 {
+			if(CountInv("DogMutate") == 1 || CountInv("DogMutate") == 4 || CountInv("DogMutate") == 6 || CountInv("DogMutate") == 9) {
+			//When mutated, normal punches are removed, but after 4 slashes, you do a Fist of the North Star combo (lol). 
+				if(CountInv("ComboCounter") == 0) {
+					A_GiveInventory("BowCharge",1); 
+					A_GiveInventory("ComboCounter",3);
+				}				
+				if(CountInv("BowCharge") == 3) {
+					A_TakeInventory ("Mana1W", 1);
+				}
+			} else {
+				if(random(1,6) == 1) {
+					A_TakeInventory ("Mana1W", 1);
+				}
+			}
+		}
+		TNT1 A 0 A_JumpIfInventory ("CoptersSound", 1, "DogSweepHit")
+		TNT1 A 0 A_JumpIfInventory ("BowCharge", 3, "DogOraOraOra")
+		TNT1 A 0 A_JumpIfInventory ("ComboCounter", 4, "DogSlashRight")
+		TNT1 A 0 A_JumpIfInventory ("ComboCounter", 3, "DogSlashLeft")
+		TNT1 A 0 A_JumpIfInventory ("ComboCounter", 2, "DogPaunchRight")
+		TNT1 A 0 A_JumpIfInventory ("ComboCounter", 1, "DogSlashRight")
+		TNT1 A 0 A_Jump(99,"DogPaunchLeft")
+		Goto DogSlashLeft //DogSlashLeft
+	}
+}
